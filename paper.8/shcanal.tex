@@ -270,7 +270,7 @@ We consider an unconstrained optimization problem
 	\min_{x\in\Omega\subset\mathbb{R}^d} f(x),
 	\label{}
 \end{align}
-where the objective function $f(x):\bbR^n\rightarrow \bbR$.
+where the objective function $f(x):\bbR^d\rightarrow \bbR$.
 Let $\rho$ be the search radius, $O(x_k, \rho)=\{x:
 \|x-x_k \|=\rho\}$ be the search surface at the
 $k$-th iteration with radius $\rho$. $\|\cdot \|$ is the common
@@ -383,8 +383,8 @@ discretization points as possible.
 Our previous results have demonstrated that the uniformly distributed
 discretization method based on the spherical coordinate
 can be used to find the SMP\,\cite{huang2017hill}. 
-The produced discretization points are as large as $2m^{n-1}$ in
-each iteration, $m$ is the number of refinement, $n$ is the dimensions of
+The produced discretization points are as large as $2m^{d-1}$ in
+each iteration, $m$ is the number of refinement, $d$ is the dimensions of
 optimization problems. This seriously restricts the
 application to high-dimensional problems. 
 To overcome this limitation, it needs to develop a new
@@ -397,47 +397,47 @@ discretize the search surface $O(x_k,\rho)$. As seen in the following,
 the computational complexity grows linearly as the
 dimension of optimization problems increases.
 
-The $n$-dimension regular simplex is a congruent polytope of
-$\mathbb{R}^n$ with a set of points $\{a_1,\dots,a_n,a_{n+1}\}$,
+The $d$-dimension regular simplex is a congruent polytope of
+$\mathbb{R}^d$ with a set of points $\{a_1,\dots,a_d,a_{d+1}\}$,
 and all pairwise distances $1$.
 Its Cartesian coordinates can be obtained from the following two properties:
 \begin{enumerate}
 	\item For a regular simplex, the distances of its vertices 
-		$\{a_1,\dots,a_n,a_{n+1}\}$ to its center are equal.
-	\item The angle subtended by any two vertices of $n$-dimension simplex through its center is
-		$\arccos(-1/n)$.
+		$\{a_1,\dots,a_d,a_{d+1}\}$ to its center are equal.
+	\item The angle subtended by any two vertices of the 
+		$d$-dimension simplex through its center is
+		$\arccos(-1/d)$.
 \end{enumerate}
 In particular, the above two properties can be implemented
 through the Algorithm \ref{alg:simplex}.
 \begin{algorithm}
-	\caption{Generate $n$-D regular simplex coordinates} 
+	\caption{Generate $d$-D regular simplex coordinates} 
 	\label{alg:simplex}
 \begin{algorithmic}
-	\STATE Give an $n\times(n+1)$-order zero matrix $x(1:n,1:n+1)$
-	\FOR {$i=1:1:n$}
+	\STATE Give an $d\times(d+1)$-order zero matrix $x(1:d,1:d+1)$
+	\FOR {$i=1:1:d$}
 	\STATE $x(i,i)=\sqrt{1-\sum_{k=1}^{i-1} [x(k, i)]^{2}}$
-		\FOR {$j=i+1:1:n+1$}
+		\FOR {$j=i+1:1:d+1$}
 		\STATE $x(i,j)
-		=\dfrac{1}{x(i,i)}\Big(-\dfrac{1}{n}-x(1:i-1, i)^T \cdot
+		=\dfrac{1}{x(i,i)}\Big(-\dfrac{1}{d}-x(1:i-1, i)^T \cdot
 		x(1:i-1, j)\Big)$
 		\ENDFOR
 	\ENDFOR
 	\STATE Output the column vectors, and let $a_j=x(:,j)$,
-	$j=1,2,\dots,n+1$ 
+	$j=1,2,\dots,d+1$ 
 \end{algorithmic}
 \end{algorithm}
 
 If the HiCS method does not find a better state at one regular
-simplex, more points could be added to discretize $O(x_k, \rho)$.
-%The new adding points of refining $O(x_k, \rho)$ should be
-%distinct from existing samplings. 
+simplex, more points can be added to discretize $O(x_k, \rho)$.
 Here we rotate the regular simplex to obtain more discretization points.
-For a given rotation angle $\theta=(\theta_1,\theta_2,\dots,\theta_{n})$, the
-rotation matrix $\bm R$ is given as 
+For a given rotation angle
+$\theta=(\theta_1,\theta_2,\dots,\theta_{d})$, the
+rotation matrix $\bm Q$ is given as 
 \begin{equation}
 \begin{aligned}
-	{\bm R} = 
-	 \prod_{i=2}^{n-1} &
+	{\bm Q} = 
+	 \prod_{i=2}^{d-1} &
 \bordermatrix{
   &  &       &  & 		   & i &		   &  &  & \cr
   & 1&       &  & 		   & \vdots  & 		   &  &  &  \cr
@@ -462,33 +462,15 @@ rotation matrix $\bm R$ is given as
   1 &  &  &  		&   \\
     & \ddots  &  & 	 	& 	\\
     &    & 1 & 	0	& 0  \\
-    &    & 0 & \cos\theta_n & -\sin\theta_n  \\
-    & 	 & 0 &  \sin\theta_n & \cos\theta_n 
+    &    & 0 & \cos\theta_d & -\sin\theta_d  \\
+    & 	 & 0 &  \sin\theta_d & \cos\theta_d 
 	\end{pmatrix}.
 \end{aligned}
 	\label{}
 \end{equation}
-%    \prod_{i=2}^{n-1}
-%    \begin{pmatrix}
-%    1 & & & & & & &  \\
-%       & \ddots &  & & & & &  \\
-%      &    & 1 & & & & &  \\
-%      &    &  & \cos\theta_i& -\sin\theta_i & & &  \\
-%      &    &  & \sin\theta_i& \cos\theta_i & & &  \\
-%      &    &  &            & 		    &1 & &  \\
-%      &    &  &            & 		    &  &\ddots  & \\
-%      &    &  &            & 		    &  &  & 1 \\
-%    \end{pmatrix}
-%%
-%%  \cos \theta_1 & -\sin \theta_1 & 0 &  		&   \\
-%%  \sin \theta_1 & \cos \theta_1  & 0 & 	 	& 	\\
-%%      0	   &      0    & 1 & 		&   \\
-%%             & 		   &   & \ddots &   \\
-%%             & 		   &   &   		& 1 
-%    \end{pmatrix}
 Then vertices of new simplex are
 \begin{align}
-	a_j = \bm{R}a_j + x_k.
+	a_j = \bm{Q}a_j + x_k.
 	\label{}
 \end{align}
 \begin{figure}[!htbp]
@@ -526,7 +508,7 @@ values in practice.
 %angle between the nearest edges. 
 Based on the dynamic refinement strategy, we propose the
 executable HiCS, see Algorithm \ref{alg:refined}. The computational amount is not
-larger than $m_{\max}(n+1)$ in each iteration which is linearly
+larger than $m_{\max}(d+1)$ in each iteration which is linearly
 dependent on the dimension of optimization problems,
 $m_{\max}$ is the maximum number of rotation.
 Whence, it is possible to treat high-dimensional optimization problems.
@@ -681,11 +663,11 @@ rotation $m=32$.
 
 The first objective function is the unimodal Gaussian problem
 \begin{align}
-	f(x) = -20\exp\left(-\sum_{j=1}^n x_j^2 \right),
+	f(x) = -20\exp\left(-\sum_{j=1}^d x_j^2 \right),
 	\label{eqn:exp1}
 \end{align}
 which has one minimum $0$ with $f(0)=-20$.
-The objective function is differentiable in $\bbR^n$, however,
+The objective function is differentiable in $\bbR^d$, however,
 it quickly diffuses out towards zero out of the upside-down ``bell''. 
 
 %Here we will illustrate the numerical behavior of HiCS method for
@@ -787,7 +769,7 @@ the difference between $f(x_k)$ and $f(0)=-20$.
 The right one in Fig.\,\ref{fig:gauss:1000D} 
 plots the changes of search radius $\rho$ and $\ell^2$-distance between
 the iterator and the global minimizer $0$, where $\|x\|_{\ell^2}=\left(
-(\sum_{i=1}^n x_i^2) / n\right)^{1/2}$.
+(\sum_{i=1}^d x_i^2) / d\right)^{1/2}$.
 From these results, it can be found that the HiCS is convergent
 for each $\rho$. Based on the iteration, the adaptive HiCS method
 can approximate the global minimum by decreasing the search radius $\rho$. 
@@ -890,9 +872,9 @@ benchmark function for testing optimization algorithms.
 The expression of the Ackley function can be written as
 \begin{align}
 	f(x) =
-	-20\cdot\exp\left(-\frac{1}{5}\cdot\sqrt{\frac{1}{n}\sum_{i=1}^n
+	-20\cdot\exp\left(-\frac{1}{5}\cdot\sqrt{\frac{1}{d}\sum_{i=1}^d
 	x_i^2}\right)-
-	\exp\left(\frac{1}{n}\sum_{i=1}^n \cos(2\pi x_i)\right)+20+e,
+	\exp\left(\frac{1}{d}\sum_{i=1}^d \cos(2\pi x_i)\right)+20+e,
 	\label{eqn:ackley}
 \end{align}
 where $n$ is the dimension.
@@ -1216,14 +1198,14 @@ The last benchmark example is the Arwhead function, which has been
 also used by Powell to test his derivative-free
 method\,\cite{powell2006newuoa}. The expression of the Arwhead function is
 \begin{align}
-	f(x) = \sum_{i=1}^{n-1}[(x_i^2+x_n^2)^2 - 4 x_i +3].
+	f(x) = \sum_{i=1}^{d-1}[(x_i^2+x_n^2)^2 - 4 x_i +3].
 	\label{}
 \end{align}
 The least value of $f$ is zero, which occurs when the minimizer
-$x^*$ take the values $x_j=1$, $j=1,2,\dots,n-1$ and $x_n=0$. 
+$x^*$ take the values $x_j=1$, $j=1,2,\dots,d-1$ and $x_d=0$. 
 We directly apply the adaptive HiCS method ($\eta=0.5$) to $1000$
 dimensional Arwhead function.
-The starting vector is given by $x_j^{(0)}=1$, $j=1,2,\dots,n$, as
+The starting vector is given by $x_j^{(0)}=1$, $j=1,2,\dots,d$, as
 Powell done in Ref.\,\cite{powell2006newuoa}
 The initial search radius $\rho_0=3$ and $\eta=(\sqrt{5}-1)/2$.
 \begin{figure}[!htbp]
