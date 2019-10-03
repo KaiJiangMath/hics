@@ -1,0 +1,924 @@
+\documentclass{beamer}
+%
+% Choose how your presentation looks.
+%
+% For more themes, color themes and font themes, see:
+% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
+%
+\mode<presentation>
+{
+  \usetheme{Madrid}      % or try Darmstadt, Madrid, Warsaw, ...
+  \usecolortheme{beaver} % or try albatross, beaver, crane, ...
+  \usefonttheme{default}  % or try serif, structurebold, ...
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+}
+
+%\usepackage{blindtext}
+%\usepackage{enumitem}
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{makecell}
+\usepackage{longtable}
+\usepackage{rotating}
+\usepackage{multirow}
+\usepackage{algorithmic}
+\usepackage[]{algorithm}
+\newcommand{\bmx}{x}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\eps}{\varepsilon}
+\newtheorem{assume}{Assumption}
+\newtheorem{remark}{Remark}
+\newtheorem{proposition}{Proposition}
+\newtheorem{notation}{Notation}
+
+\title[Stick Hill-Climbing Optimization]
+{A finite-step convergent derivative-free method for high-dimensional unconstrained
+optimization}
+\author[Y. Huang, XTU]{Yunqing Huang}
+
+\institute[]{Xiangtan University
+\\
+\vspace{0.1cm}
+joint work with Kai Jiang}
+
+%\date{July 11, 2017  }
+\date{\today }
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% Uncomment these lines for an automatically generated outline.
+%\begin{frame}{Outline}
+%  \tableofcontents
+%\end{frame}
+
+\section{Introduction}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Optimization}
+\begin{align*}
+	& \hspace{0.6cm} \min f(x,\gamma)
+	\\
+	& \mbox{\textit{s.t.} some constraints}
+\end{align*}
+where $x$ may be continue variable or discrete data, $\gamma$ is
+a set of parameters.
+
+\begin{itemize}
+\item Derivative-based optimization: Taylor's expansion
+	\begin{itemize}[]
+		\item Steepest Descent Method, CG, Newton,
+			Quasi-Newton, Trust-Region, \ldots
+	\end{itemize}
+\item Derivative-free optimization \\
+	\begin{itemize}[]
+		\item Function derivative evaluation: \large{\textcolor{blue}{costly, unreliable}
+			}
+			(one cannot trust derivatives or approximate them by finite differences)
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Derivative-Free Optimization}
+	\begin{itemize}
+		\item Direct search algorithms
+			\\
+			{\large
+			\textcolor{blue}{Predetermined search
+			directions + Search step} }
+			\begin{itemize}
+				\item Directional direct-search methods:
+					\begin{itemize}
+						\item including Hooke-Jeeves algorithm (1961);
+						 (Generalized) Pattern-search methods 
+							(Torczon, 1997, Audet-Dennis, 2003);
+						Multidirectional search algorithm: Torczon (1991);
+						Probabilistic descent directions
+							(Gratton-Royer-Vicente-Zhang, 2015)
+						\dots
+					\end{itemize}
+				\item Simplex algorithm: Nelder-Mead (1965)
+			\end{itemize}
+		\item Model-based algorithms
+			\\
+			{\large \textcolor{blue}{
+				Interpolation model like the trust-region method
+				but NOT depend on the derivatives
+				}}
+			\begin{itemize}
+				\item 
+					{\footnotesize
+					including DFO (Conn-Scheinberg-Toint,
+					1997, 1998), UOBYQA (Powell, 2000), NEWUOA
+					(Powell, 2004), NEWUOAs (Zhang, 2012), \dots
+					}
+			\end{itemize}
+		\item Heuristic algorithms
+			\begin{itemize}
+				\item Simulated annealing, genetic algorithm,
+					(deep) neural networks, \ldots
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Derivative-Free Optimization}
+\begin{itemize}
+	\item Molecular geometry conformation
+		(minimization of the potential energy of clusters)
+	\item Biomedical image processing
+	\item Circuit design (tuning parameters of relatively small
+		circuits using accurate simulation)
+	\item Dynamic pricing
+	\item Growing sophistication of computer hardware and
+		mathematical algorithms and software (which opens new
+		possibilities for optimization)
+	\item \dots
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Algorithm Description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Motivation: the behavior of the blind for hill-climbing }
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.2]{./figures/blindman.png}
+\end{figure}
+\begin{itemize}
+	\item Find a higher place with a stick using circular motions
+	\item No predetermined search directions
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Search Set: NOT neighborhood, BUT compass}
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.4]{./figures/nc.png}
+\end{figure}
+\begin{itemize}
+	\item a circle in two dimensions, a spherical surface in higher dimensions
+	\item like using fishing net to filter optimal states
+	\item jump out of the local minimum trap quickly with very little memory
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Suspected minimum point}
+	
+\begin{definition}[Suspected minimum point]
+	For a given function $f(x)$ and a search radius
+	$\rho$, $\tilde{x}$ is a suspected minimum point (SMP) if $f(\tilde
+	x)\leq f(x)$ for $\forall x\in O(\tilde{x},\rho)$.
+\end{definition}
+where $O(\tilde{x}, \rho)=\{x: |\tilde{x}-x|=\rho\}$.
+
+\begin{itemize}
+	\item 
+When $\tilde{x}$ is a minimizer in the neighborhood of
+$U(\tilde{x}, \rho)$, $\tilde{x}$ is a SMP. 
+\item The opposite is not always true. 
+%    A sufficient condition is given as follows.
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Stick Hill-Climbing (SHC) Algorithm}
+
+\begin{itemize}
+	\item Consider the unconstrained optimization problem
+\end{itemize}
+\vspace{-0.3cm}
+\begin{columns}[c]
+	\column{8cm}
+\begin{align*}
+	& \min_x f(x,\gamma)
+\end{align*}
+where $f: \mathbb{R}^n \rightarrow \mathbb{R}$, $\gamma$ is a set of parameters.
+\vspace{0.1cm}
+{\scriptsize
+\begin{algorithm}[H]
+	\caption{stick hill-climbing algorithm}
+	\label{alg:shc}
+\begin{algorithmic}[1]
+	\STATE \textbf{Initialization:} choose $x_0$ and $\rho$.
+	\STATE \textbf{for} $k=0,1,2,\dots$
+	\\
+	\hspace{0.2cm} Try to find $\bar{x}\in O(x_k, \rho)$
+		   s.t. $f(\bar x)<f(x_k)$.
+			\\
+	\hspace{0.2cm} 	 If such a point is found, then set $x_{k+1}= \bar{x}$.
+		  \\
+		   \hspace{0.2cm} Otherwise, a SMP is found, and declare the
+		   \\
+		   \hspace{0.2cm} 
+		   iteration successful.
+\end{algorithmic}
+\end{algorithm}
+}
+	\column{3.5cm}
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.45]{./figures/shc.png}
+\end{figure}
+\end{columns}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Finite-Step Convergence}
+
+\begin{theorem}[Finite-step convergence]
+	Assume that objective function $f(x)$ is continuous and the
+	search domain $\Omega$ is a compact set. 
+	If there are not two SMPs $x_*$ and $x^*$ such that
+	$f(x^*)=f(x_*)=A$ when $|x_*-x^*|=\rho$. 
+	Then Algorithm \ref{alg:shc} converges in at most finite steps.
+\end{theorem}
+\begin{proof}
+\begin{itemize}
+\footnotesize{
+	\item The stick hill-climbing method produces $\{x_n,
+		f(x_n)\}_{n=0}^{\infty}$.
+	\item From assumption, $f(x)$ is bounded, then
+		the decreasing sequence $\{f(x_n)\}$ is convergent, i.e.,
+		$f(x_n)\rightarrow A$.
+	\item The sequence $\{x_n\}$ has a convergent subsequence
+		$\{x_{n_k}\}$, i.e., $x_{n_k}\rightarrow x^*$.
+	\item There exists a subsequence $\{x_{n_{{m}}}\}$ satisfying
+		$|x_{n_k}-x_{n_{m}}|=\rho$. Obviously,
+		$f(x_{n_m})\rightarrow A$.
+	\item $\{x_{n_{m}}\}$ has a
+		convergent subsequence $\{x_{n_{m'}}\}$, s.t.
+		$x_{n_{m'}}\rightarrow x_*$.
+	\item We have $|x^* - x_*|=\rho$, $f(x^*)=f(x_*)=A$.
+		}
+\end{itemize}
+\end{proof}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Sampling Search Set $O(x_k, \rho)$}
+
+\begin{itemize}
+	\item Many sampling approaches: random, inherent, adaptive, etc.
+	\item Here we rotate the \textcolor{blue}{regular simplex} to sample $O(x_k, \rho)$.
+\end{itemize}
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.35]{./figures/sketch.png}
+	\caption{2D schematic diagram of rotating regular simplex for
+	sampling the search set $O(\bmx_k, \rho)$.}
+%    Subfigure (a) demonstrates the initial samples,
+%    and images (b-d) show new sample points in the equally
+%    refined process.}
+\label{fig:obset:sketch}
+\end{figure}
+\vspace{-0.6cm}
+\begin{itemize}
+	\item For n-D regular simplex ($n+1$ vertices),
+		the rotation matrices can be obtained form Euler angles.
+	\item \textcolor{blue}{Computational complexity: $m(n+1)$}
+\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Dynamic Refinement Technique}
+\begin{algorithm}[H]
+	\caption{Dynamic Refinement Technique}
+	\label{alg:refined}
+\begin{algorithmic}[]
+	\STATE For $k$ iteration in Algorithm\,\ref{alg:shc}
+	\STATE \textbf{Step 1}. Sample the search set
+	$O(\bmx_k, r_k)$ with a given regular simplex. \\
+	\STATE \textbf{Step 2}. Compare the function values on
+	samples with $f(\bmx_k)$.
+	\\
+	\hspace{1.3cm} If there exists $\bar\bmx$ such that
+	$f(\bar\bmx)<f(\bmx_k)$, goto \textbf{Step 4}.
+	\\
+	\hspace{1.3cm} Otherwise, goto \textbf{Step 3}.
+	\STATE \textbf{Step 3}. Rotate the regular simplex,
+	goto \textbf{Step 2}.
+	\STATE \textbf{Step 4}. Declare that the iteration is
+	successful, and set $\bmx_{k+1}= \bar\bmx$.
+\end{algorithmic}
+\end{algorithm}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Adaptive Stick Hill-Climbing (ASHC) Algorithm}
+\begin{algorithm}[H]
+	\caption{Adaptive Stick Hill-Climbing Algorithm}
+	\label{alg:pshc}
+\begin{algorithmic}[]
+	\STATE \textbf{Initialization:} Choose $\bmx_0$, $\rho$,
+	and control factor $\eta$.
+	\STATE \textbf{For} $k=0,1,2,\dots$
+	\STATE \hspace{0.5cm} Use \textbf{Algorithm\,\ref{alg:shc}} to find
+	$\bar{\bmx}\in O(\bmx_k, \rho)$ such that
+	$f(\bar\bmx)<f(\bmx_k)$.
+		 \\
+		 \hspace{0.5cm} If such a point is found, then set
+						 $\bmx_{k+1}= \bar\bmx$.
+		  \\
+	 	  \hspace{0.5cm} Otherwise, change the search radius
+		  $\rho = \eta \cdot \rho$.
+\end{algorithmic}
+\end{algorithm}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Results}
+
+\subsection{Gaussian Function}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Gaussian Function}
+\begin{align*}
+	f(\bmx) = -h \exp\left( -\sum_{i=1}^n x_i^2/s_i \right),
+	~~ h =10, s_i = 1.0, i=1,\cdots,n.
+\end{align*}
+\begin{itemize}
+	\item A unique global minimum $0$ with $f(0)=-10$.
+%    \item 
+\end{itemize}
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.17]{./figures/gauss.png}
+	\caption{ 2D Gaussian function.}
+\label{fig:gauss:2drand}
+\end{figure}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Gaussian Function}
+	\begin{itemize}
+		\item SHC can capture the minimizer within finite-step iterations
+	\end{itemize}
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.22]{./figures/gauss2Drand.png}
+	\caption{ The iterations of convergence of the SHC with
+	constant $\rho=1.0$ for 2D Gaussian function. The initial
+	values were randomly generated in $[-10,10]^2$.}
+\label{fig:gauss:2drand}
+\end{figure}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Gaussian Function}
+	\begin{itemize}
+		\item SHC: initial value $x_0 = (6.7, -8.0)$, $\rho=1.0$, $m_{max}=32$.
+\end{itemize}
+\vspace{-0.5cm}
+\footnotesize{
+\begin{table}[!htbp]
+\caption{Iteration information}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+ \hline
+    Iter. & $\ell^2$-distant &  Fun. Val. 
+ \\\hline
+ 1 &  1.0435037135e+01 & -5.1247639412e-47 \\ 
+ \hline
+ 1 &  9.4516450176e+00 & -1.5955605034e-38 \\ 
+ \hline
+ 1 &  8.4721418236e+00 & -6.7230095025e-31 \\ 
+ \hline
+ 1 &  7.4980517882e+00 & -3.8337625366e-24 \\ 
+ \hline
+ 1 &  6.5317971614e+00 & -2.9586781839e-18 \\ 
+ \hline
+ 1 &  5.5774517207e+00 & -3.0901622718e-13 \\ 
+ \hline
+ 1 &  4.6423659094e+00 & -4.3679320991e-09 \\ 
+ \hline
+ 1 &  3.7410098605e+00 & -8.3556743824e-06 \\ 
+ \hline
+ 1 &  2.9049523775e+00 & -2.1632074620e-03 \\ 
+ \hline
+ 1 &  2.2096021938e+00 & -7.5792437378e-02 \\ 
+ \hline
+ 1 &  1.8237147240e+00 & -3.5938885990e-01 \\ 
+ \hline
+ 1 &  1.2175146221e+00 & -2.2710521764e+00 \\ 
+ \hline
+ 1 &  9.6225536865e-01 & -3.9616067919e+00 \\ 
+ \hline
+ 32 & 2.8695270523e-01 & -9.2095707106e+00 \\ 
+ \hline
+\end{tabular}
+\end{center}
+\end{table}
+}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Gaussian Function: evolution}
+	\begin{itemize}
+		\item ASHC: initial value $x_0 = (6.7, -8.0)$, $\rho=1.0$, $m_{max}=32$.
+	\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Dennis-Woods Function}
+
+\begin{frame}{Dennis-Woods Function}
+\begin{align*}
+	f(z) = \frac{1}{2}\max\{\|z - c_1 \|^2, \|z - c_2
+	\|^2\}, ~~~~ z = (x,y),
+	\label{eqn:dwfun}
+\end{align*}
+where $c_1 = (1,-1)^T$, $c_2 = -c_1$, $\|\cdot\|$ denotes
+$\ell^2$-norm.
+\begin{itemize}
+	\item continuous, strictly convex, but its gradient is
+		\textcolor{blue}{discontinuous} along the line $x=y$
+\end{itemize}
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.13]{./figures/dWoods.png}
+	  \vspace{-0.4cm}
+	\caption{Contours of the variant of the Dennis-Woods
+	function}
+\label{fig:dwfun}
+\end{figure}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Dennis-Woods Function}
+	\begin{itemize}
+		\item SHC can capture the minimizer within finite-step iterations
+	\end{itemize}
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.22]{./figures/dwoodrand.png}
+	\caption{ The iterations of convergence of the SHC with
+	constant $\rho=0.5$ for 2D Gaussian function. The initial
+	values were randomly generated in $[-5,5]^2$.}
+\label{fig:dwfunrand}
+\end{figure}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Dennis-Woods Function: evolution}
+	\begin{itemize}
+		\item SHC: initial value $x_0 = (3.2, 1.5)$, $\rho=0.5$, $m_{max}=32$.
+	\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Dennis-Woods Function}
+	\begin{itemize}
+		\item SHC: initial value $x_0 = (3.2, 1.5)$, $\rho=0.5$, $m_{max}=32$.
+	\end{itemize}
+\footnotesize{
+\begin{table}[!htbp]
+\caption{Iteration information}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+ \hline
+    Iter. & $\ell^2$-distant &  Fun. Val.
+ \\\hline
+ \makecell{ 1 (1-15) } & \makecell{ 3.5341194094e+00 \\ $\downarrow$ \\ 3.7927243150e-01 } 
+ & \makecell{8.9450000000e+00  \\ $\downarrow$ \\1.1398729811e+00 } 
+ \\\hline
+ 3  &1.3421830119e-01 & 1.1240707856e+00
+ \\\hline
+ 15  & \textcolor{blue}{3.8930926651e-01} & 1.0985484063e+00
+ \\\hline
+ 32  & 1.1218490755e-01 &  1.0290602806e+00
+ \\\hline
+\end{tabular}
+\end{center}
+\end{table}
+}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Dennis-Woods Function: Comparison}
+\begin{itemize}
+	\item The popular Nelder-Mead simplex algorithm \textcolor{blue}{fails}
+	\item The coordinate-search (CS) method (with predetermined search
+		directions $\mathcal{D}_\oplus$) \textcolor{blue}{stalls}
+\end{itemize}
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.17]{./figures/dwoods_cmp.png}
+	  \caption{
+	  \footnotesize{
+	  Application of the adaptive stick hill-climbing method
+	  ($m_{\max}=8$) and the CS method with
+	  $\mathcal{D}_{\oplus}=\{(1,0), (0,1), (-1,0), (0,-1)\}$,
+	  starting from $x_0=(1.1, 0.9)$.
+	  The initial search radii are both $r = 1.0$,
+	  the control factor $\eta=0.5$.}
+	  }
+\label{fig:dwfun:cmp}
+\end{figure}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Ackley Function}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Ackley Function}
+\footnotesize{
+\begin{itemize}
+	\item Many local minima and a unique global
+minimum $(0,0)$ with $f(0,0)=0$.
+	\item Non-convex
+\end{itemize}
+\vspace{-0.2cm}
+\begin{align*}
+	f(\bmx) =
+	-20\cdot\exp\left(-0.2\cdot\sqrt{\frac{1}{n}\sum_{i=1}^n
+	x_i^2}\right)-
+	\exp\left(\frac{1}{n}\sum_{i=1}^n \cos(2\pi x_i)\right)+20+\exp(1)
+\end{align*}
+}
+$n$ is the dimension.
+\vspace{-0.4cm}
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.2]{./figures/ackley.png}
+	  \caption{2D Ackley function}
+\end{figure}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Ackley Function: 2D}
+	\begin{itemize}
+		\item ASHC: initial value $x_0 = (6.12, 5.426)$, $\rho=2.5$
+	\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Ackley Function: 2D}
+
+\footnotesize{
+	$\bullet$ Apply ASHC to 2D Ackley.
+		The initial value is $x_0=(4.1,3.4)$, $\rho_0=2.5$, $\eta=0.5$, $m_{max}=32$
+	}
+\footnotesize{
+\vspace{-0.4cm}
+\begin{table}[!htbp]
+\caption{Iteration information}
+\begin{center}
+\vspace{-0.5cm}
+\begin{tabular}{|c|c|c||c|c|c|}
+ \hline
+ $\rho$ &  Iter. & $\ell^2$-distant
+ & $\rho$ &  Iter. & $\ell^2$-distant
+ \\\hline
+ $2.5$ & \makecell{ 1 (1-5) \\  \\ 32} & \makecell{ 8.1789899132e+00
+ \\ $\downarrow$ \\ 1.0770647084e+00 } 
+ & 7.812500e-02  & 32  &  2.8671697567e-02   
+ \\\hline
+ $1.25$ & \makecell{ 1 \\ 1 \\ 6 \\ 3
+ \\ 15 \\ 32} & \makecell{
+1.0770647084e+00 
+\\
+7.5511786386e-01  
+\\
+9.0643428768e-01   
+\\
+3.7558136376e-01       
+\\
+\textcolor{blue}{8.8719307270e-01}
+\\
+3.6508163385e-01  
+ }
+ & 3.906250e-02& \makecell{1 \\ 32} & \makecell{
+2.8671697567e-02 
+\\
+1.0415421005e-02 
+}
+\\\hline
+ $0.625$ & \makecell{ 1  \\ 2 \\ 32} & \makecell{ 
+3.6508163385e-01  
+\\
+3.3018360271e-01  
+\\
+2.9552513683e-01  
+ }
+ & 1.953125e-02& \makecell{1 \\ 32} & \makecell{
+1.0415421005e-02  
+\\
+9.1544465411e-03   
+ }
+ \\\hline
+ $0.3125$ & \makecell{ 1  \\ 32} & \makecell{ 
+2.9552513683e-01  
+\\
+1.4349657932e-01 
+ }
+& $\downarrow$ & $\downarrow$ & $\downarrow$ 
+ \\\hline
+ 0.15625 & \makecell{  1 \\ 32 } 
+ & \makecell{
+ 1.4349657932e-01  \\ 2.8671697567e-02 
+ }
+ & 1.907349e-05 & \makecell{1 \\ 32}
+ & \makecell{
+1.4744333518e-05 \\ 
+7.4878517018e-06 
+ }
+ \\\hline
+\end{tabular}
+\end{center}
+\end{table}
+}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Ackley Function: 2D}
+\begin{itemize}
+	\item Has potential to distinguish different minima
+\end{itemize}
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.18]{./figures/ackley_LG.png}
+\end{figure}
+\vspace{-0.8cm}
+\footnotesize{
+\begin{table}[!htbp]
+\caption{\label{tab:ackley:r}The convergent results and required
+iterations with differently \textcolor{blue}{constant $\rho$}
+starting from the initial state $(x_0, y_0)=(4.1, 3.4)$.}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+ \hline
+ $\rho$ & 0.1 & 0.3 & 0.5 & 0.55 & 0.58 &  0.6 & 1.0
+ \\\hline
+ Iter. & 7   & 3   &  2  & 6 & 7 & 15 & 7 
+ \\\hline
+ Min. & $\rm{Loc_1}$ & $\rm{Loc_1}$ & $\rm{Loc_1}$ & $\rm{Loc_2}$
+	& $\rm{Loc_3}$ & Global & Global
+ \\\hline
+\end{tabular}
+\end{center}
+\end{table}
+}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Ackley Function: 100D}
+\footnotesize{
+	\begin{itemize}
+		\item We apply SHC to 100D Ackley with constant $\rho=2$.
+		The initial value is randomly generated in $[-10,10]^{100}$.
+	\end{itemize}
+	\vspace{-0.5cm}
+	}
+\footnotesize{
+\begin{table}[!htbp]
+\caption{Iteration information}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+ \hline
+    Iter. & $\ell^2$-distant &  Fun. Val. 
+ \\\hline
+ \makecell{ 1 (1-353) } & \makecell{ 4.3769842839e+01 \\ $\downarrow$ \\ 5.6705662388e+00 } 
+ & \makecell{  1.3402763950e+01 \\ $\downarrow$ \\ 3.6500283195e+00 } 
+ \\\hline
+ 3  &\textcolor{blue}{5.7676753732e+00} & 3.6496090883e+00
+ \\\hline
+ 5  & \textcolor{blue}{5.8410256060e+00} &3.6457912911e+00
+ \\\hline
+  5  & 5.7571725375e+00 &3.6370586909e+00
+ \\\hline
+1  & 5.7273233589e+00  & 3.6315399254e+00  
+ \\\hline
+ 1 &   5.6810640400e+00  & 3.6302051882e+00  
+ \\\hline
+ 6 &   5.6745774447e+00  & 3.6065456752e+00  
+ \\\hline
+ 12 & 5.7618050286e+00  & 3.6056866282e+00  
+ \\\hline
+ 5  & \textcolor{blue}{5.8449616655e+00}  & 3.5967423037e+00   
+ \\\hline
+1  & 5.7652804943e+00  & 3.5937731951e+00   
+ \\\hline
+1  & 5.7175444967e+00  & 3.5927685452e+00   
+ \\\hline
+ 2  & \textcolor{blue}{5.9090844843e+00} &  3.5905379762e+00  
+ \\\hline
+ 32 ($m_{max}$) & \textcolor{blue}{5.9376731371e+00} &  3.5825199326e+00  
+ \\\hline
+\end{tabular}
+\end{center}
+\end{table}
+}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Ackley Function: 100D}
+	\begin{itemize}
+		\item We can continue apply ASHC to 100D Ackley.
+	\end{itemize}
+\footnotesize{
+\begin{table}[!htbp]
+\caption{Iteration information}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+ \hline
+  $\rho$ &  Iter. & $\ell^2$-distant &  Fun. Val. 
+ \\\hline
+2.0 &  \makecell{ 431 } & 5.9376731371e+00 &  3.5825199326e+00    
+ \\\hline
+1.0 &  \makecell{ 152 } &  2.5717428366e+00 &  2.2979795353e+00    
+ \\\hline
+0.5&  \makecell{ 171 } & 1.2147220195e+00 &  1.1029637432e+00    
+ \\\hline
+0.25&  \makecell{ 145 } & 6.0161985055e-01 &  4.2190311564e-01    
+ \\\hline
+0.125&  \makecell{ 152 } & 3.0400991430e-01 &  1.7007648336e-01    
+ \\\hline
+0.0625&  \makecell{ 105 } & 1.4644406013e-01 &  6.9957199791e-02    
+ \\\hline
+0.03125&  \makecell{ 175 } & 7.6076391231e-02 &  3.3509781782e-02    
+ \\\hline
+ $\downarrow$ & $\downarrow$ & $\downarrow$  & $\downarrow$
+ \\\hline
+1.525879e-05 & 135  & 3.5663302607e-05  & 1.4265998399e-05    
+ \\\hline
+\end{tabular}
+\end{center}
+\end{table}
+}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Ackley Function: 2500D}
+\footnotesize{
+	\begin{itemize}
+		\item Apply ASHC algorithm to 2500D Ackley function with
+			random initial value in  $[-10,10]^{2500}$ and $\rho_0 = 3.5$, $m_{max}=16$.
+		\item CPU time 3.7h [Intel(R) Core(TM) i7-4790, 3.60GHz]
+	\end{itemize}
+	}
+\footnotesize{
+\vspace{-0.3cm}
+\begin{table}[!htbp]
+\caption{Iteration information}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+ \hline
+  $\rho$ &  Iter. & $\ell^2$-distant &  Fun. Val. 
+ \\\hline
+3.5 &  \makecell{ 5415 } & \makecell{ 1.8854368262e+02 \\ $\downarrow$ \\ 4.3980512458e+01  } 
+ & \makecell{  1.2310134936e+01 \\ $\downarrow$ \\  4.7600200861e+00} 
+ \\\hline
+1.75 &  \makecell{ 5064 } & \makecell{ $\downarrow$ \\  2.4909250731e+01 } 
+ & \makecell{   $\downarrow$ \\ 3.3115891477e+00 } 
+ \\\hline
+8.75e-01&  \makecell{ 4099 } & \makecell{ $\downarrow$ \\  1.0893125123e+01 } 
+ & \makecell{   $\downarrow$ \\ 2.0271413426e+00 } 
+ \\\hline
+4.375e-01&  \makecell{ 4869 } & \makecell{ $\downarrow$ \\  5.1289809138e+00 } 
+ & \makecell{   $\downarrow$ \\  8.8082043719e-01} 
+ \\\hline
+2.1875e-01&  \makecell{ 3269 } & \makecell{ $\downarrow$ \\ 2.5698591962e+00 } 
+ & \makecell{   $\downarrow$ \\ 3.4009221628e-01 } 
+ \\\hline
+ $\downarrow$ & $\downarrow$ & $\downarrow$  & $\downarrow$
+ \\\hline
+1.335144e-05 & 3340  & 1.5546421188e-04 & 1.2437651812e-05 
+ \\\hline
+\end{tabular}
+\end{center}
+\end{table}
+}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Discussion and Summary}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Summary}
+	\begin{itemize}
+		\item Propose the stick hill-climbing method
+		\item \textcolor{blue}{Finite-step convergence}
+		\item Sampling method: \textcolor{blue}{Simplex	}
+		\item Good properties:
+			\begin{itemize}
+				\item Easily implement to high dimension 
+					(\textcolor{blue}{2500D Ackley function})
+				\item Very little memory
+				\item Only one parameter $\rho$
+%                \item Be able to capture the local and global optimal states
+				\item Has potential to escape the trap of local maxima
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+	\begin{centering}
+	  \Huge Thanks for Your Attention ! \par
+	\end{centering}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newcount\opaqueness
+%\plainframe{
+%  \itshape
+%  \animate<1-10>
+%  \Large
+%
+%  \only<1-10>{
+%  \animatevalue<1-10>{\opaqueness}{10}{100}
+%  \begin{colormixin}{\the\opaqueness!averagebackgroundcolor}
+%    \begin{centering}
+%      \Huge Thanks for Your Attention \par
+%    \end{centering}
+%  \end{colormixin}
+%  }
+%}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Some \LaTeX{} Examples}
+%
+%\subsection{Tables and Figures}
+%
+%\begin{frame}{Tables and Figures}
+%
+%\begin{itemize}
+%\item Use \texttt{tabular} for basic tables --- see Table~\ref{tab:widgets}, for example.
+%\item You can upload a figure (JPEG, PNG or PDF) using the files menu.
+%\item To include it in your document, use the \texttt{includegraphics} command (see the comment below in the source code).
+%\end{itemize}
+%
+%% Commands to include a figure:
+%%\begin{figure}
+%%\includegraphics[width=\textwidth]{your-figure's-file-name}
+%%\caption{\label{fig:your-figure}Caption goes here.}
+%%\end{figure}
+%
+%\begin{table}
+%\centering
+%\begin{tabular}{l|r}
+%Item & Quantity \\\hline
+%Widgets & 42 \\
+%Gadgets & 13
+%\end{tabular}
+%\caption{\label{tab:widgets}An example table.}
+%\end{table}
+%
+%\end{frame}
+%
+%\subsection{Mathematics}
+%
+%\begin{frame}{Readable Mathematics}
+%
+%Let $X_1, X_2, \ldots, X_n$ be a sequence of independent and identically distributed random variables with $\text{E}[X_i] = \mu$ and $\text{Var}[X_i] = \sigma^2 < \infty$, and let
+%$$S_n = \frac{X_1 + X_2 + \cdots + X_n}{n}
+%      = \frac{1}{n}\sum_{i}^{n} X_i$$
+%denote their mean. Then as $n$ approaches infinity, the random variables $\sqrt{n}(S_n - \mu)$ converge in distribution to a normal $\mathcal{N}(0, \sigma^2)$.
+%
+%\end{frame}
+%
+
+\end{document}

@@ -1,0 +1,269 @@
+
+\documentclass[preprint,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+% \documentclass[final,1p,times]{elsarticle}
+%% \documentclass[final,1p,times,twocolumn]{elsarticle}
+% \documentclass[final,3p,times]{elsarticle}
+%% \documentclass[final,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,5p,times]{elsarticle}
+%% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+%% if you use PostScript figures in your article
+%% use the graphics package for simple commands
+%% \usepackage{graphics}
+%% or use the graphicx package for more complicated commands
+%% \usepackage{graphicx}
+%% or use the epsfig package if you prefer to use the old commands
+%% \usepackage{epsfig}
+
+%% The amssymb package provides various useful mathematical symbols
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers.
+% \usepackage{lineno}\linenumbers
+
+\journal{xxx}
+
+\usepackage{mathrsfs,amsmath,amssymb,bm}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{overpic}
+\usepackage{epsfig}
+\usepackage{xcolor}
+\usepackage{indentfirst}
+\usepackage{fancyhdr}
+\usepackage{comment}
+\usepackage{makecell, rotating}
+\usepackage{algorithmic}
+\usepackage[]{algorithm}
+\usepackage{listings} 
+%\usepackage[framed, numbered, autolinebreaks, useliterate]{mcode} 
+%\usepackage{fullpage}
+\usepackage{amsthm}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+\newtheorem{example}{Example}
+\newtheorem{notation}{Notation}
+\newtheorem{problem}{Primal Problem}
+%\newtheorem{proof}{Proof}
+
+
+\def\bbZ{\mathbb{Z}}
+\def\bbR{\mathbb{R}}
+\def\bbK{\mathbb{K}}
+\def\bbQ{\mathbb{Q}}
+\def\calL{{\mathcal{L}}}
+\def\calZ{{\mathcal{Z}}}
+\def\calH{{\mathcal{H}}}
+
+\def\bu{{\bm u}}
+\def\bx{{\bm x}}
+\def\by{{\bm y}}
+\def\bz{{\bm z}}
+\def\bq{{\bm q}}
+\def\bp{{\bm p}}
+\def\ba{{\bm a}}
+\def\bb{{\bm b}}
+\def\bc{{\bm c}}
+\def\bd{{\bm d}}
+\def\bk{{\bm k}}
+\def\bj{{\bm j}}
+\def\bn{{\bm n}}
+\def\bh{{\bm h}}
+\def\bB{{\bm B}}
+\def\bA{{\bm A}}
+\def\bJ{{\bm J}}
+\def\bP{{\bm P}}
+\def\bw{{\bm\omega}}
+\def\bK{{\bm K}}
+\def\bfm{{\bm m}}
+\def\hf{{\hat{f}}}
+\def\hphi{{\hat{\phi}}}
+\def\hvarphi{{\hat{\varphi}}}
+\def\vphi{{\vec{\phi}}}
+\def\vvarphi{{\vec{\varphi}}}
+
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{ Convergence analysis for stick hill-climbing algorithm}
+
+
+\author{Authors }
+
+%\author[xtu]{Kai Jiang \corref{cor}}
+%\address[xtu]{School of Mathematics and Computational
+% Science, Xiangtan University, P.R. China, 411105}
+%\cortext[cor]{kaijiang@xtu.edu.cn.}
+
+%\author{Kai Jiang\corref{cor}}
+%\address{
+% School of Mathematics and Computational Science, Xiangtan
+% University, Xiangtan, Hunan, P.R. China, 411105
+% }
+% \cortext[cor]{Email: kaijiang@xtu.edu.cn.}
+%
+%\date{\today}
+
+\begin{abstract}
+This is an abstract \dots
+\end{abstract}
+
+\begin{keyword}
+%% keywords here, in the form: keyword \sep keyword
+Stick hill-climbing algorithm, Convergence analysis
+\end{keyword}
+
+\end{frontmatter}
+
+
+
+In our previous work\,\cite{huang2017hill}, we proposed a derivative-free
+optimization method, i.e., stick hill-climbing (SHC) algorithm, to
+treat unconstrained optimization problems. 
+The main idea of the algorithm, at each iteration, is
+comparing function values on a surface of the current point,
+rather than a neighbourhood of current node. 
+It has many good properties, such as easily to implement,
+a unique parameter required to be modulated, and having capacity
+for find local and global minima. However, it still lacks rigorous
+theoretical explanation. 
+In this paper, we will give the convergence analysis and related
+properties of this algorithm.
+Before we go further, a short introduction of the
+SHC method is necessary.
+
+We consider an unconstrained optimization problem 
+\begin{align}
+	\min_{x\in\Omega\subset\mathbb{R}^d} f(x).
+	\label{}
+\end{align}
+Let $r$ be a search radius, $O(x_k, r)=\{x:
+|x-x_k|=r\}$ be the search surface in the
+$k$-th iteration with radius $r$. $U(x_k,
+r)$ is the neighbourhood of $x_k$ with radius of $r$.
+With these notations, the SHC algorithm 
+can be presented as 
+\begin{algorithm}[H]
+	\caption{Stick Hill-Climbing Algorithm}
+	\label{alg:SHC}
+\begin{algorithmic}[1]
+	\STATE \textbf{Initialization:} Choose $x_0$ and $r$.
+	\STATE \textbf{For} $k=0,1,2,\dots$
+	\STATE \hspace{0.5cm} Try to find $\tilde{x}\in O(x_k, r)$
+		   s.t. $f(\tilde x)<f(x_k)$.
+			\\
+		 \hspace{0.5cm} If such a point is found, then set
+		 $x_{k+1}= \tilde{x}$.
+		  \\
+		   \hspace{0.5cm} Otherwise, terminate the iteration.
+\end{algorithmic}
+\end{algorithm}
+
+\begin{theorem}[Existence of minimizers]
+If the objective function is continuous, then the termination of 
+Algorithm \ref{alg:SHC} implies that there at least exists one
+minimizer in the neighborhood of $U(x_k,r)$. The distance of the
+minimizers and $x_k$ is evidently less than the search radius of $r$.
+	\label{}
+\end{theorem}
+\begin{proof}
+	The proof is obvious.
+\end{proof}
+
+From our experience, the SHC approach usually terminates in 
+finite step. It is an excellent property. In what follows, we will
+give the condition to ensure the finite-step convergence.
+
+
+
+\begin{theorem}[Finite-step convergence]
+	Assume that the search domain $\Omega$ is a compact set and 
+	objective function $f$ is continuous.
+	If there do not exist two points $x$ and $x'$, where
+	$|x-x'|=r$, such that
+	$f(x)=f(x')=\min_{x\in\Omega}f(x)$, then
+	Algorithm \ref{alg:SHC} is convergent in at most finite steps
+\end{theorem}
+\begin{proof}
+	Assume that the SHC method produces an infinite pair sequence
+	$\{x_n, f(x_n)\}_{n=0}^{\infty}$.
+	Since $f(x)$ is continuous and $\Omega$ is compact, 
+	it is obvious $f(x)$ is bounded. The decreasing sequence
+	$\{f(x_n)\}_{n=0}^\infty$ converges, and the bounded
+	$\{x_n\}_{n=0}^\infty$ has a convergent subsequence 
+	$\{x_{n_k}\}_{k=0}^\infty$. Assume that $f(x_n)\rightarrow
+	\alpha$ and $x_{n_k}\rightarrow x^*$. 
+	
+	Based on the subsequence $\{x_{n_k}\}_{k=0}^\infty$, we can
+	always have an another subsequence
+	$\{x_{n_m}\}_{m=0}^\infty\subset \{x_n\}_{n=0}^{\infty}$ such that 
+	for $\forall n_k, \exists n_m$, we have  
+	$|x_{n_k}-x_{n_{m}}|=r$. Under the same assumption,
+	$\{x_{n_m}\}_{m=0}^\infty$ has a convergent subsequence
+	$\{x_{n_{m'}}\}_{m'=0}^\infty$. Let $x_{n_m'} \rightarrow
+	x_*$ when $m'\rightarrow \infty$. 
+	Obviously, $|x^*-x_*|=r$, and $f(x^*)=f(x_*)=\alpha$.
+
+
+%    There exists a subsequence $\{x_{n_{{k}-1}}\}$ satisfying
+%    $|x_{n_k}-x_{n_{{k}-1}}|=r$. Obviously, $f(x_{n_{k-1}})\rightarrow \alpha$.
+%    Under the same assumption, $\{x_{n_{{k}-1}}\}$ has a
+%    convergent subsequence $\{x_{n_{k'}}\}$, its limitation is $x_*$.
+%    We have $|x^* - x_*|=r$, $f(x^*)=f(x_*)=\alpha$.
+
+%    there exists one minimizer of $f(x)$, denoted by
+%    $\alpha=\min_{x\in\Omega}f(x)$.
+%    It is obvious that decreasing sequence
+%    $\{f(x_n)\}_{n=0}^\infty$ is convergent, 
+%    
+%    then 
+%    the bounded sequence $\{f(x_n)\}_{n=0}^{\infty}$ has a
+%    convergent subsequence $\{x_{n_k}\}$, i.e., $x_{n_k}\rightarrow x^*$.
+
+%\begin{itemize}
+%    \item The stick hill-climbing method produces a decreasing
+%        sequence $\{x_n, f(x_n)\}_{n=0}^{\infty}$.
+%    \item If the objective function $f(x)$ is bounded, then
+%        the decreasing sequence $\{f(x_n)\}$ is convergent, i.e.,
+%        $f(x_n)\rightarrow A$.
+%    \item Assume that the search domain is bounded, then the
+%        sequence $\{x_n\}$ has a convergent subsequence
+%        $\{x_{n_k}\}$, i.e., $x_{n_k}\rightarrow x^*$.
+%    \item There exists a subsequence $\{x_{n_{{k}-1}}\}$ satisfying
+%        $|x_{n_k}-x_{n_{{k}-1}}|=r$. Obviously,
+%        $f(x_{n_{k-1}})\rightarrow A$.
+%    \item At the same assumption, $\{x_{n_{{k}-1}}\}$ has a
+%        convergent subsequence $\{x_{n_{k'}}\}$, s.t.
+%        $x_{n_{k'}}\rightarrow x_*$.
+%    \item We have $|x^* - x_*|=r$, $f(x^*)=f(x_*)=A$.
+%\end{itemize}
+\end{proof}
+
+\section*{Acknowledgments}
+%The work is supported by the Natural Science
+%Foundation of China (Grant No.~11421101, and
+%No.~11771368). 
+
+
+\bibliographystyle{plain}
+\bibliography{shcanal}
+
+\end{document}
+
+\endinput

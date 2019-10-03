@@ -1,0 +1,514 @@
+\documentclass[12pt]{article}
+
+\usepackage{color}
+\usepackage{CJK}
+\usepackage{CJKfntef}
+
+\usepackage{mathrsfs,amsmath,amssymb,bm}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{overpic}
+\usepackage{epsfig}
+\usepackage{indentfirst}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{algorithm} 
+\usepackage{algorithmic} 
+\usepackage{longtable}
+
+%%\renewcommand{\baselinestretch}{1.5}
+%
+\headsep=4mm\headheight=6mm\topmargin=-10pt
+\oddsidemargin=0pt\evensidemargin=0pt
+\textheight=225truemm\textwidth=160truemm
+%\setcounter{page}{257}
+
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{layout}
+%\pagestyle{empty}                   % 不设置页眉页脚
+\footskip = 10pt
+\pagestyle{fancy}                    % 设置页眉
+%\begin{CJK}{GBK}{kai}\end{CJK}
+%\lhead{page \thepage\ of \pageref{LastPage}}
+%\chead{页眉中间}
+%\rhead{\small\leftmark}
+%\cfoot{\thepage}
+%\rfoot{页脚左}
+%\lfoot{页脚右}
+%\renewcommand{\headrulewidth}{1pt}  %页眉线宽，设为0可以去页眉线
+%\setlength{\skip\footins}{0.5cm}    %脚注与正文的距离
+%\renewcommand{\footnotesize}{}      %设置脚注字体大小
+%\renewcommand{\footrulewidth}{1pt}  %脚注线的宽度
+
+\newcommand{\ep}{\hfill\rule{0.15cm}{0.35cm}\vskip 0.3cm}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+\pagestyle{plain}
+\textheight 250mm\textwidth 165mm\topmargin -15mm \oddsidemargin
+-5mm\evensidemargin -20mm
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+%\newtheorem{theorem}{定理}[section]
+%\newtheorem{definition}{定义}[section]
+%\newtheorem{corollary}{\hspace{0.6cm}推论}[section]
+%\newtheorem{lemma}{引理}[section]
+%\newtheorem{example}{例}[section]
+%%\newtheorem{\proposition{}}{命题}[section]
+%\newtheorem{property}{性质}[section]
+%\newtheorem{remark}{注}[section]
+%\newtheorem{algorithm}{算法}[section]
+%\newtheorem{exercise}{习题}[section]
+%\newtheorem{question}{问题}[section]
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lemma}[thm]{Lemma}
+\newtheorem{proposition}[thm]{Proposition}
+\newtheorem{corollary}[thm]{Corollary}
+\newtheorem{defy}[thm]{Definition}
+\newtheorem{remark}[thm]{Remark}
+\newtheorem{sample}[thm]{Example}
+\newtheorem{assumption}[thm]{Assumption}
+\newtheorem{prop}[thm]{Properties}
+
+\newcommand{\bbR}{\mathbb{R}}
+\newcommand{\bbZ}{\mathbb{Z}}
+\newcommand{\bbQ}{\mathbb{Q}}
+\newcommand{\bh}{\mathbf{h}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\by}{\mathbf{y}}
+\newcommand{\br}{\mathbf{r}}
+\newcommand{\bt}{\mathbf{t}}
+\newcommand{\bs}{\mathbf{s}}
+\newcommand{\bu}{\mathbf{u}}
+\newcommand{\bk}{\mathbf{k}}
+\newcommand{\bM}{\mathbf{M}}
+\newcommand{\bP}{\mathbf{P}}
+\newcommand{\bQ}{\mathbf{Q}}
+\newcommand{\calS}{\mathcal{S}}
+\newcommand{\hF}{\hat{F}}
+\newcommand{\bq}{\mathbf{q}}
+\newcommand{\hw}{\hat{w}}
+\newcommand{\hphi}{\hat{\phi}}
+\newcommand{\hxi}{\hat{\xi}}
+\newcommand{\hJ}{\hat{J}}
+%\def\bx{{\bm x}}
+
+
+\newenvironment{blackbox}[1][~~~~]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\ep\end{trivlist}}
+\newenvironment{proof}[1][证明]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\ep\end{trivlist}}
+
+
+\begin{document}
+\begin{CJK*}{GB}{gbsn}
+\abovedisplayskip=5.8pt plus 1pt minus 3pt
+\belowdisplayskip=5.8pt plus 1pt minus 3pt
+\renewcommand{\sectionmark}[1]{\markright{~\thesection~~ #1~}{}}
+\setlength{\LTleft}{0pt} \setlength{\LTright}{0pt} %表格与页面左右边缘之间的矩离均为０
+
+
+\baselineskip 18pt
+
+\title{Cartesian coordinates of $n$-D regular simplex}
+%\title{Numerical Result: Ackley Function}
+
+\author{蒋凯}
+\date{\today}
+%\date{2011年11月}
+
+\maketitle
+\footnotetext{Email: kaijiang@xtu.edu.cn}
+
+\section{The rule of cartesian coordinates for $n$-D regular simplex}
+
+The cartesian coordinates of a $n$-D regular simplex in
+$\bbR^n$ can be obtained from these two
+properties\,\cite{simplexWiki}
+\begin{enumerate}
+	\item For a regular simplex, the distances of its vertices to its center are equal.
+	\item The angle subtended by any two vertices of ann-dimensional simplex through its center is
+		$\arccos(-1/n)$.
+\end{enumerate}
+
+For example in 2D, the vectors $(v_0, v_1, v_2)$ are the vertics
+of a 2-simplex or regular triangle. Write these as 
+\begin{gather*}
+	\begin{pmatrix}
+		x_0 \\ y_0 
+	\end{pmatrix}, ~
+	\begin{pmatrix}
+		x_1 \\ y_1 
+	\end{pmatrix}, ~
+	\begin{pmatrix}
+		x_2 \\ y_2 
+	\end{pmatrix}.
+\end{gather*}
+Without loss of generality, one can always choose the first vector
+$v_0=(1,0)^T$. Then the vectors become 
+\begin{gather*}
+	\begin{pmatrix}
+		1 \\ 0
+	\end{pmatrix}, ~
+	\begin{pmatrix}
+		x_1 \\ y_1 
+	\end{pmatrix}, ~
+	\begin{pmatrix}
+		x_2 \\ y_2 
+	\end{pmatrix}.
+\end{gather*}
+By the second property the dot product of $v_0$ with all other
+vectors is $-1/2$, so each of their $x$ components must equal
+this, and the vectors become 
+\begin{gather*}
+	\begin{pmatrix}
+		1 \\ 0
+	\end{pmatrix}, ~
+	\begin{pmatrix}
+		-1/2 \\ y_1 
+	\end{pmatrix}, ~
+	\begin{pmatrix}
+		-1/2 \\ y_2 
+	\end{pmatrix}.
+\end{gather*}
+Next by the first property, the length of all vectors $v_j$
+must be equal, therefore the possible square roots give the two
+results 
+\begin{gather*}
+	\begin{pmatrix}
+		1 \\ 0
+	\end{pmatrix}, ~
+	\begin{pmatrix}
+		-1/2 \\ \sqrt{3}/2
+	\end{pmatrix}, ~
+	\begin{pmatrix}
+		-1/2 \\ -\sqrt{3}/2
+	\end{pmatrix}.
+\end{gather*}
+
+The process can be carried out in $n$ dimension, using $n+1$
+vectors, applying the first and second properties alternately to
+determine cartesian coordinates of $n$-D regular simplex in $\bbR^n$.
+The following algorithm is to achieve the above process.
+%\begin{gather*}
+%    \begin{pmatrix}
+%        1 \\ 0 \\ \vdots \\ 0
+%    \end{pmatrix}, ~
+%    \begin{pmatrix}
+%        -1/n \\ \sqrt{n^2-1}/n \\ 0 \\ \vdots \\ 0
+%    \end{pmatrix}, ~
+%    \begin{pmatrix}
+%        -1/n \\ -\dfrac{n+1}{n}\dfrac{1}{\sqrt{n^2-1}} \\
+%        \sqrt{\dfrac{n^3-3n-2}{n(n^2-1)}} \\ 0 \\ \vdots \\ 0
+%    \end{pmatrix}, ~
+%    \begin{pmatrix}
+%        -1/n \\ -\dfrac{n+1}{n}\dfrac{1}{\sqrt{n^2-1}} \\
+%        xxx \\ 0 \\ \vdots \\ 0
+%    \end{pmatrix}, ~
+%\end{gather*}
+\begin{algorithm}
+	\caption{n-D regular simplex coordinates (MATLAB style)} 
+\begin{algorithmic}
+	\STATE Given $x(1:n, 1:n+1) = 0$
+	\FOR {$i=1:1:n$}
+	\STATE $x(i,i)=\sqrt{1-\sum_{k=1}^{i-1} [x(k, i)]^{2}}$
+		\FOR {$j=i+1:1:n+1$}
+		\STATE $x(i,j)
+		=\dfrac{1}{x(i,i)}\Big(-\frac{1}{n}-x(1:i-1, i)^T \cdot
+		x(1:i-1, j)\Big)$
+		\ENDFOR
+	\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+%\section{Rotate regular simplex appropriately}
+
+\section{Algorithm Implementation}
+
+\subsection{Ackley function}
+\begin{align*}
+	f(\textbf{x}) = f(x_1, \cdots, x_n)=
+	-a\exp\left(-b\sqrt{\frac{1}{n}\sum_{i=1}^{n}x_i^2}\right)-\exp\left(\frac{1}{n}\sum_{i=1}^{n}\cos(cx_i)\right)+
+	a + \exp(1)
+\end{align*}
+$n$ is the dimension, where $a=20$, $b=0.2$ and $c=2\pi$.
+Ackley function has many local minima
+and a unique global minimum of $(0,0)$ with $f(0,0)=0$.
+
+\textbf{Setup:} 
+
+Search region: $(-10, 10)^n$; initial position: random;
+$N_{max}=2^m(n+1)$, $m=5$. The maximum
+number of ration is $2^m = 32$. The convergent criterion is
+$\rho<1.0^{-5}$.
+
+\textbf{Case I : d = 100}
+
+\begin{longtable}{|c|c|c|c|c|}
+\caption{
+\label{tab:100dAckley}
+Iterative information of SHC algorithm in optimizing 100
+dimensional Ackley function. $N_{max}=3232$.
+\textcolor{red}{ The $\ell^2$-distant between convergent point and global
+minimizer is 1.907319675315442e-05.}
+}\\
+ \hline
+ $\rho$ & \# rotation & Func. evaluates  &  Total Func. evaluates & function values  \\
+ \hline
+2.500000e+00 & 1 & 101 & 102 & 1.323139574861084e+01 \\ 
+2.500000e+00 & 31 & 3131 & 3233 & 1.323139574861084e+01 \\ 
+ \hline
+1.250000e+00 & 1 & 101 & 3334 & 1.323139574861084e+01 \\ 
+1.250000e+00 & 31 & 3131 & 6465 & 1.323139574861084e+01 \\ 
+ \hline
+6.250000e-01 & 1 & 101 & 6566 & 1.323139574861084e+01 \\ 
+6.250000e-01 & 1 & 101 & 6667 & 9.940649053411246e+00 \\ 
+6.250000e-01 & 1 & 101 & 6768 & 7.253616867726927e+00 \\ 
+6.250000e-01 & 1 & 101 & 6869 & 5.371504406271417e+00 \\ 
+6.250000e-01 & 1 & 101 & 6970 & 4.131601370439101e+00 \\ 
+6.250000e-01 & 1 & 101 & 7071 & 3.519485425938275e+00 \\ 
+6.250000e-01 & 1 & 101 & 7172 & 2.509135107511345e+00 \\ 
+6.250000e-01 & 1 & 101 & 7273 & 1.528942111121421e+00 \\ 
+6.250000e-01 & 1 & 101 & 7374 & 8.963281283140647e-01 \\ 
+6.250000e-01 & 1 & 101 & 7475 & 5.953319005442568e-01 \\ 
+6.250000e-01 & 1 & 101 & 7576 & 4.801822650485095e-01 \\ 
+6.250000e-01 & 1 & 101 & 7677 & 4.431048117272214e-01 \\ 
+6.250000e-01 & 1 & 101 & 7778 & 4.353533050822351e-01 \\ 
+6.250000e-01 & 1 & 101 & 7879 & 4.352008513973376e-01 \\ 
+6.250000e-01 & 1 & 101 & 8081 & 4.216468351025968e-01 \\ 
+6.250000e-01 & 1 & 101 & 8182 & 3.964634080189393e-01 \\ 
+6.250000e-01 & 31 & 3131 & 11313 & 3.964634080189393e-01 \\ 
+ \hline
+3.125000e-01 & 1 & 101 & 11414 & 3.964634080189393e-01 \\ 
+3.125000e-01 & 1 & 101 & 11515 & 2.021414646047406e-01 \\ 
+3.125000e-01 & 1 & 101 & 11616 & 1.742429055941637e-01 \\ 
+3.125000e-01 & 1 & 101 & 11717 & 1.727263853740242e-01 \\ 
+3.125000e-01 & 1 & 101 & 11919 & 1.573599740024436e-01 \\ 
+3.125000e-01 & 31 & 3131 & 15050 & 1.573599740024436e-01 \\ 
+ \hline
+1.562500e-01 & 1 & 101 & 15151 & 1.573599740024436e-01 \\ 
+1.562500e-01 & 1 & 101 & 15252 & 7.309458748586994e-02 \\ 
+1.562500e-01 & 1 & 101 & 15454 & 7.201070066689486e-02 \\ 
+1.562500e-01 & 31 & 3131 & 18585 & 7.201070066689486e-02 \\ 
+ \hline
+7.812500e-02 & 1 & 101 & 18686 & 7.201070066689486e-02 \\ 
+7.812500e-02 & 1 & 101 & 18787 & 3.357460259351885e-02 \\ 
+7.812500e-02 & 31 & 3131 & 21918 & 3.357460259351885e-02 \\ 
+ \hline
+3.906250e-02 & 1 & 101 & 22019 & 3.357460259351885e-02 \\ 
+3.906250e-02 & 1 & 101 & 22120 & 1.642897517429720e-02 \\ 
+3.906250e-02 & 1 & 101 & 22322 & 1.624038169371023e-02 \\ 
+3.906250e-02 & 1 & 101 & 22423 & 1.622559763041398e-02 \\ 
+3.906250e-02 & 1 & 101 & 23029 & 1.620428681899444e-02 \\ 
+3.906250e-02 & 1 & 101 & 23130 & 1.620281288330805e-02 \\ 
+3.906250e-02 & 31 & 3131 & 26261 & 1.620281288330805e-02 \\ 
+ \hline
+1.953125e-02 & 1 & 101 & 26362 & 1.620281288330805e-02 \\ 
+1.953125e-02 & 1 & 101 & 26463 & 8.016635984284370e-03 \\ 
+1.953125e-02 & 1 & 101 & 26564 & 8.015283381504368e-03 \\ 
+1.953125e-02 & 1 & 101 & 26766 & 7.960647521604081e-03 \\ 
+1.953125e-02 & 1 & 101 & 26766 & 7.960647521604081e-03 \\ 
+1.953125e-02 & 31 & 3131 & 29897 & 7.960647521604081e-03 \\ 
+ \hline
+9.765625e-03 & 1 & 101 & 29998 & 7.960647521604081e-03 \\ 
+9.765625e-03 & 1 & 101 & 30099 & 3.930679837556461e-03 \\ 
+9.765625e-03 & 31 & 3131 & 33230 & 3.930679837556461e-03 \\ 
+ \hline
+4.882812e-03 & 1 & 101 & 33331 & 3.930679837556461e-03 \\ 
+4.882812e-03 & 1 & 101 & 33432 & 1.965649933606706e-03 \\ 
+4.882812e-03 & 1 & 101 & 33634 & 1.962393110219729e-03 \\ 
+4.882812e-03 & 1 & 101 & 33735 & 1.962372616152841e-03 \\ 
+4.882812e-03 & 1 & 101 & 34341 & 1.962044805655871e-03 \\ 
+4.882812e-03 & 31 & 3131 & 37472 & 1.962044805655871e-03 \\ 
+ \hline
+2.441406e-03 & 1 & 101 & 37573 & 1.962044805655871e-03 \\ 
+2.441406e-03 & 1 & 101 & 37674 & 9.778611832702566e-04 \\ 
+2.441406e-03 & 31 & 3131 & 40805 & 9.778611832702566e-04 \\ 
+ \hline
+1.220703e-03 & 1 & 101 & 40906 & 9.778611832702566e-04 \\ 
+1.220703e-03 & 1 & 101 & 41007 & 4.890635637950780e-04 \\ 
+1.220703e-03 & 1 & 101 & 41209 & 4.888592803462544e-04 \\ 
+1.220703e-03 & 1 & 101 & 41310 & 4.888589711962155e-04 \\ 
+1.220703e-03 & 1 & 101 & 41916 & 4.888385156762709e-04 \\ 
+1.220703e-03 & 31 & 3131 & 45047 & 4.888385156762709e-04 \\ 
+ \hline
+6.103516e-04 & 1 & 101 & 45148 & 4.888385156762709e-04 \\ 
+6.103516e-04 & 1 & 101 & 45249 & 2.442210666915301e-04 \\ 
+6.103516e-04 & 31 & 3131 & 48380 & 2.442210666915301e-04 \\ 
+ \hline
+3.051758e-04 & 1 & 101 & 48481 & 2.442210666915301e-04 \\ 
+3.051758e-04 & 1 & 101 & 48582 & 1.221191779139374e-04 \\ 
+3.051758e-04 & 1 & 101 & 48784 & 1.221008263572188e-04 \\ 
+3.051758e-04 & 1 & 101 & 52016 & 1.220983608165582e-04 \\ 
+3.051758e-04 & 1 & 101 & 52117 & 1.220885084309842e-04 \\ 
+3.051758e-04 & 31 & 3131 & 55248 & 1.220885084309842e-04 \\ 
+ \hline
+1.525879e-04 & 1 & 101 & 55349 & 1.220885084309842e-04 \\ 
+1.525879e-04 & 1 & 101 & 55450 & 6.104737234924329e-05 \\ 
+1.525879e-04 & 1 & 101 & 55652 & 6.104415597096846e-05 \\ 
+1.525879e-04 & 31 & 3131 & 58783 & 6.104415597096846e-05 \\ 
+ \hline
+7.629395e-05 & 1 & 101 & 58884 & 6.104415597096846e-05 \\ 
+7.629395e-05 & 1 & 101 & 58985 & 3.051897912076385e-05 \\ 
+7.629395e-05 & 31 & 3131 & 62116 & 3.051897912076385e-05 \\ 
+ \hline
+3.814697e-05 & 1 & 101 & 62217 & 3.051897912076385e-05 \\ 
+3.814697e-05 & 1 & 101 & 62318 & 1.525955241721277e-05 \\ 
+3.814697e-05 & 1 & 101 & 62520 & 1.525935175994420e-05 \\ 
+3.814697e-05 & 1 & 101 & 62621 & 1.525935175283877e-05 \\ 
+3.814697e-05 & 1 & 101 & 63227 & 1.525933236568022e-05 \\ 
+3.814697e-05 & 31 & 3131 & 66358 & 1.525933236568022e-05 \\ 
+ \hline
+1.907349e-05 & 1 & 101 & 66459 & 1.525933236568022e-05 \\ 
+1.907349e-05 & 1 & 101 & 66560 & 7.629472443149155e-06 \\ 
+1.907349e-05 & 31 & 3131 & 69691 & 7.629472443149155e-06 \\ 
+ \hline
+\end{longtable}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Case II : d = 1000}
+
+\begin{longtable}{|c|c|c|c|c|}
+\caption{
+\label{tab:1000dAckley}
+Iterative information of SHC algorithm in optimizing 1000
+dimensional Ackley function. $N_{max}=32032$.
+\textcolor{red}
+{ The $\ell^2$-distant between convergent point and global
+minimizer is 1.907320588287960e-05.}
+}\\
+ \hline
+$\rho$ & \# rotation & Func. evaluates  &  Total Func. evaluates & function values  \\
+ \hline
+2.500000e+00 & 1 & 1001 & 1002 & 1.352971471312092e+01 \\ 
+2.500000e+00 & 31 & 31031 & 32033 & 1.352971471312092e+01 \\ 
+ \hline
+1.250000e+00 & 1 & 1001 & 33034 & 1.352971471312092e+01 \\ 
+1.250000e+00 & 31 & 31031 & 64065 & 1.352971471312092e+01 \\ 
+ \hline
+6.250000e-01 & 1 & 1001 & 65066 & 1.352971471312092e+01 \\ 
+6.250000e-01 & 1 & 1001 & 66067 & 1.030620236761562e+01 \\ 
+6.250000e-01 & 1 & 1001 & 67068 & 7.636667217633572e+00 \\ 
+6.250000e-01 & 1 & 1001 & 68069 & 5.717132892145167e+00 \\ 
+6.250000e-01 & 1 & 1001 & 69070 & 4.112245570965805e+00 \\ 
+6.250000e-01 & 1 & 1001 & 70071 & 3.549285769175520e+00 \\ 
+6.250000e-01 & 1 & 1001 & 71072 & 2.658308818254981e+00 \\ 
+6.250000e-01 & 1 & 1001 & 72073 & 1.650730630734011e+00 \\ 
+6.250000e-01 & 1 & 1001 & 73074 & 9.025366799134682e-01 \\ 
+6.250000e-01 & 1 & 1001 & 74075 & 4.822433298605882e-01 \\ 
+6.250000e-01 & 1 & 1001 & 75076 & 2.750879702955666e-01 \\ 
+6.250000e-01 & 1 & 1001 & 76077 & 1.795466282665901e-01 \\ 
+6.250000e-01 & 1 & 1001 & 77078 & 1.384913050776087e-01 \\ 
+6.250000e-01 & 1 & 1001 & 78079 & 1.223438728513964e-01 \\ 
+6.250000e-01 & 1 & 1001 & 79080 & 1.165506788885233e-01 \\ 
+6.250000e-01 & 1 & 1001 & 80081 & 1.147241998256954e-01 \\ 
+6.250000e-01 & 1 & 1001 & 81082 & 1.143066572404523e-01 \\ 
+6.250000e-01 & 1 & 1001 & 83084 & 1.036591755864302e-01 \\ 
+6.250000e-01 & 1 & 1001 & 84085 & 1.014893953104989e-01 \\ 
+6.250000e-01 & 31 & 31031 & 115116 & 1.014893953104989e-01 \\ 
+ \hline
+3.125000e-01 & 1 & 1001 & 116117 & 1.014893953104989e-01 \\ 
+3.125000e-01 & 1 & 1001 & 117118 & 5.291296750026309e-02 \\ 
+3.125000e-01 & 1 & 1001 & 118119 & 4.633828080662017e-02 \\ 
+3.125000e-01 & 1 & 1001 & 119120 & 4.585773393637727e-02 \\ 
+3.125000e-01 & 1 & 1001 & 120121 & 4.584861398056095e-02 \\ 
+3.125000e-01 & 1 & 1001 & 122123 & 4.341974243482216e-02 \\ 
+3.125000e-01 & 1 & 1001 & 123124 & 4.196842200756112e-02 \\ 
+3.125000e-01 & 31 & 31031 & 154155 & 4.196842200756112e-02 \\ 
+ \hline
+1.562500e-01 & 1 & 1001 & 155156 & 4.196842200756112e-02 \\ 
+1.562500e-01 & 1 & 1001 & 156157 & 2.176858636838919e-02 \\ 
+1.562500e-01 & 1 & 1001 & 157158 & 2.123392104245969e-02 \\ 
+1.562500e-01 & 1 & 1001 & 159160 & 2.044666717497368e-02 \\ 
+1.562500e-01 & 31 & 31031 & 190191 & 2.044666717497368e-02 \\ 
+ \hline
+7.812500e-02 & 1 & 1001 & 191192 & 2.044666717497368e-02 \\ 
+7.812500e-02 & 1 & 1001 & 192193 & 9.994601321214880e-03 \\ 
+7.812500e-02 & 31 & 31031 & 223224 & 9.994601321214880e-03 \\ 
+ \hline
+3.906250e-02 & 1 & 1001 & 224225 & 9.994601321214880e-03 \\ 
+3.906250e-02 & 1 & 1001 & 225226 & 5.025376691084382e-03 \\ 
+3.906250e-02 & 1 & 1001 & 226227 & 5.025375563215029e-03 \\ 
+3.906250e-02 & 1 & 1001 & 228229 & 4.960511766481268e-03 \\ 
+3.906250e-02 & 31 & 31031 & 259260 & 4.960511766481268e-03 \\ 
+ \hline
+1.953125e-02 & 1 & 1001 & 260261 & 4.960511766481268e-03 \\ 
+1.953125e-02 & 1 & 1001 & 261262 & 2.461558036327638e-03 \\ 
+1.953125e-02 & 31 & 31031 & 292293 & 2.461558036327638e-03 \\ 
+ \hline
+9.765625e-03 & 1 & 1001 & 293294 & 2.461558036327638e-03 \\ 
+9.765625e-03 & 1 & 1001 & 294295 & 1.240380565868726e-03 \\ 
+9.765625e-03 & 1 & 1001 & 296297 & 1.236249745539375e-03 \\ 
+9.765625e-03 & 1 & 1001 & 297298 & 1.236198660856225e-03 \\ 
+9.765625e-03 & 1 & 1001 & 303304 & 1.235819268559091e-03 \\ 
+9.765625e-03 & 31 & 31031 & 334335 & 1.235819268559091e-03 \\ 
+ \hline
+4.882812e-03 & 1 & 1001 & 335336 & 1.235819268559091e-03 \\ 
+4.882812e-03 & 1 & 1001 & 336337 & 6.166515313354992e-04 \\ 
+4.882812e-03 & 31 & 31031 & 367368 & 6.166515313354992e-04 \\ 
+ \hline
+2.441406e-03 & 1 & 1001 & 368369 & 6.166515313354992e-04 \\ 
+2.441406e-03 & 1 & 1001 & 369370 & 3.091339892735689e-04 \\ 
+2.441406e-03 & 1 & 1001 & 370371 & 3.091337680354300e-04 \\ 
+2.441406e-03 & 1 & 1001 & 372373 & 3.088677265568052e-04 \\ 
+2.441406e-03 & 31 & 31031 & 403404 & 3.088677265568052e-04 \\ 
+ \hline
+1.220703e-03 & 1 & 1001 & 404405 & 3.088677265568052e-04 \\ 
+1.220703e-03 & 1 & 1001 & 405406 & 1.543549107632103e-04 \\ 
+1.220703e-03 & 31 & 31031 & 436437 & 1.543549107632103e-04 \\ 
+ \hline
+6.103516e-04 & 1 & 1001 & 437438 & 1.543549107632103e-04 \\ 
+6.103516e-04 & 1 & 1001 & 438439 & 7.722380626606906e-05 \\ 
+6.103516e-04 & 1 & 1001 & 440441 & 7.720721338433378e-05 \\ 
+6.103516e-04 & 1 & 1001 & 441442 & 7.720720143655768e-05 \\ 
+6.103516e-04 & 1 & 1001 & 447448 & 7.720574954195314e-05 \\ 
+6.103516e-04 & 31 & 31031 & 478479 & 7.720574954195314e-05 \\ 
+ \hline
+3.051758e-04 & 1 & 1001 & 479480 & 7.720574954195314e-05 \\ 
+3.051758e-04 & 1 & 1001 & 480481 & 3.859791772686805e-05 \\ 
+3.051758e-04 & 31 & 31031 & 511512 & 3.859791772686805e-05 \\ 
+ \hline
+1.525879e-04 & 1 & 1001 & 512513 & 3.859791772686805e-05 \\ 
+1.525879e-04 & 1 & 1001 & 513514 & 1.930224566581984e-05 \\ 
+1.525879e-04 & 1 & 1001 & 515516 & 1.930120707616112e-05 \\ 
+1.525879e-04 & 1 & 1001 & 516517 & 1.930120688786729e-05 \\ 
+1.525879e-04 & 1 & 1001 & 522523 & 1.930111624393049e-05 \\ 
+1.525879e-04 & 31 & 31031 & 553554 & 1.930111624393049e-05 \\ 
+ \hline
+7.629395e-05 & 1 & 1001 & 554555 & 1.930111624393049e-05 \\ 
+7.629395e-05 & 1 & 1001 & 555556 & 9.650248174786213e-06 \\ 
+7.629395e-05 & 31 & 31031 & 586587 & 9.650248174786213e-06 \\ 
+ \hline
+3.814697e-05 & 1 & 1001 & 587588 & 9.650248174786213e-06 \\ 
+3.814697e-05 & 1 & 1001 & 588589 & 4.825329914304177e-06 \\ 
+3.814697e-05 & 1 & 1001 & 590591 & 4.825264992014411e-06 \\ 
+3.814697e-05 & 1 & 1001 & 591592 & 4.825264988461697e-06 \\ 
+3.814697e-05 & 1 & 1001 & 597598 & 4.825259325436093e-06 \\ 
+3.814697e-05 & 31 & 31031 & 628629 & 4.825259325436093e-06 \\ 
+ \hline
+1.907349e-05 & 1 & 1001 & 629630 & 4.825259325436093e-06 \\ 
+1.907349e-05 & 1 & 1001 & 630631 & 2.412610290214445e-06 \\ 
+1.907349e-05 & 31 & 31031 & 661662 & 2.412610290214445e-06 \\ 
+ \hline
+\end{longtable}
+%\newpage
+%
+%
+\bibliography{report}
+\bibliographystyle{unsrt}
+
+%\begin{thebibliography}{100}
+%\bibitem{simplexWiki}
+%    https://en.wikipedia.org/wiki/Simplex#Projection_onto_the_standard_simplex
+
+
+
+%\end{thebibliography}
+
+\end{CJK*}
+
+\end{document}

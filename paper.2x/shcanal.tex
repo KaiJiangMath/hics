@@ -1,0 +1,457 @@
+
+\documentclass[preprint,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+% \documentclass[final,1p,times]{elsarticle}
+%% \documentclass[final,1p,times,twocolumn]{elsarticle}
+% \documentclass[final,3p,times]{elsarticle}
+%% \documentclass[final,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,5p,times]{elsarticle}
+%% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+%% if you use PostScript figures in your article
+%% use the graphics package for simple commands
+%% \usepackage{graphics}
+%% or use the graphicx package for more complicated commands
+%% \usepackage{graphicx}
+%% or use the epsfig package if you prefer to use the old commands
+%% \usepackage{epsfig}
+
+%% The amssymb package provides various useful mathematical symbols
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers.
+% \usepackage{lineno}\linenumbers
+
+\journal{xxx}
+
+\usepackage{mathrsfs,amsmath,amssymb,bm}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{overpic}
+\usepackage{epsfig}
+\usepackage{xcolor}
+\usepackage{indentfirst}
+\usepackage{fancyhdr}
+\usepackage{comment}
+\usepackage{makecell, rotating}
+\usepackage{algorithmic}
+\usepackage[]{algorithm}
+\usepackage{listings} 
+%\usepackage[framed, numbered, autolinebreaks, useliterate]{mcode} 
+%\usepackage{fullpage}
+\usepackage{amsthm}
+\newtheorem{assume}{Assumption}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+\newtheorem{example}{Example}
+\newtheorem{notation}{Notation}
+\newtheorem{problem}{Primal Problem}
+%\newtheorem{proof}{Proof}
+
+
+\def\bbZ{\mathbb{Z}}
+\def\bbR{\mathbb{R}}
+\def\bbK{\mathbb{K}}
+\def\bbQ{\mathbb{Q}}
+\def\calL{{\mathcal{L}}}
+\def\calZ{{\mathcal{Z}}}
+\def\calH{{\mathcal{H}}}
+
+\def\bu{{\bm u}}
+\def\bx{{\bm x}}
+\def\by{{\bm y}}
+\def\bz{{\bm z}}
+\def\bq{{\bm q}}
+\def\bp{{\bm p}}
+\def\ba{{\bm a}}
+\def\bb{{\bm b}}
+\def\bc{{\bm c}}
+\def\bd{{\bm d}}
+\def\bk{{\bm k}}
+\def\bj{{\bm j}}
+\def\bn{{\bm n}}
+\def\bh{{\bm h}}
+\def\bB{{\bm B}}
+\def\bA{{\bm A}}
+\def\bJ{{\bm J}}
+\def\bP{{\bm P}}
+\def\bw{{\bm\omega}}
+\def\bK{{\bm K}}
+\def\bfm{{\bm m}}
+\def\hf{{\hat{f}}}
+\def\hphi{{\hat{\phi}}}
+\def\hvarphi{{\hat{\varphi}}}
+\def\vphi{{\vec{\phi}}}
+\def\vvarphi{{\vec{\varphi}}}
+
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{A finite-step convergent derivative-free method for
+high-dimensional unconstrained optimization}
+
+%The stick hill-climbing algorithm: finite-step convergence
+%analysis and an application to high-dimensional optimization problems}
+
+%\title{ The stick hill-climbing algorithm: finite-step convergence
+%analysis and an application to high-dimensional optimization problems}
+
+
+\author{Authors }
+
+%\author[xtu]{Kai Jiang \corref{cor}}
+%\address[xtu]{School of Mathematics and Computational
+% Science, Xiangtan University, P.R. China, 411105}
+%\cortext[cor]{kaijiang@xtu.edu.cn.}
+
+%\author{Kai Jiang\corref{cor}}
+%\address{
+% School of Mathematics and Computational Science, Xiangtan
+% University, Xiangtan, Hunan, P.R. China, 411105
+% }
+% \cortext[cor]{Email: kaijiang@xtu.edu.cn.}
+%
+%\date{\today}
+
+\begin{abstract}
+This is an abstract \dots
+\end{abstract}
+
+\begin{keyword}
+%% keywords here, in the form: keyword \sep keyword
+Stick hill-climbing algorithm, Finite-step convergence,
+Suspected minimum point, Simplex sampling, 
+High-dimensional optimization problems
+\end{keyword}
+
+\end{frontmatter}
+
+
+\section{Introduction}
+
+
+\section{Convergence analysis}
+
+In our previous work\,\cite{huang2017hill}, we proposed a
+derivative-free optimization method, i.e., stick hill-climbing
+(SHC) algorithm, to treat unconstrained optimization problems. 
+The main idea of the algorithm, at each iteration, is
+comparing function values on a surface of the current point,
+rather than a neighbourhood of current node. 
+It has many good properties, such as easily to implement,
+a unique parameter required to be modulated, and having capacity
+for find local and global maxima. However, it still lacks rigorous
+theoretical explanation. 
+In this paper, we will give the convergence analysis and related
+properties of this algorithm.
+Before we go further, a short introduction of the
+SHC method is necessary.
+
+We consider an unconstrained optimization problem 
+\begin{align}
+	\min_{x\in\Omega\subset\mathbb{R}^d} f(x),
+	\label{}
+\end{align}
+where the objective function $f(x)$ is continuous.
+Let $\rho$ be a search radius, $O(x_k, \rho)=\{x:
+|x-x_k|=\rho\}$ be the search surface in the
+$k$-th iteration with radius $\rho$. $U(x_k,
+\rho)$ is the neighbourhood of $x_k$ with radius of $\rho$.
+To illustrate the algorithm to be more precision, an useful concept of
+suspected extreme point is introduced.
+\begin{definition}[Suspected minimum point (SMP)]
+	For a given objective function $f(x)$ and a search radius
+	$\rho$, $\tilde{x}$ is a suspected extreme point if $f(\tilde
+	x)>f(x)$ for $\forall x\in O(\tilde{x},\rho)$.
+\end{definition}
+When $\tilde{x}$ is a maximizer in the neighborhood of $U(\tilde{x}, \rho)$,
+$\tilde{x}$ is a SMP. The opposite is not always true.
+%A sufficient condition is given as follows.
+%\begin{proposition}
+%    Assume that $f(x)$ is continuous differentiable, $\rho < 1$,
+%    and $|\nabla f(\tilde x)| > C\rho$, $C$ is related to the
+%    Hessian matrix of $f$ on $\tilde{x}$,
+%    then SMP $\tilde{x}$ is a maximizer in $U(\tilde{x}, \rho)$. 
+%\end{proposition}
+%\begin{proof}
+%    We can apply Taylor expansion to $f(x)$ to the first order on $\tilde x$
+%    \begin{align*}
+%        f(x)=f(\tilde x) + \nabla f(\tilde x)(x-\tilde{x}) + C( (x-\tilde{x} )^2),
+%    \end{align*}
+%    If $\tilde x$ is a local maximizer in $U(\tilde{x},\rho)$,
+%    then $f(x)<f(\tilde x)$, i.e., $\nabla f(\tilde
+%    x)(x-\tilde{x}) + C \rho^2<0$. It will be satisfied if 
+%    \begin{align*}
+%        -|\nabla f(\tilde x)|\rho + C\rho^2 < 0.
+%    \end{align*}
+%    From assumption, the proposition is proven.
+%\end{proof}
+With these notations, the SHC algorithm can be presented
+more precisely as 
+\begin{algorithm}[H]
+	\caption{Stick Hill-Climbing Algorithm}
+	\label{alg:SHC}
+\begin{algorithmic}[1]
+	\STATE \textbf{Initialization:} Choose $x_0$ and $\rho$.
+	\STATE \textbf{For} $k=0,1,2,\dots$
+	\STATE \hspace{0.5cm} Try to find $\bar{x}\in O(x_k, \rho)$
+		   s.t. $f(\bar x)<f(x_k)$.
+			\\
+		 \hspace{0.5cm} If such a point is found, then set
+		 $x_{k+1}= \bar{x}$.
+		  \\
+		   \hspace{0.5cm} Otherwise, a SMP is found, 
+		   and declare the iteration successful 
+\end{algorithmic}
+\end{algorithm}
+
+
+
+%\begin{theorem}[Existence of maximizers]
+%If the objective function is continuous, then the termination of 
+%Algorithm \ref{alg:SHC} implies that there at least exists one
+%maximizer in the neighborhood of $U(x_k,\rho)$. The distance of the
+%maximizers and $x_k$ is evidently less than the search radius of
+%$\rho$.
+%    \label{}
+%\end{theorem}
+%\begin{proof}
+%    The proof is obvious.
+%\end{proof}
+
+From our experience, the SHC approach usually terminates in 
+finite step. It is an amazing property. In what follows, we will
+give the condition to ensure the finite-step convergence.
+
+%\begin{assume}
+%    Assume that objective function $f(x)$ is continuous and the
+%    search domain $\Omega$ is a compact set. 
+%    \label{assume:fx}
+%\end{assume}
+%
+%\begin{assume}
+%    There are not two SMPs $x_*$ and $x^*$ such that
+%    $f(x^*)=f(x_*)$ when $|x_*-x^*|=\rho$.
+%    \label{assume:sep}
+%\end{assume}
+
+\begin{theorem}[Finite-step convergence]
+	Assume that objective function $f(x)$ is continuous and the
+	search domain $\Omega$ is a compact set.
+	If there are not two SMPs $x_*$ and $x^*$ such that
+	$f(x^*)=f(x_*)=\alpha$ when $|x_*-x^*|=\rho$.
+	Then Algorithm \ref{alg:SHC} converges in at most finite steps.
+
+%    When the Assumptions \ref{assume:fx} and \ref{assume:sep} are
+%    hold, Algorithm \ref{alg:SHC} converges in at most finite
+%    steps.
+%    Assume that the search domain $\Omega$ is a compact set and 
+%    objective function $f$ is continuous.
+%    If there do not exist two points $x$ and $x'$, where
+%    $|x-x'|=\rho$, such that
+%    $f(x)=f(x')=\max_{x\in\Omega}f(x)$, then
+%    Algorithm \ref{alg:SHC} is convergent in at most finite steps
+\end{theorem}
+\begin{proof}
+	Assume that the SHC method produces an infinite pair sequence
+	$\{x_n, f(x_n)\}_{n=0}^{\infty}$. From assumption,
+	it is obvious $f(x)$ is bounded. The decreasing sequence
+	$\{f(x_n)\}_{n=0}^\infty$ converges, and the bounded
+	$\{x_n\}_{n=0}^\infty$ has a convergent subsequence 
+	$\{x_{n_k}\}_{k=0}^\infty$. Assume that $f(x_n)\rightarrow
+	\alpha$ and $x_{n_k}\rightarrow x^*$. 
+	
+	In accordance with the subsequence $\{x_{n_k}\}_{k=0}^\infty$, we can
+	always choose an another subsequence
+	$\{x_{n_m}\}_{m=0}^\infty\subset \{x_n\}_{n=0}^{\infty}$ such that 
+	for $\forall n_k$ . Under the same assumption,
+	$\{x_{n_m}\}_{m=0}^\infty$ has a convergent subsequence
+	$\{x_{n_{m'}}\}_{m'=0}^\infty$. Let $x_{n_m'} \rightarrow
+	x_*$ when $m'\rightarrow \infty$. 
+	Obviously, $|x^*-x_*|=\rho$, and $f(x^*)=f(x_*)=\alpha$ 
+	which clearly contradicts the assumption.
+%\begin{itemize}
+%    \item The stick hill-climbing method produces a decreasing
+%        sequence $\{x_n, f(x_n)\}_{n=0}^{\infty}$.
+%    \item If the objective function $f(x)$ is bounded, then
+%        the decreasing sequence $\{f(x_n)\}$ is convergent, i.e.,
+%        $f(x_n)\rightarrow A$.
+%    \item Assume that the search domain is bounded, then the
+%        sequence $\{x_n\}$ has a convergent subsequence
+%        $\{x_{n_k}\}$, i.e., $x_{n_k}\rightarrow x^*$.
+%    \item There exists a subsequence $\{x_{n_{{k}-1}}\}$ satisfying
+%        $|x_{n_k}-x_{n_{{k}-1}}|=\rho$. Obviously,
+%        $f(x_{n_{k-1}})\rightarrow A$.
+%    \item At the same assumption, $\{x_{n_{{k}-1}}\}$ has a
+%        convergent subsequence $\{x_{n_{k'}}\}$, s.t.
+%        $x_{n_{k'}}\rightarrow x_*$.
+%    \item We have $|x^* - x_*|=\rho$, $f(x^*)=f(x_*)=A$.
+%\end{itemize}
+\end{proof}
+
+\section{Algorithm implementation}
+
+%\subsection{Sampling}
+
+As mentioned above, the SHC algorithm can converge within at most 
+finite step and has a unique parameter of search radius
+$\rho$ required to adjust. However in practice, the search
+surface $O(x_k,\rho)$ in each iteration shall be sampled in
+numerical implementation. The sampling strategy can not
+only capture the SMP, but also treat high-dimensional
+optimization problems. The principle of sampling strategy
+is to obtain as more information of objection function as few
+sampling points. Meanwhile the sampling points could be linearly
+dependent on the dimension $d$ of objection problems. 
+Our previous work has demonstrated that uniformly distributed
+sampling points were useful to find the SMP when
+without a priori knowledge of objective functions\,\cite{huang2017hill}. 
+However, sampling points of the bisection sampling strategy used in the
+previous work are as large as $2m^{d-1}$ in each iteration, $m$
+is the number of refinement. This significantly limits the
+application to high-dimensional problems. 
+To overcome this limitation, it is required to develop a new
+strategy to sample $O(x_k,\rho)$ with a few sampling points.
+An useful approach is the regular simplex. 
+
+A regular $d$-simplex is a set of points
+$\{a_1,\dots,a_n,a_{n+1}\}$ in $\bbR^d$ with all pairwise
+distances $1$. It is a congruent polytope in $\bbR^d$. 
+The Cartesian coordinates of a $d$-D regular simplex 
+can be obtained from these two
+properties\,\cite{simplexWiki}
+\begin{enumerate}
+	\item For a regular simplex, the distances of its vertices 
+		$\{a_1,\dots,a_n,a_{n+1}\}$ to its center are equal.
+	\item The angle subtended by any two vertices of $d$-dimensional simplex through its center is
+		$\arccos(-1/d)$.
+\end{enumerate}
+
+To save computational amount, we choose a dynamic refinement
+strategy to sample the search surface in practice.
+The additional sampling points are generated by rotating the simplex. 
+Consider the uniformly distributed principle, 
+the rotation angle of the new regular simplex is the half of
+angle between the nearest edges. A schematic plot of $2$-D case
+is given in Fig.\,\ref{fig:obset:sketch}.
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.45]{../figures/sketch.png}
+	\caption{$2$-D schematic plot of rotating regular simplex of
+	sampling the search set $O(x, \rho)$.}
+\label{fig:obset:sketch}
+\end{figure}
+
+Using the dynamic refinement strategy, we have the computable SHC
+algorithm \ref{alg:refined}. The computational amount is not
+larger than $m(d+1)$ in each iteration which is linearly
+dependent on the dimension of optimization problems. 
+Whence, it could be easy to treat high-dimensional optimization
+problems.
+\begin{algorithm}[]
+	\caption{Computable SHC algorithm} 
+	\label{alg:refined}
+\begin{algorithmic}[]
+	\STATE Give the maximum number of rotating regular simplex $m$.
+	\STATE For $k$ iteration in Algorithm\,\ref{alg:SHC}:
+	\STATE ~~\textbf{Step 1}. Sample the surface
+	$O(x_k, \rho_k)$ with a regular simplex. \\
+	\STATE ~~\textbf{Step 2}. Compare the function values of the
+	samples with $f(x_k)$.
+	\\
+	\hspace{1.5cm} If there exists $\bar{x}$ such that
+	$f(\bar{x})<f(x_k)$, goto \textbf{Step 4}.
+	\\
+	\hspace{1.5cm} Otherwise, goto \textbf{Step 3}.
+	\STATE ~~\textbf{Step 3}. Rotate the regular simplex. If the
+	rotation number is smaller than $m$, goto \textbf{Step 2},
+	otherwise, stop iteration.
+	\STATE ~~\textbf{Step 4}. Declare that the iteration is
+	successful, and set $x_{k+1}= \bar{x}$.
+\end{algorithmic}
+\end{algorithm}
+
+If the SHC algorithm converges, it is evident that
+the search space is shrunk to a ball with the radius $\rho$. 
+The convergent point $x_k$ provides a good initial value for
+other optimization methods, including derivative-free
+approaches, and derivative-based algorithms if the objective
+function is differentiable. 
+We will demonstrate this by several numerical experiments in
+Sec.\,\ref{sec:experiment}.
+Meanwhile, we can further exploit the potential of
+stick hill-climbing algorithm to improve the precision by tuning the
+search radius $\rho$. Algorithm\,\ref{alg:ASHC} presents a
+strategy to resize the search radius $\rho$. 
+Significant difference of the version from
+Algorithm\,\ref{alg:refined} is adjusting the search radius
+$\rho$ when Algorithm\,\ref{alg:refined} fails to find
+$f(\bar{x})<f(x_k)$, $\bar{x}\in O(x_k, \rho)$ with
+fixed $\rho$. 
+The natural stop criterion of Algorithm\,\ref{alg:ASHC} is to
+terminate the run when $\rho$ is smaller than a prescribed
+numerical accuracy.
+Certainly, the search surface can be expanded by setting
+control factor $\eta>1$ if required. 
+In fact, Algorithm\,\ref{alg:ASHC} provides a restart technique by
+fixed the $k$-iterate with different search radius $\rho$.
+
+\begin{algorithm}[]
+	\caption{Adaptive Stick Hill-Climbing Algorithm} 
+	\label{alg:ASHC}
+\begin{algorithmic}[]
+	\STATE \textbf{Initialization:} Choose $x_0$, $\rho$,
+	and control factor $\eta$.
+	\STATE \textbf{For} $k=0,1,2,\dots$
+	\STATE \hspace{0.5cm} Use Algorithm\,\ref{alg:refined} to find
+	$\bar{{x}}\in O(x_k, \rho)$ such that $f(\bar{x})<f(x_k)$.
+		 \\
+		 \hspace{0.5cm} If such a point is found, then set
+		 $x_{k+1}= \bar{x}$.
+		  \\
+	 	  \hspace{0.5cm} Otherwise, change the search radius
+		  $\rho = \eta \cdot \rho$.
+\end{algorithmic}
+\end{algorithm}
+
+%\subsection{Adaptive stick hill-climblic algorithm}
+
+
+\section{Numerical results}
+\label{sec:experiment}
+
+\subsection{single extreme point problem}
+
+\subsection{High-dimensional optimization problems}
+
+\subsection{A combination of optimization methods}
+
+\section{Discussion}
+
+\section*{Acknowledgments}
+%The work is supported by the Natural Science
+%Foundation of China (Grant No.~11421101, and
+%No.~11771368). 
+
+
+\bibliographystyle{plain}
+\bibliography{shcanal}
+
+\end{document}
+
+\endinput

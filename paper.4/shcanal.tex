@@ -1,0 +1,1731 @@
+
+%\documentclass[preprint,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+ \documentclass[final,1p,times]{elsarticle}
+%% \documentclass[final,1p,times,twocolumn]{elsarticle}
+% \documentclass[final,3p,times]{elsarticle}
+%% \documentclass[final,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,5p,times]{elsarticle}
+%% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+%% if you use PostScript figures in your article
+%% use the graphics package for simple commands
+%% \usepackage{graphics}
+%% or use the graphicx package for more complicated commands
+%% \usepackage{graphicx}
+%% or use the epsfig package if you prefer to use the old commands
+%% \usepackage{epsfig}
+
+%% The amssymb package provides various useful mathematical symbols
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers.
+% \usepackage{lineno}\linenumbers
+
+\journal{xxx}
+
+\usepackage{mathrsfs,amsmath,amssymb,bm}
+\usepackage{multirow, bigdelim}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{overpic}
+\usepackage{epsfig}
+\usepackage{xcolor}
+\usepackage{indentfirst}
+\usepackage{fancyhdr}
+\usepackage{comment}
+\usepackage{makecell, rotating}
+\usepackage{algorithmic}
+\usepackage[]{algorithm}
+\usepackage{listings} 
+%\usepackage[framed, numbered, autolinebreaks, useliterate]{mcode} 
+%\usepackage{fullpage}
+\usepackage{amsthm}
+\newtheorem{assume}{Assumption}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+\newtheorem{example}{Example}
+\newtheorem{notation}{Notation}
+\newtheorem{problem}{Primal Problem}
+%\newtheorem{proof}{Proof}
+
+
+\def\bbZ{\mathbb{Z}}
+\def\bbR{\mathbb{R}}
+\def\bbK{\mathbb{K}}
+\def\bbQ{\mathbb{Q}}
+\def\calL{{\mathcal{L}}}
+\def\calZ{{\mathcal{Z}}}
+\def\calH{{\mathcal{H}}}
+
+\def\bu{{\bm u}}
+\def\bx{{\bm x}}
+\def\by{{\bm y}}
+\def\bz{{\bm z}}
+\def\bq{{\bm q}}
+\def\bp{{\bm p}}
+\def\ba{{\bm a}}
+\def\bb{{\bm b}}
+\def\bc{{\bm c}}
+\def\bd{{\bm d}}
+\def\bk{{\bm k}}
+\def\bj{{\bm j}}
+\def\bn{{\bm n}}
+\def\bh{{\bm h}}
+\def\bB{{\bm B}}
+\def\bA{{\bm A}}
+\def\bJ{{\bm J}}
+\def\bP{{\bm P}}
+\def\bw{{\bm\omega}}
+\def\bK{{\bm K}}
+\def\bfm{{\bm m}}
+\def\hf{{\hat{f}}}
+\def\hphi{{\hat{\phi}}}
+\def\hvarphi{{\hat{\varphi}}}
+\def\vphi{{\vec{\phi}}}
+\def\vvarphi{{\vec{\varphi}}}
+
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{A finite-step convergent derivative-free method of unconstrained optimization}
+
+%\title{A finite-step convergent derivative-free method for
+%high-dimensional unconstrained optimization}
+
+%The stick hill-climbing algorithm: finite-step convergence
+%analysis and an application to high-dimensional optimization problems}
+
+%\title{ The stick hill-climbing algorithm: finite-step convergence
+%analysis and an application to high-dimensional optimization problems}
+
+\author[xtu]{Yunqing Huang }
+%\cortext[cor]{huangyq@xtu.edu.cn.}
+
+
+\author[xtu]{Kai Jiang \corref{cor}}
+
+\cortext[cor]{kaijiang@xtu.edu.cn.}
+
+\address[xtu]{School of Mathematics and Computational
+ Science, 
+ \\
+Hunan Key Laboratory for Computation and Simulation in Science
+and Engineering, Xiangtan University, P.R. China, 411105
+ }
+
+%\date{\today}
+
+\begin{abstract}
+Inspired by the behavior of the blind for hill-climbing using a
+stick to detect a higher place by drawing a circle,
+in this talk, we will present a new derivative-free method, i.e.,
+the hill-climbing method with a stick (HiCS), to treat
+unconstrained optimization.
+At a given point, the new algorithm can obtain a better state
+by searching a surface with the length of the stick.
+This algorithm can capture a neighbourhood of a minimizer of the objective function
+rather than directly approximating it.
+A simple but rigorous theory can guarantee the 
+finite-step convergence of the proposed algorithm without convexity assumption. 
+Only one parameter is required to be input in this method which makes it easy for coding.
+Meanwhile, an economic sampling strategy with the
+regular simplex of evaluating function values is given to
+optimize high dimensional problems.
+Finally, several standard numerical examples have been used to demonstrate its efficiency.
+HiCS shows potential to find the global minimizer by choosing
+proper algorithm parameters.
+\end{abstract}
+
+%\begin{abstract}
+%In our previous work [Y. Q. Huang and K. Jiang, Advances in
+%Applied Mathematics and Mechanics, 2017, 9: 307-323], a useful
+%derivative-free algorithm, the stick hill-climbing method, has
+%been proposed to treat unconstrained optimization. Numerical
+%results have been demonstrated its wonderful performance.
+%However, there are two issues required to be solved: convergent
+%analysis and high dimensional problems. 
+%In this paper, we will give a rigorous theory to ensure finite-step
+%convergence with mild conditions. Meanwhile, an economic sampling
+%strategy using regular simplex of evaluating function values is
+%proposed to treat high dimensional optimization. Finally, we use
+%several standard numerical examples to demonstrate its efficiency.
+%\end{abstract}
+
+\begin{keyword}
+%% keywords here, in the form: keyword \sep keyword
+Stick hill-climbing algorithm, Finite-step convergence,
+Suspected extreme point, Simplex sampling, 
+High-dimensional unconstrained optimization
+\end{keyword}
+
+\end{frontmatter}
+
+
+\section{Introduction}
+\label{sec:intro}
+
+Derivative-free optimization is an area of long history and
+current rapid growth, fueled by a growing number of applications
+that range from science problems to medical problems to
+engineering design and facility location problems. 
+In general, derivative-free optimization  does not use derivative
+information to find optimal solution. 
+
+The derivative-free optimization algorithms can mainly be
+classified as direct and model-based.  Direct algorithms usually
+determine search directions by evaluating the
+function $f$ directly, whereas model-based algorithms construct
+and utilize a surrogate model of $f$ to guide the search process.
+A detailed review about this kind of approaches was presented by
+Rios and Sahinidis\,\cite{rios2013derivative}.
+Recently developed methods based trust-region using
+interpolation model belong to model-based methods\,\cite{powell2000uobyqa,
+powell2002trust, wu2009heuristic, zhang2014sobolev}. 
+In practical implementation, heuristic algorithms, such as
+simulated annealing, genetic algorithm\,\cite{michalewicz2004how}, 
+have been also developed to solve derivative-free optimization.
+Here we focus our attention on the direct search algorithms.
+
+In our previous work\,\cite{huang2017hill}, we proposed a
+derivative-free optimization method, i.e., hill-climbing method
+with a stick (HiCS), to treat unconstrained optimization problems. 
+The main idea of the algorithm, at each iteration, is
+comparing function values on a surface surrounding the current point,
+rather than a neighbourhood of current node. 
+It has many good properties, such as easily to implement,
+a unique parameter required to be modulated, and having capacity
+for find local and global maxima. However, it still lacks rigorous
+theoretical explanation. 
+In this paper, we will give the convergence analysis and related
+properties of this algorithm. 
+Meanwhile, a new strategy will be proposed to sample the search
+surface to deal with high dimension optimization problems.
+
+In the following, we will briefly introduce the HiCS algorithm and
+prove its finite-step convergence in Sec.\,\ref{sec:algorithm}. 
+The algorithm implementation is presented in Sec.\,\ref{sec:implement}.
+In particular, the new sampling strategy using regular simplex is
+also given in this section.
+The numerical experiments including high dimensional optimization
+problems are showcased in Sec.\,\ref{sec:experiment}. 
+Finally the conclusion and discussions are given in Sec.\,\ref{sec:conclusion}.
+
+
+
+\section{Algorithm description and convergence analysis}
+\label{sec:algorithm}
+
+Before going further, a short introduction of the
+HiCS method is necessary.
+We consider an unconstrained optimization problem 
+\begin{align}
+	\min_{x\in\Omega\subset\mathbb{R}^d} f(x),
+	\label{}
+\end{align}
+where the objective function $f(x):\bbR^n\rightarrow \bbR$ is
+continuous. Let $\rho$ be a search radius, $O(x_k, \rho)=\{x:
+|x-x_k|=\rho\}$ be the search surface in the
+$k$-th iteration with radius $\rho$. $U(x_k,
+\rho)$ is the neighbourhood of $x_k$ with radius of $\rho$.
+To illustrate the algorithm to be more precision, an useful concept of
+suspected extreme point is introduced.
+\begin{definition}	
+	For a given objective function $f(x)$ and a positive constant 
+	$\rho>0$, $\tilde{x}$ is a suspected extreme point if $f(\tilde
+	x)<f(x)$ or $f(\tilde x)>f(x)$, for $\forall x\in O(\tilde{x},\rho)$.
+	If $f(\tilde x) < f(x)$ for all $x\in O(\tilde{x},\rho)$,
+	$\tilde{x}$ is the suspected minimum point (SMP).
+\end{definition}
+Certainly, $\tilde{x}$ is a SMP if $\tilde{x}$ is a minimizer in
+the neighborhood of $U(\tilde{x}, \rho)$. The opposite is not always true.
+The definition can be extended to describe suspected maximum point.
+%A sufficient condition is given as follows.
+%\begin{proposition}
+%    Assume that $f(x)$ is continuous differentiable, $\rho < 1$,
+%    and $|\nabla f(\tilde x)| > C\rho$, $C$ is related to the
+%    Hessian matrix of $f$ on $\tilde{x}$,
+%    then SMP $\tilde{x}$ is a minimizer in $U(\tilde{x}, \rho)$. 
+%\end{proposition}
+%\begin{proof}
+%    We can apply Taylor expansion to $f(x)$ to the first order on $\tilde x$
+%    \begin{align*}
+%        f(x)=f(\tilde x) + \nabla f(\tilde x)(x-\tilde{x}) + C( (x-\tilde{x} )^2),
+%    \end{align*}
+%    If $\tilde x$ is a local minimizer in $U(\tilde{x},\rho)$,
+%    then $f(x)<f(\tilde x)$, i.e., $\nabla f(\tilde
+%    x)(x-\tilde{x}) + C \rho^2<0$. It will be satisfied if 
+%    \begin{align*}
+%        -|\nabla f(\tilde x)|\rho + C\rho^2 < 0.
+%    \end{align*}
+%    From assumption, the proposition is proven.
+%\end{proof}
+With these notations, the HiCS algorithm can be presented
+more precisely as Algorithm \ref{alg:HiCS}.
+\begin{algorithm}[H]
+	\caption{Hill-Climbing method with a stick (HiCS)}
+	\label{alg:HiCS}
+\begin{algorithmic}[1]
+	\STATE \textbf{Initialization:} Choose $x_0$ and $\rho$.
+	\STATE \textbf{For} $k=0,1,2,\dots$
+	\STATE \hspace{0.5cm} Try to find $\bar{x}\in O(x_k, \rho)$,
+		   s.t. $f(\bar x)<f(x_k)$.
+			\\
+		 \hspace{0.5cm} If such a point is found, then set
+		 $x_{k+1}= \bar{x}$.
+		  \\
+		   \hspace{0.5cm} Otherwise, a SMP is found, 
+		   and declare the iteration successful.
+\end{algorithmic}
+\end{algorithm}
+It is evident that the approximation error of the HiCS algorithm
+is measured by the distance between a SMP and a minimum.
+When HiCS converges, its error is smaller than the search radius
+$\rho$.
+From our experience, the HiCS approach usually terminates in 
+finite steps. It is an amazing property. In what follows, we will
+give the condition to ensure the finite-step convergence.
+
+\begin{theorem}[Finite-step convergence]
+	\label{thm:fsc}
+	Assume that objective function $f(x)$ is continuous and the
+	search domain $\Omega$ is a compact set.
+	If there are not two SMPs $x_*$ and $x^*$ satisfying 
+	$|x_*-x^*|=\rho$ and $f(x^*)=f(x_*)=\alpha$.
+	Then Algorithm \ref{alg:HiCS} converges in finite steps.
+\end{theorem}
+\begin{proof}
+	Assume that the HiCS method produces an infinite pair sequence
+	$\{x_n, f(x_n)\}_{x=0}^{\infty}$. From assumption,
+	it is obvious $f(x)$ is bounded. The decreasing sequence
+	$\{f(x_n)\}_{n=0}^\infty$ converges, and the bounded
+	$\{x_n\}_{n=0}^\infty$ has a convergent subsequence 
+	$\{x_{n_k}\}_{k=0}^\infty$. Assume that $f(x_n)\rightarrow
+	\alpha$ and $x_{n_k}\rightarrow x^*$. 
+	
+	In accordance with the subsequence
+	$\{x_{n_k}\}_{k=0}^\infty$, we can always choose an another
+	bounded subsequence $\{x_{n_k -1}\}_{k=0}^\infty \subset
+	\{x_n\}$ satisfying $|x_{n_k - 1}-x_{n_k}|=\rho$. 
+	Due to the boundedness of iteration
+	sequence, $\{x_{n_k-1}\}_{k=0}^\infty$ has a convergent
+	subsequence $\{x_{n_{m}}\}_{m=0}^\infty$. Let $x_{n_m}
+	\rightarrow x_*$ when $m\rightarrow \infty$. 
+	From the $\{x_{n_m}\}$, we can find a subsequence
+	$\{x_{n_{m}+1}\}\subset \{x_{n_k}\}$ satisfying
+	$x_{n_m}-x_{n_{m}+1}=\rho$, and $x_{n_{m}+1}\rightarrow x^*$
+	($m\rightarrow \infty$).
+	Obviously, $|x^*-x_*|=\rho$, and $f(x^*)=f(x_*)=\alpha$ 
+	which clearly contradicts the assumption.
+\end{proof}
+
+\section{Algorithm implementation}
+\label{sec:implement}
+
+As mentioned above, the HiCS algorithm can converge in  
+finite steps with mild assumptions and has a unique parameter of
+search radius $\rho$ to be chosen.
+In practice, the search surface $O(x_k,\rho)$ in each iteration
+shall be sampled in numerical implementation.
+The principle of discretization of sampling $O(x_k,\rho)$
+includes symmetric and uniform distribution, and as few
+discretization points as possible when without a priori
+information of the objective function.
+%The sampling strategy can not
+%only capture the SMP, but also treat high-dimensional
+%optimization problems. The principle of sampling strategy
+%is to obtain as more information of objection function as few
+%sampling points. 
+Our previous work has demonstrated that uniformly distributed
+sampling points were useful to find the SMP when
+without a priori knowledge of objective functions\,\cite{huang2017hill}. 
+However, the bisection sampling strategy based
+on spherical coordinates has been used in the
+previous work. The sampling points are as large as $2m^{n-1}$ in each iteration, $m$
+is the number of refinement, $n$ is the dimensions of
+optimization problems. This significantly limits the
+application to high-dimensional problems. 
+To overcome this limitation, it is required to develop a new
+strategy to sample $O(x_k,\rho)$ with a few sampling points.
+A reasonable requirement is that the number of sampling points will be
+linear or quasi-linear growth with the increases of problem dimensions.
+In this work, we will use the regular simplex and its rotations to
+sample search surface $O(x_k,\rho)$. As seen in the following,
+the computational complexity grows linearly as the
+dimension of optimization problems increases.
+
+A $n$-dimension regular simplex is the congruent polytope of
+$\mathbb{R}^n$ with a set of points $\{a_1,\dots,a_n,a_{n+1}\}$,
+and all pairwise distances $1$.
+Its Cartesian coordinates can be obtained from the following two properties:
+\begin{enumerate}
+	\item For a regular simplex, the distances of its vertices 
+		$\{a_1,\dots,a_n,a_{n+1}\}$ to its center are equal.
+	\item The angle subtended by any two vertices of $n$-dimension simplex through its center is
+		$\arccos(-1/n)$.
+\end{enumerate}
+In particular, the above two properties can be implemented
+through Algorithm \ref{alg:simplex}.
+\begin{algorithm}
+	\caption{Generate $n$-D regular simplex coordinates} 
+	\label{alg:simplex}
+\begin{algorithmic}
+	\STATE Give an $n\times(n+1)$-order zero matrix $x(1:n,1:n+1)$
+	\FOR {$i=1:1:n$}
+	\STATE $x(i,i)=\sqrt{1-\sum_{k=1}^{i-1} [x(k, i)]^{2}}$
+		\FOR {$j=i+1:1:n+1$}
+		\STATE $x(i,j)
+		=\dfrac{1}{x(i,i)}\Big(-\dfrac{1}{n}-x(1:i-1, i)^T \cdot
+		x(1:i-1, j)\Big)$
+		\ENDFOR
+	\ENDFOR
+	\STATE Output the column vectors, and let $a_j=x(:,j)$,
+	$j=1,2,\dots,n+1$. 
+\end{algorithmic}
+\end{algorithm}
+
+If the HiCS method has not find a better state on a regular
+simplex, we can add more points to refine $O(x_k, \rho)$
+The new adding points of refining $O(x_k, \rho)$ should be
+distinct from existing samplings. 
+Here we will refine $O(x_k, \rho)$ through rotating the regular simplex. 
+For a given rotation angle $\theta=(\theta_1,\theta_2,\dots,\theta_{n})$, the
+rotation matrix $\bm R$ is given as 
+\begin{equation}
+\begin{aligned}
+	{\bm R} = 
+	 \prod_{i=2}^{n-1} &
+\bordermatrix{
+  &  &       &  & 		   & i &		   &  &  & \cr
+  & 1&       &  & 		   & \vdots  & 		   &  &  &  \cr
+  &  & \ddots&  & 		   & \vdots  & 		   &  &  &  \cr
+  &  &       & 1&          & \vdots  & 		   &  &  &  \cr
+  &  &       &  & \cos \theta_i & 0 & -\sin \theta_i &  &  &  \cr
+  &  &       &  &   0	 & 1 &     0     &  &  & \cr 
+  &  &       &  & \sin \theta_i & 0 &  \cos \theta_i &  &  &  \cr
+  &  &       &  &          &   &           & 1 & &  \cr
+  &  &       &  &          &   &           &  & \ddots &   \cr
+  &  &       &  &          &   &           &  &  & 1 
+}
+\\
+	& \begin{pmatrix}
+  \cos \theta_1 & -\sin \theta_1 & 0 &  		&   \\
+  \sin \theta_1 & \cos \theta_1  & 0 & 	 	& 	\\
+  	0	   &      0    & 1 & 		&   \\
+  		   & 		   &   & \ddots &   \\
+  		   & 		   &   &   		& 1 
+	\end{pmatrix}
+	\begin{pmatrix}
+  1 &  &  &  		&   \\
+    & \ddots  &  & 	 	& 	\\
+    &    & 1 & 	0	& 0  \\
+    &    & 0 & \cos\theta_n & -\sin\theta_n  \\
+    & 	 & 0 &  \sin\theta_n & \cos\theta_n 
+	\end{pmatrix}.
+\end{aligned}
+	\label{}
+\end{equation}
+%    \prod_{i=2}^{n-1}
+%    \begin{pmatrix}
+%    1 & & & & & & &  \\
+%       & \ddots &  & & & & &  \\
+%      &    & 1 & & & & &  \\
+%      &    &  & \cos\theta_i& -\sin\theta_i & & &  \\
+%      &    &  & \sin\theta_i& \cos\theta_i & & &  \\
+%      &    &  &            & 		    &1 & &  \\
+%      &    &  &            & 		    &  &\ddots  & \\
+%      &    &  &            & 		    &  &  & 1 \\
+%    \end{pmatrix}
+%%
+%%  \cos \theta_1 & -\sin \theta_1 & 0 &  		&   \\
+%%  \sin \theta_1 & \cos \theta_1  & 0 & 	 	& 	\\
+%%      0	   &      0    & 1 & 		&   \\
+%%             & 		   &   & \ddots &   \\
+%%             & 		   &   &   		& 1 
+%    \end{pmatrix}
+Then vertices of new simplex can be obtained by
+\begin{align}
+	a_j = \bm{R}a_j + x_k
+	\label{}
+\end{align}
+When without a priori knowledge of objective, the uniformly
+distributed principle is still a reasonable assumption to rotate regular simplex.
+\textcolor{blue}{
+%%%% How to rotate
+A standard schematic plots of $2$, and
+$3$-D case are given in Fig.\,\ref{fig:obset:sketch}.
+}
+\begin{figure}[!htbp]
+	\centering
+	\subfigure[2D regular simplexes]{
+%      \includegraphics[scale=0.3]{../figures/2Dsketch.png}
+		  \includegraphics[scale=0.08]{../figures/2D1.png}
+		  \includegraphics[scale=0.08]{../figures/2D2.png}
+		  \includegraphics[scale=0.08]{../figures/2D3.png}
+		  \includegraphics[scale=0.08]{../figures/2D4.png}
+	  }
+	\subfigure[3D regular simplexes]{
+	  \includegraphics[scale=0.4]{../figures/3Dsketch.png}
+	  }
+	\caption{The first $2$-, and $3$-D
+	regular simplexes of sampling the search set $O(x, \rho)$.}
+\label{fig:obset:sketch}
+\end{figure}
+It should be noted that there are also other strategies to rotate
+the regular simplex. For example, the additional simplexes can be
+dependent on the known information of objective functions. 
+
+To save computational amount, we choose a dynamic
+refinement strategy to sample the search surface and compare
+function values in practice. 
+%The additional sampling points are generated by rotating the simplex. 
+%Consider the uniformly distributed principle, 
+%the rotation angle of the new regular simplex is the half of
+%angle between the nearest edges. 
+Based on the dynamic refinement strategy, we propose the
+computable HiCS
+method, see Algorithm \ref{alg:refined}. The computational amount is not
+larger than $m_{\max}(n+1)$ in each iteration which is linearly
+dependent on the dimension of optimization problems,
+$m_{\max}$ is the maximum number of rotation.
+Whence, it is possible to treat high-dimensional optimization problems.
+
+\begin{algorithm}[H]
+	\caption{HiCS}
+	\label{alg:refined}
+\begin{algorithmic}[1]
+	\STATE Input $x_0$, $\rho$, and $m_{\max}$
+	\FOR {$k=0,1,2,\cdots$}
+		\STATE Set $m=0$
+		\IF {$m\leq m_{\max}$}
+			\STATE Discrete $O(x_k,\rho)$ to obtain $O^m_h(x_k,\rho)$
+			\IF {$\exists x_j \in O^m_h(x_k,\rho)$, s.t.  $f(x_j)<f(x_k)$}
+				\STATE Set $x_{k+1}=x_j$, and $m=m_{\max}+1$
+			\ELSE
+				\STATE Set $m = m+1$
+			\ENDIF
+		\ELSE
+			\STATE Declare that find a SMP, end program
+		\ENDIF
+	\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+%\begin{algorithm}[]
+%    \caption{Computable HiCS algorithm} 
+%    \label{alg:refined}
+%\begin{algorithmic}[]
+%    \STATE Give $m_{\rm max}$ (the maximum rotation number of
+%    regular simplex)
+%    \STATE For $k$ iteration in Algorithm\,\ref{alg:HiCS}:
+%    \STATE ~~\textbf{Step 1}. Sample the surface
+%    $O(x_k, \rho_k)$ with a regular simplex. \\
+%    \STATE ~~\textbf{Step 2}. Compare the function values of the
+%    samples with $f(x_k)$.
+%    \\
+%    \hspace{1.5cm} If there exists $\bar{x}$ such that
+%    $f(\bar{x})<f(x_k)$, goto \textbf{Step 4}.
+%    \\
+%    \hspace{1.5cm} Otherwise, goto \textbf{Step 3}.
+%    \STATE ~~\textbf{Step 3}. Rotate the regular simplex. If the
+%    rotation number is smaller than $m_{\rm max}$, goto
+%    \textbf{Step 2}, otherwise, stop iteration.	
+%    \STATE ~~\textbf{Step 4}. Declare that the iteration is
+%    successful, and set $x_{k+1}= \bar{x}$.
+%\end{algorithmic}
+%\end{algorithm}
+
+If the HiCS algorithm converges, the convergent result provides a
+good initial value for other optimization methods, including
+derivative-free approaches, and derivative-based algorithms if the
+objective function is differentiable. 
+It is evident that the search space is shrunk to a ball with
+the radius $\rho$, and more significantly, the convergent ball
+contains a SMP.
+We will demonstrate this by several numerical experiments in
+Sec.\,\ref{sec:experiment}.
+
+We can also adjust the search radius $\rho$ in HiCS method 
+to improve the approximation precision as done in our previous
+work\,\cite{huang2017hill}. Algorithm\,\ref{alg:HiCSa} gives the
+process of narrowing down $\rho$ when Algorithm\,\ref{alg:refined} fails
+to find $f(\bar{x})<f(x_k)$, $\bar{x}\in O(x_k, \rho)$ with a fixed $\rho$.
+The approximation distance between convergent point and a SMP is
+improved when Algorithm\,\ref{alg:HiCSa} converges.
+Certainly, the search surface $\rho$ can be expanded by setting
+control factor $\eta>1$ if required. 
+In fact, Algorithm\,\ref{alg:HiCSa} provides a restart technique by
+fixed the $k$-iterate with different search radius $\rho$.
+
+%further exploit the potential of
+%HiCS algorithm to improve the approximation precision by tuning the
+%search radius $\rho$. Algorithm\,\ref{alg:HiCSa} presents a
+%strategy to resize the search radius $\rho$. 
+%Significant difference of the version from
+%Algorithm\,\ref{alg:refined} is adjusting the search radius
+%$\rho$ when Algorithm\,\ref{alg:refined} fails to find
+%$f(\bar{x})<f(x_k)$, $\bar{x}\in O(x_k, \rho)$ with
+%fixed $\rho$. 
+%A natural stop criterion of Algorithm\,\ref{alg:HiCSa} is to
+%terminate the run when $\rho$ is smaller than a prescribed
+%numerical accuracy.
+%Certainly, the search surface can be expanded by setting
+%control factor $\eta>1$ if required. 
+%In fact, Algorithm\,\ref{alg:HiCSa} provides a restart technique by
+%fixed the $k$-iterate with different search radius $\rho$.
+%
+%
+\begin{algorithm}[H]
+	\caption{HiCS: adjust $\rho$}
+	\label{alg:HiCSa}
+\begin{algorithmic}[1]
+	\STATE Input $x_0$, $\rho$, $m_{\max}$,
+	\textcolor{blue}{$\varepsilon$ and $\eta<1$}
+	\IF { \textcolor{blue}{ $\rho>\varepsilon$}}
+	\FOR {$k=0,1,2,\cdots$}
+		\STATE Set $m=0$
+		\IF {$m\leq m_{\max}$}
+			\STATE Discrete $O(x_k,\rho)$ to obtain $O^m_h(x_k,\rho)$
+			\IF {$\exists x_j \in O^m_h(x_k,\rho)$, s.t.  $f(x_j)<f(x_k)$}
+			\STATE Set $x_{k+1}=x_j$, 
+				and \textcolor{blue}{$m=m_{\max}+1$} (Jump out of IF statement) 
+			\ELSE
+				\STATE Set $m = m+1$
+			\ENDIF
+		\ELSE
+			\STATE \textcolor{blue}{ Set $\rho=\eta\rho$}
+		\ENDIF
+		\STATE \textcolor{blue}{Set $k=k+1$}
+	\ENDFOR
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+
+%\begin{algorithm}[]
+%    \caption{Adaptive Stick Hill-Climbing (HiCSa) Algorithm} 
+%    \label{alg:HiCSa}
+%\begin{algorithmic}[]
+%    \STATE \textbf{Initialization:} Choose $x_0$, $\rho$,
+%    and control factor $\eta$.
+%    \STATE \textbf{For} $k=0,1,2,\dots$
+%    \STATE \hspace{0.5cm} Use Algorithm\,\ref{alg:refined} to find
+%    $\bar{{x}}\in O(x_k, \rho)$ such that $f(\bar{x})<f(x_k)$.
+%         \\
+%         \hspace{0.5cm} If such a point is found, then set
+%         $x_{k+1}= \bar{x}$.
+%          \\
+%           \hspace{0.5cm} Otherwise, change the search radius
+%          $\rho = \eta \cdot \rho$.
+%\end{algorithmic}
+%\end{algorithm}
+
+
+\section{Numerical results}
+\label{sec:experiment}
+
+In this section, we choose three kinds of test functions,
+including a single extreme point function, high dimensional
+multi-extreme points functions, and a continuous but
+indifferentiable function, to demonstrate the performance of the
+HiCS algorithm. 
+In Algorithm\,\ref{alg:refined}, the sampling points of 
+search set in each iteration are $m(n+1)$, $n$ is the dimension
+of objective function.  If not specified, the maximum number of
+refinement $m=32$.
+
+\subsection{A single extreme point problem}
+\label{subsec:gauss}
+
+The first example is a unimodal function, in particular, the Gaussian function
+\begin{align}
+	f(x) = -20\exp\left(-\sum_{j=1}^n x_j^2 \right),
+	\label{eqn:exp1}
+\end{align}
+who has a unique global minimum $0$ with $f(0)=-20$.
+The objective function is differentiable in $\bbR^n$, however,
+it quickly diffuses out towards zero out of the upside-down ``bell''. 
+
+%Here we will illustrate the numerical behavior of HiCS method for
+%$2$ dimension Gaussian function.
+
+We firstly investigate the convergent properties of HiCS
+method for $10$-dimensional Gaussian function. 
+The function satisfies the assumptions of
+Theorem\,\ref{thm:fsc}, therefore, Algorithm\,\ref{alg:HiCS} will
+be convergent in finite steps theoretically.
+To verify this fact, we use random initial values and carry out
+Algorithm\,\ref{alg:HiCS} within $30$ runs.
+In the set of numerical experiments, 
+the search radius $\rho$ is fixed as $0.3$, start points are
+randomly generated in the space $[-1, 1]^{10}$. For each
+experiment, the HiCS method indeed converges and
+captures a neighbourhood of the peak
+$0$ in finite iterations. Fig.\,\ref{fig:exp1:randInit} gives
+the required iterations for convergence in $30$ numerical experiments.
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.2]{../figures/gauss10Drandr0_3.png}
+	  \caption{The iterations of convergence of the 
+	  HiCS algorithm to the Gaussian function
+	  \eqref{eqn:exp1} in $30$ runs. Start points are randomly
+	  generated in the space $[-1, 1]^{10}$, and $\rho=0.3$. 
+	  The flat dashed line shows the average.} 
+	  \label{fig:exp1:randInit}
+\end{figure}
+In these $30$ runs, the average iterations of convergence is
+$20.5$, while the maximum is $27$, and the minimum is $9$.
+
+Then we use a small search radius $\rho=0.1$ to observe the
+behavior of HiCS method. The initial values are also randomly
+generated in $30$ numerical tests. The required iterations for
+convergence is given in Fig.\,\ref{fig:exp1:randInitr0_1}
+In these $30$ runs, the average iterations of convergence is
+$77.2$, while the maximum is $121$, and the minimum is $54$.
+From these results, we can find that HiCS approach converges in
+finite iterations. Meanwhile, it is obvious that the value of
+$\rho$ affects the number of iterations. 
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.2]{../figures/gauss10Drandr0_1.png}
+	  \caption{The iterations of convergence of the 
+	  HiCS algorithm to the Gaussian function
+	  \eqref{eqn:exp1} in $30$ runs. Start points are randomly
+	  generated in the space $[-1, 1]^{10}$, and $\rho=0.1$. 
+	  The flat dashed line shows the average.} 
+	  \label{fig:exp1:randInitr0_1}
+\end{figure}
+
+
+%The number of iterations is inversely proportional to the
+%distance of the initial point and the minimizer.
+%When the initial values are far away from the optimal point, the
+%algorithm needs more iterations. In contrast, when the initial
+%points are close to the minimizer, the method requires less iterations. 
+%We also note that when the start point is far away from the peak,
+%the derivative-based methods, such as steepest descent method,
+%conjugate gradient method and Newton method, would fail since the
+%gradient value is almost zero. 
+%However, the HiCS algorithm can always approximate the
+%peak point. The initial values may yield a few more iterations
+%but NOT affect the finite-step convergence as the
+%Theorem\,\ref{thm:fsc} shows.
+
+In the following, we apply HiCSa algorithm to $1000$ dimensional
+Gaussian function. The initial value is randomly generated in
+domain $[-1,1]^{1000}$, the initial search radius $\rho_0 = 0.3$,
+and control factor $\eta=(\sqrt{5}-1)/2$. 
+Fig.\,\ref{fig:gauss:1000D} presents the iteration process.
+The difference between $f(x_k)$ and the global minimum
+$f(0)=-20$ is given in Fig.\,\ref{fig:gauss:1000D}(a). The
+$\ell^2$-distance between the iterator and the global minimizer
+$0$, where
+$\|x\|_{\ell^2}=\left(\sum_{i=1}^n x_i^2 \right)^{1/2}$,
+is illustrated in Fig.\,\ref{fig:gauss:1000D}(b). 
+It can be found that the HiCSa method can approach to the global
+minimum through shrinking search radius $\rho$.
+\begin{figure}[!htbp]
+	\begin{minipage}[b]{0.5\linewidth}
+	\centering{
+	  \includegraphics[scale=0.25]{../figures/gauss1000D.png}
+	  }
+	\centerline{(a) }
+	\end{minipage}
+	\begin{minipage}[b]{0.5\linewidth}
+	\centering{
+	  \includegraphics[scale=0.25]{../figures/gauss1000D_dist.png}
+	  }
+	\centerline{(b) }
+	\end{minipage}
+	  \caption{The iteration process of the HiCSa method to 1000
+	  dimensional Gaussian function. 
+	  Start point is randomly generated in the space $[-1,
+	  1]^{1000}$, $\rho=0.3$ and control factor
+	  $\eta=(\sqrt{5}-1)/2$.} 
+	  \label{fig:gauss:1000D}
+\end{figure}
+
+%Then we take an example to further observe the numerical behavior
+%of the HiCS algorithm.
+%Tab.\,\ref{tab:gauss:CHC} shows the iterative procedure of the
+%HiCS approach in detail when the start point is
+%$x_0=(6.7, -8.0)$ with fixed search radius $\rho=1.0$. 
+%In the Tab.\,\ref{tab:gauss:CHC}, the first and second columns show
+%the number of iterations and rotation simplexes when applying
+%HiCS
+%method. The third column gives the $\ell^2$-distance between
+%iterator and the global minimizer $0$, where
+%$\|x\|_{\ell^2}=\left(\sum_{i=1}^n x_i^2 \right)^{1/2}$.
+%The fourth column is the function value on iterator.
+%\begin{table}[!htbp]
+%\begin{center}
+%\caption{\label{tab:gauss:CHC}The iterative procedure of 
+%HiCS algorithm with $\rho=1.0$ when the initial value
+%is $x_0=(6.7, -8,0)$.}	
+%\begin{tabular}{|c|c|c|c|}
+% \hline
+%Iteration & $m$ & $\ell^2$-distant &  Function value
+% \\\hline
+% 1 & 1 & 10.435037135 & -5.1247639412e-47 \\
+% \hline
+% 2 & 1 &  9.4516450176 & -1.5955605034e-38 \\
+% \hline
+% 3 & 1 &  8.4721418236 & -6.7230095025e-31 \\
+% \hline
+% 4 & 1 & 7.4980517882 & -3.8337625366e-24 \\
+% \hline
+% 5 & 1 &  6.5317971614 & -2.9586781839e-18 \\
+% \hline
+% 6 & 1 &  5.5774517207 & -3.0901622718e-13 \\
+% \hline
+% 7 & 1 &  4.6423659094 & -4.3679320991e-09 \\
+% \hline
+% 8 & 1 &  3.7410098605 & -8.3556743824e-06 \\
+% \hline
+% 9 & 1 &  2.9049523775 & -2.1632074620e-03 \\
+% \hline
+% 10 & 1 &  2.2096021938 & -7.5792437378e-02 \\
+% \hline
+% 11 & 1 &  1.8237147240 & -3.5938885990e-01 \\
+% \hline
+% 12 & 1 &  1.2175146221 & -2.2710521764e+00 \\
+% \hline
+% 13 & 1 &  0.96225536865 & -3.9616067919e+00 \\
+% \hline
+% 14 & 32 & 0.28695270523 & -9.2095707106e+00 \\
+% \hline
+%\end{tabular}
+%\end{center}
+%\end{table}
+%The results show that the iterates can be updated efficiently to
+%capture a neighbourhood of the minimizer $0$ within $14$ steps. 
+%The convergent result reduces the search space and
+%provides a good start position $(0.3, -0.1)$ to further
+%approximate the minimizer to high precision with other
+%optimization algorithms.
+%Due to the good analytical nature of objective function, the
+%derivative-based methods or adaptive HiCS method (see
+%Algorithm\,\ref{alg:HiCSa}) are both good choices of finding the
+%minimizer with the above convergent results. 
+
+\newpage
+
+\subsection{Ackley function: multi-minimizers problems}
+\label{subsec:minmulit}
+
+The second tested function is the Ackley
+function\,\cite{dieterich2012empirical},
+a benchmark function, widely used for
+testing optimization algorithms.
+The expression of the Ackley function can be written as
+\begin{align}
+	f(x) =
+	-20\cdot\exp\left(-\frac{1}{5}\cdot\sqrt{\frac{1}{n}\sum_{i=1}^2
+	x_i^2}\right)-
+	\exp\left(\frac{1}{n}\sum_{i=1}^n \cos(2\pi x_i)\right)+20+e,
+	\label{eqn:ackley}
+\end{align}
+where $n$ is the dimension.
+Ackley function has many local minima and a unique global
+minimum of $0$ with $f(0)=0$, which poses a risk for
+optimization algorithms to be trapped into one of local
+minima, such as the traditional hill-climbing method\,\cite{back1996evolutionary}.
+In this subsection, we will apply the our proposed 
+algorithms to higher dimensional Ackley function. 
+In this subsection, the maximum rotation number
+$m_{\max}=32$, the control factor $\eta=0.5$.
+
+\newpage
+
+Firstly, taking $100$ dimensional Ackley function as an example, 
+we will test the ability of HiCSa to find the different minimizer.
+Since the main parameter in our method is the search radius,  
+we implement HiCSa method $30$ times for different
+initial search radius $\rho_0$. The initial value is generated
+randomly in the region of $[-5,5]^{100}$. 
+The convergent criterion $\varepsilon=10^{-14}$.
+Fig.\,\ref{fig:ackley100D:HiCSa:randinit} gives the 
+$\ell^2$-distance between the convergent SMP and the global minimizer, and
+the function value after convergence when $\rho_0=0.05, 0.1, 0.5,
+0.8$, respectively. Obviously, with the increment of $\rho_0$,
+the convergent point is close to the global minimizer in the
+average sense. Correspondingly, the convergent function value
+becomes small. It can be found that when $\rho_0=0.8$, HiCSa
+method can find the neighbourhood with radius $10^{-14}$ of the
+global minimizer $0$ for several times. We also find that the
+HiCSa can capture the global minimizer when further increasing
+$\rho_0$.
+
+\begin{figure}[!htbp]
+	\begin{minipage}[b]{0.5\linewidth}
+	\centering{
+	  \includegraphics[scale=0.125]{../figures/ackley100Drandr0_05_dist.png}
+	  \includegraphics[scale=0.125]{../figures/ackley100Drandr0_05_val.png}
+	  }
+	\centerline{(a) $\rho_0 =0.05$}
+	\end{minipage}
+	%%%%%%%
+	\begin{minipage}[b]{0.5\linewidth}
+	\centering{
+	  \includegraphics[scale=0.125]{../figures/ackley100Drandr0_1_dist.png}
+	  \includegraphics[scale=0.125]{../figures/ackley100Drandr0_1_val.png}
+	  }
+	\centerline{(b) $\rho_0=0.1$}
+	\end{minipage}
+	%%%%%%%
+	\begin{minipage}[b]{0.5\linewidth}
+	\centering{
+	  \includegraphics[scale=0.125]{../figures/ackley100Drandr0_5_dist.png}
+	  \includegraphics[scale=0.125]{../figures/ackley100Drandr0_5_val.png}
+	  }
+	\centerline{(c) $\rho_0 =0.5$}
+	\end{minipage}
+	%%%%%%%
+	\begin{minipage}[b]{0.5\linewidth}
+	\centering{
+	  \includegraphics[scale=0.125]{../figures/ackley100Drandr0_8_dist.png}
+	  \includegraphics[scale=0.125]{../figures/ackley100Drandr0_8_val.png}
+	  }
+	\centerline{(d) $\rho_0 =0.8$}
+	\end{minipage}
+	%%%%%%%
+	  \caption{The iteration process of the HiCSa method to 100
+	  dimensional Ackley function with different initial search
+	  radius $\rho_0$. Start point is randomly generated in the
+	  space $[-5, 5]^{100}$. The maximum rotation number
+	  $m_{\max}=32$, the control factor $\eta=0.5$ and the
+	  convergent criterion $\varepsilon=10^{-14}$.  } 
+	  \label{fig:ackley100D:HiCSa:randinit}
+\end{figure}
+
+
+\newpage
+
+\textcolor{red}{
+Then we use $\rho_0=2.0$ to observe the iteration process of
+HiCS. Tab.\,\ref{tab:ackley100D:HiCS} gives the 
+iteration process of HiCS with constant $\rho_0=2.0$ to
+$100$ dimensional Ackley function.
+\begin{table}[!htbp]
+\caption{Iteration process of HiCS with constant $\rho_0=2.0$ to
+$100$ dimensional Ackley function.
+}
+\label{tab:ackley100D:HiCS}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+ \hline
+    Iter. & $\ell^2$-distance &  Fun. Val.
+ \\\hline
+ \makecell{ 1 (1-353) } & \makecell{ 43.769843 \\ $\downarrow$ \\ 5.670566 }
+ & \makecell{  13.402764 \\ $\downarrow$ \\ 3.650028 }
+ \\\hline
+ 3  &\textcolor{blue}{5.767675} & 3.649609
+ \\\hline
+ 5  & \textcolor{blue}{5.841026} &3.645791
+ \\\hline
+  5  & 5.757173 &3.637059
+ \\\hline
+1  & 5.727323  & 3.631540
+ \\\hline
+ 1 &   5.681064  & 3.630205
+ \\\hline
+ 6 &   5.674577  & 3.606546
+ \\\hline
+ 12 &  5.761805  &  3.605687
+ \\\hline
+ 5  & \textcolor{blue}{5.844962}  & 3.596742
+ \\\hline
+1  & 5.765280  & 3.593773
+ \\\hline
+1  & 5.717544  & 3.592769
+ \\\hline
+ 2  & \textcolor{blue}{5.909084} &  3.590538
+ \\\hline
+ 32 ($m_{max}$) & \textcolor{blue}{5.937673} &  3.5825200
+ \\\hline
+\end{tabular}
+\end{center}
+\end{table}
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.2]{../figures/ackley100D.png}
+	  \includegraphics[scale=0.2]{../figures/ackley100D_dist.png}
+\end{figure}
+}
+
+\newpage
+
+We continue to apply HiCSa method to $2500$ dimensional
+Ackley function. The initial search radius is $\rho_0=3.5$, and
+initial position is generated randomly in $[-5,5]^{2500}$. 
+The control factor $\eta=0.5$ to shrink the search radius. 
+The iteration process is presented
+in Fig.\,\ref{fig:ackley2500D:HiCSa}. As we can see from this
+figure, the iterator approximates the global minimizer, and the
+function value decreases to $0$.
+\begin{figure}[!htbp] 
+	\centering
+	\includegraphics[scale=0.2]{../figures/ackley2500D.png}
+	\includegraphics[scale=0.2]{../figures/ackley2500D_dist.png}
+	  \caption{The iteration process of the HiCSa method to 2500
+	  dimensional Ackley function with initial search
+	  radius $\rho_0=3.5$. Start point is randomly generated in the
+	  space $[-5, 5]^{2500}$. The maximum rotation number
+	  $m_{\max}=32$, the control factor $\eta=0.5$.  } 
+	\label{fig:ackley2500D:HiCSa}
+\end{figure}
+
+\newpage
+
+Firstly we consider the 2 dimension Ackley function whose   
+morphology can be found everywhere, such
+as\,\cite{huang2017hill}.
+In our previous work, we have found that the 
+HiCS method is able to obtain a neighbourhood of the
+global minimum with an appropriate search radius $\rho$ using the
+bisection sampling approach. 
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.3]{../figures/ackley2Drand.png}
+	  \caption{The required iterations of convergence by HiCS
+	  algorithm\,\ref{alg:HiCS} for 2 dimension Ackley function
+	  \eqref{eqn:ackley} in $30$ numerical experiments. 
+	  Start points are randomly generated in the space
+	  $[-10, 10]^2$ with fixed $\rho=1.0$.
+	  The flat dashed line shows the average.} 
+	  \label{fig:ackley:randInit}
+\end{figure}
+In the current work, we still to examine the convergent behavior of
+Algorithm\,\ref{alg:HiCS} to approximate the global minimum using
+the simplex sampling strategy. The first $30$ numerical
+experiments are performed with random initial values generated in
+the space of $[-10, 10]^2$ when $\rho=1.0$.
+The final convergent domain in each test contains the global minimizer $(0,0)$.
+Fig.\,\ref{fig:ackley:randInit} shows the required iterations
+of convergence. In the $30$ numerical tests, the average iterations of
+convergence is about $11$, while the maximum number of
+iterations is $20$ and the minimum is $4$. 
+The initial positions also only affect the
+speed of convergence, but not the ability of catching the
+neighbourhood of the global minimum. 
+
+The above tests have demonstrated that the HiCS
+algorithm can capture the neighbourhood of the global minimum of
+the Ackley function. 
+Subsequently we plan to manifest the ability of the 
+HiCS algorithm to obtain local minimizers.
+As discussed above, the unique regulatable parameter in the 
+HiCS scheme is the search radius $\rho$. Therefore we
+will test the numerical behaviors with different size of $\rho$.
+In the set of tests, the initial value is always $x_0=(4.1,3.4)$.
+Tab.\,\ref{tab:ackley:r} gives the convergent results with
+different $\rho$. Fig.\,\ref{fig:ackley:LG} marks
+corresponding local minima.
+
+\begin{table}[!htbp]
+\caption{\label{tab:ackley:r}The convergent results and required
+iterations of the HiCS algorithm with different
+$\rho$ when the
+initial value is $x_0=(4.1, 3.4)$. The locations of
+different local minima are marked in Fig.\,\ref{fig:ackley:LG}.}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+ \hline
+ $\rho$ & 0.1 & 0.3 & 0.5 & 0.55 & 0.58 &  0.6 & 1.0
+ \\\hline
+ Iterations & 7   & 3   &  2  & 6 & 7 & 15 & 7
+ \\\hline
+ Min. & $\rm{Loc_1}$ & $\rm{Loc_1}$ & $\rm{Loc_1}$ & $\rm{Loc_2}$
+	& $\rm{Loc_3}$ & Global & Global
+ \\\hline
+\end{tabular}
+\end{center}
+\end{table}
+\begin{figure}[!htbp]
+	\centering
+	  \includegraphics[scale=0.28]{../figures/ackley_LG.png}
+	  \caption{The locations of some local minima and the global
+	  minimum of 2 dimension Ackley function.}
+\label{fig:ackley:LG}
+\end{figure}
+From these numerical experiments, one can find that the search
+radius $\rho$ plays a filter role in
+catching different local minimum by setting different values. 
+When $\rho$ is greater than $0.6$, the HiCS
+approach can approximate the global minimum, otherwise, the
+method can converge to different local minima. If starting from other
+initial position, the HiCS method can find other minima.
+
+
+Next we consider the 100 dimension Ackley function.
+The initial value is randomly generated in $[-10,10]^{100}$ and
+the search radius is set as $\rho=2$. The iteration detail has
+been listed in Tab.\,\ref{tab:ackley100DHiCS}. The first and
+second columns show the number of iterations and rotation simplexes
+when applying HiCS method. The third column gives the
+$\ell^2$-distance between the current iterator and the
+global minimizer $0$. The fourth column is the function value on
+the current iterator. Obviously, HiCS algorithm converges within $365$ steps and
+the global minimizer is contained in the convergent neighbourhood. 
+\begin{table}[!htbp]
+\caption{
+\label{tab:ackley100DHiCS}
+The iterative procedure of HiCS algorithm with fixed $\rho=2$ and
+random initial value when optimizing $100$ dimension Ackley function. 
+}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+ \hline
+  Iteration &  m & $\ell^2$-distance &  Function value 
+ \\\hline
+ \makecell{1 \\ $\downarrow$ \\ 353} & \makecell{ 1 } &
+ \makecell{ 43.769842839 \\ $\downarrow$ \\ 5.6705662388 }
+ & \makecell{  13.402763950 \\ $\downarrow$ \\ 3.6500283195 }
+ \\\hline
+354 & 3  &\textcolor{black}{5.7676753732} & 3.6496090883
+ \\\hline
+ 355 &5  & \textcolor{black}{5.8410256060} &3.6457912911
+ \\\hline
+ 356 & 5  & 5.7571725375 &3.6370586909
+ \\\hline
+ 357 &1  & 5.7273233589  & 3.6315399254
+ \\\hline
+ 358 &1 &   5.6810640400  & 3.6302051882
+ \\\hline
+ 359 &6 &   5.6745774447  & 3.6065456752
+ \\\hline
+ 360 &12 & 5.7618050286  & 3.6056866282
+ \\\hline
+ 361 &5  & \textcolor{black}{5.8449616655}  & 3.5967423037
+ \\\hline
+ 362 &1  & 5.7652804943  & 3.5937731951
+ \\\hline
+363 & 1 & 5.7175444967  & 3.5927685452
+ \\\hline
+ 364 &2  & \textcolor{black}{5.9090844843} &  3.5905379762
+ \\\hline
+ 365 &32 ($m_{\rm max}$) & \textcolor{black}{5.9376731371} &  3.5825199326
+ \\\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+The convergent result by HiCS method efficiently shrinks the search region. 
+Then we can further approximate the unique minimizer by
+repeatedly using HiCS with different $\rho$, i.e.,
+Algorithm~\ref{alg:HiCSa}. 
+The convergent criterion of HiCSa is $\rho<10^{-5}$.
+The detail of iteration procedure is given in
+Tab.\,\ref{tab:ackley100DHiCSa}. In this table, the first and
+second columns give the values of search radius $\rho$ and
+corresponding iterations. The third and fourth columns are the
+same as the third and fourth ones in
+Tab.\,\ref{tab:ackley100DHiCS}.
+Obviously, for each fixed $\rho$, the algorithm is convergent in
+finite steps. The pair sequence produced by HiCSa method
+approximates to both the unique global minimizer and
+corresponding function value. 
+\begin{table}[!htbp]
+\caption{
+\label{tab:ackley100DHiCSa}
+The iterative procedure of HiCSa algorithm for optimizing $100$
+dimension Ackley function based on the convergent
+result as given in Tab.\,\ref{tab:ackley100DHiCS}. The control
+factor $\eta=0.5$.
+}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+ \hline
+  $\rho$ &  Iterations & $\ell^2$-distance &  Function value
+ \\\hline
+2.0 &  \makecell{ 431 } & 5.9376731371 &  3.5825199326
+ \\\hline
+1.0 &  \makecell{ 152 } &  2.5717428366 &  2.2979795353
+ \\\hline
+0.5&  \makecell{ 171 } & 1.2147220195 &  1.1029637432
+ \\\hline
+0.25&  \makecell{ 145 } & 0.60161985055 &  0.42190311564
+ \\\hline
+0.125&  \makecell{ 152 } & 0.30400991430 &  0.17007648336
+ \\\hline
+0.0625&  \makecell{ 105 } & 0.14644406013 &  0.069957199791
+ \\\hline
+0.03125&  \makecell{ 175 } & 0.076076391231 &  0.033509781782
+ \\\hline
+ $\downarrow$ & $\downarrow$ & $\downarrow$  & $\downarrow$
+ \\\hline
+1.525879e-05 & 135  & 3.5663302607e-05  & 1.4265998399e-05
+ \\\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+Finally, we apply HiCS and HiCSa algorithms to 2500 dimension Ackley function.
+The random initial value is randomly generated in
+$[-10,10]^{2500}$, and initial search radius is $\rho=3.5$. 
+Due to such high dimension problem, the maximum number of
+rotation of simplexes is $m_{\rm max}=16$ to save computational amount.
+The convergent criterion of HiCSa approach is that $\rho$ is 
+smaller than $10^{-5}$.
+The iterative information can be found in
+Tab.\,\ref{tab:ackley2500DHiCSa}.
+The table is the same as Tab.\,\ref{tab:ackley100DHiCSa} except
+that 2500 dimension Ackley function is optimized. 
+For the high dimension optimization problem, the iteration
+behavior is similar to previous numerical experiments. 
+When $\rho=3.5$, the scheme, which is actual the HiCS method,
+converges within $5415$ steps. Keeping carrying out the HiCS algorithm
+by shrinking $\rho$, we can further approximate the global
+minimizer $0$. After $61755$ iterations, the HiCSa algorithm 
+achieves the convergent point as shown in the last row in
+Tab.\,\ref{tab:ackley2500DHiCSa}. It costs roughly $3.7$ hours 
+of real time using one Inter 3.60 GHz i7-4790 processor.
+\begin{table}[!htbp]
+\caption{
+\label{tab:ackley2500DHiCSa}
+The iterative procedure of optimizing $2500$ dimension Ackley
+function using HiCSa algorithm with initial $\rho=3.5$ and random
+initial value. The control factor $\eta=0.5$.
+}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+ \hline
+  $\rho$ &  Iteration & $\ell^2$-distance &  Function value
+ \\\hline
+3.5 &  \makecell{ 5415 } & \makecell{ 188.54368262 \\ $\downarrow$ \\ 43.980512458  }
+ & \makecell{  12.310134936 \\ $\downarrow$ \\  4.7600200861}
+ \\\hline
+1.75 &  \makecell{ 5064 } & \makecell{ $\downarrow$ \\  24.909250731 }
+ & \makecell{   $\downarrow$ \\ 3.3115891477 }
+ \\\hline
+0.875&  \makecell{ 4099 } & \makecell{ $\downarrow$ \\  10.893125123 }
+ & \makecell{   $\downarrow$ \\ 2.0271413426 }
+ \\\hline
+ 0.4375&  \makecell{ 4869 } & \makecell{ $\downarrow$ \\  5.1289809138 }
+ & \makecell{   $\downarrow$ \\  0.88082043719}
+ \\\hline
+0.21875&  \makecell{ 3269 } & \makecell{ $\downarrow$ \\ 2.5698591962 }
+ & \makecell{   $\downarrow$ \\ 0.34009221628 }
+ \\\hline
+ $\downarrow$ & $\downarrow$ & $\downarrow$  & $\downarrow$
+ \\\hline
+1.335144e-05 & 3340  & 1.5546421188e-04 & 1.2437651812e-05
+ \\\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\newpage
+
+%\subsection{A continuous but indifferentiable function}
+%\label{subsec:dwfun}
+%
+%The last model is a 2 dimension variant of Dennis-Woods
+%function\,\cite{kolda2003optimization, dennis1987optimization},
+%\begin{align}
+%    f(x) = \frac{1}{2}\max\{\|x - c_1 \|^2, \|x - c_2
+%    \|^2\}, ~~~~ x=(x_1,x_2)\in\bbR^2,
+%    \label{eqn:dwfun}
+%\end{align}
+%where $c_1 = (1,-1)^T$, $c_2 = -c_1$, $\|\cdot\|$ denotes
+%$\ell^2$ norm. 
+%\begin{figure}[!htbp]
+%    \centering
+%      \includegraphics[scale=0.2]{../figures/dWoods.png}
+%    \caption{Contours of the variant of the Dennis-Woods 
+%    function \eqref{eqn:dwfun}}
+%\label{fig:dwfun}
+%\end{figure}
+%This objective function has
+%a unique minimizer of $0$, and $f(0,0)=1$, indicated by a red
+%star in the contour plot of Fig.\,\ref{fig:dwfun}. 
+%The function is continuous and strictly convex everywhere,
+%but its gradient is discontinuous along the line $x_1 = x_2$. 
+%It has been shown that the Nelder-Mead simplex algorithm fails to
+%converge to the minimizer of Dennis-Woods function\,\eqref{eqn:dwfun} in
+%Ref.\,\cite{dennis1987optimization}. In this subsection, we will
+%investigate the performance of our proposed method.
+%
+%Firstly, we still examine the efficiency of the HiCS algorithm
+%for the continuous but indifferentiable function. 
+%$30$ numerical experiments are performed with random 
+%initial values generated in the space $[-5,5]^2$. The search
+%radius is fixed as $\rho=0.5$ for these tests. 
+%Results demonstrate that the HiCS algorithm can find a neighbourhood of the
+%minimizer $0$ in each test no matter which initial value is used.
+%\begin{figure}[!htbp]
+%    \centering
+%      \includegraphics[scale=0.3]{../figures/dwoodrand.png}
+%      \caption{The iterations of convergence of the 
+%      HiCS method to the Dennis-Woods function
+%      \eqref{eqn:dwfun} in $30$ test examples.
+%      Start points are randomly generated in the space
+%      $[-5, 5]^2$, and $\rho=0.5$.
+%      The flat dashed line shows the average.} 
+%      \label{fig:dwfun:randInit}
+%\end{figure}
+%The required iterations for convergence is shown in 
+%Fig.\,\ref{fig:dwfun:randInit}, while the average iterations is
+%about $13$. 
+%
+%Subsequently, we will take an example to show the 
+%numerical behavior of the HiCS algorithm in detail. 
+%In particular, Tab.\,\ref{tab:dw:HiCS} gives the iterative
+%information when the initial value is $x=(1.0, 1.5)$, and the
+%search radius is fixed as $\rho=0.5$. 
+%\begin{table}[!htbp]
+%\caption{
+%\label{tab:dw:HiCS}
+%The iterative information of optimizing Dennis-Woods function
+%using HiCS algorithm with $\rho=0.5$ and initial value $x=(3.2, 1.5)$}
+%\begin{center}
+%\begin{tabular}{|c|c|c|c|}
+% \hline
+%  Iteration & m & $\ell^2$-distance &  Fun. Val.
+% \\\hline
+% \makecell{ 1 \\ $\downarrow$ \\ 15 } & 1 & \makecell{
+% 3.5341194094 \\ $\downarrow$ \\ 0.37927243150 }
+% & \makecell{8.9450000000  \\ $\downarrow$ \\1.1398729811 }
+% \\\hline
+% 16 & 3  &0.13421830119 & 1.1240707856
+% \\\hline
+% 17 & 15  & \textcolor{black}{0.38930926651} & 1.0985484063
+% \\\hline
+% 18 &32  & 0.11218490755 &  1.0290602806
+% \\\hline
+%\end{tabular}
+%\end{center}
+%\end{table}
+%It can be found that the HiCS method has a pronounced convergent
+%behavior in $18$ steps even for this indifferentiable function.
+%
+%Finally we compare the performance of the HiCS algorithm with one
+%of the standard directional direct-search methods, the
+%coordinate-search (CS) method, for the Dennis-Woods function.
+%Before we go further, a short introduction of the CS method is necessary. 
+%More details about the CS method can be found, for instance, 
+%in a recent monograph\,\cite{conn2009introduction} or
+%Ref.\,\cite{kolda2003optimization}. 
+%The CS method makes use of the positive bases
+%$\mathcal{D}_{\oplus}$ which spans the $\mathbb{R}^2$ with
+%positive coefficients. Let $x_k$ be the current iterate and
+%$\lambda$ the current search step length. The CS method evaluates
+%the function $f$ at the points in the set
+%\begin{align*}
+%    \mathcal{P}_k = \{x_k + \lambda d:
+%    d\in\mathcal{D}_{\oplus}\},
+%\end{align*}
+%following some specified order, trying to find a point in
+%$\mathcal{P}_k$ that decreases the objective function value. 
+%When that happens, the method defines a new iterate
+%$x_{k+1}=x_{k}+\lambda d \in \mathcal{P}_k$ such that
+%$f(x_{k+1})<f(x_{k})$. In such a case, one either leaves
+%the parameter $\lambda$ unchanged, or increases it, or decreases it. 
+%Here we will change $\lambda$ during the iterative procedure.
+%If none of the points in
+%$\mathcal{P}_k$ leads to a decrease in $f$, then the parameter
+%$\lambda$ is reduced (here by a factor of $1/2$) and the next
+%iteration at the same point ($x_{k+1}=x_{k}$). The
+%algorithm is terminated when the $\lambda$ is smaller than a
+%given tolerance. 
+%
+%Like the CS method, the HiCS algorithm
+%has similar algorithmic steps to update iterates and change
+%the search radius. Unlike the CS method, however, the HiCS
+%method does not predetermine the search
+%directions, such as $\mathcal{D}_{\oplus}$ in the CS scheme. 
+%In $k$ iteration, the HiCS method evaluates functions on the search
+%surface $O(x_k, \rho)$, and compares them with $f(x_k)$.
+%In practice, the search surface $O(x_k, \rho)$ is
+%dynamically sampled as presented in Algorithm\,\ref{alg:refined}.
+%From another perspective, the HiCS algorithm
+%provides an adaptive mechanism to adjust the search directions 
+%according to objective function. 
+%
+%In the following numerical tests, the initial value is $x_0=(1.1,
+%0.9)$, the initial search radius is $\rho = 1.0$.
+%In the HiCS algorithm, the maximum sample points $N_{\rm{max}}$
+%of $O(x_k, \rho)$ is $8$. In the CS method, the positive bases is
+%$\mathcal{D}_{\oplus}=\{(1,0), (0,1), (-1,0), (0,-1)\}$ of standard choice.
+%The control factor of adjusting search radius $\eta=0.5$ in both methods. 
+%\begin{figure}[!htbp]
+%    \centering
+%      \includegraphics[scale=0.35]{../figures/dwoods_cmp.png}
+%      \caption{Application of the HiCS method
+%      ($N_{\max}=8$) and the CS (with predetermined search
+%      directions $\mathcal{D}_\oplus$) methods to the
+%      Dennis-Woods function starting from $x_0=(1.1, 0.9)$. In
+%      the HiCS algorithm, the initial search
+%      radius $\rho = 1.0$, and in the CS approach the initial
+%      search step length $\lambda=1.0$.  The control factor
+%      $\eta=0.5$ in both methods. $f(x^*)$ is the global
+%      minimizer.}
+%\label{fig:dwfun:cmp}
+%\end{figure}
+%
+%Fig.\,\ref{fig:dwfun:cmp} shows the error of
+%$|f(x_k)-f(x^*)|$ against the number of function
+%evaluations for both HiCS and CS methods. As observed in
+%Fig.\,\ref{fig:dwfun:cmp} the CS method stalls at the error of 
+%$O(10^{-2})$, however, the HiCS method can
+%continue to reduce error. 
+%The reason is that when the iterate approaches to the minimizer,
+%the CS method can not detect a sufficient decrease, even no
+%decrease, along the predetermined search directions in $\mathcal{D}_{\oplus}$.
+%This results in the stagnation phenomenon.
+%However, the mechanism of detecting smaller values in the HiCS
+%algorithm is dependent on the feature of $f(x_k)$ rather than
+%along predetermined directions. It yields the efficient and
+%flexible performance of the HiCS method when approximating the
+%minimizer.
+%
+%
+%
+\subsection{Sphere function}
+\label{subsec:sphere}
+
+\begin{align}
+	f(x) = \sum_{i=1}^n x_i^2
+	\label{}
+\end{align}
+The Sphere function has $n$ local minima except for the
+global one $x=(0,0,\dots,0)$ with $f=0$.
+It is continuous, convex and unimodal. 
+
+\subsection{Powell function}
+\label{subsec:powell}
+
+\begin{align}
+	F(x) = \sum_{i=1}^{n/4}[(x_{4i-3}+10 x_{4i-2})^2 +
+	5(x_{4i-1}-x_{4i})^2 + (x_{4i-2}-2 x_{4i-1})^4 +
+	10(x_{4i-3}-x_{4i})^4]
+	\label{}
+\end{align}
+The function is usually evaluated on the hypercube $x_i\in[-4,5]$
+for all $i=1,\dots,n$.
+
+\textbf{available}
+
+
+\subsection{ARWHEAD function}
+\label{subsec:ARWHEAD}
+
+\begin{align}
+	F(x) = \sum_{i=1}^{n-1}[(x_i^2+x_n^2)^2 - 4 x_i +3]
+	\label{}
+\end{align}
+
+The least value of $F$ is zero, which occurs when the variables take the values
+$x_j=1$, $j=1,2,\dots,n-1$ and $x_n=0$. 
+The starting vector is given by $x_j^{(0)}=1$, $j=1,2,\dots,n$, as
+Powell done in Ref.\,\cite{powell2006newuoa}.
+
+\textbf{available}
+
+\subsection{CHROSEN function}
+\label{subsec:CHROSEN}
+
+\begin{align}
+	F(x) = \sum_{i=1}^{n-1}[(4(x_i-x_{i+1}^2)^2 + (1-x_{i+1})^2]
+	\label{} \end{align}
+
+The least value of $F$ is zero, which occurs when the variables take the values
+$x_j=1$, $j=1,2,\dots,n$.
+The starting vector is given by $x_j^{(0)}=-1$, $j=1,2,\dots,n$, as
+Powell done in Ref.\,\cite{powell2006newuoa}. 
+%It is hard to
+%approach the minimizer by HiCSa algorithm. However, HiCSa method
+%can approximate the minimizer using random initial value.
+
+\textbf{Hard}
+
+
+\subsection{Woods function\,\cite{lukvsan2010modified, algopy}}
+\label{subsec:woods}
+
+The Woods function is a large and difficult problem in the CUTE test
+set\,\cite{lukvsan2010modified}. The specified expression is  
+\begin{equation}
+	\begin{aligned}
+		F(x) = \sum^{n/4}_{i=1} \Big[100(x_{4i-2}-x^2_{4i-3})^2 +
+		(1-x_{4i-3})^2 + 90(x_{4i}-x_{4i-1})^2 +
+		\\
+		(1-x_{4i-1})^2 + 10(x_{4i-2}+x_{4i}-2)^2 +
+		0.1(x_{4i-2}-x_{4i})^2
+		\Big].
+	\end{aligned}
+	\label{eq:woods}
+\end{equation}
+The global minimizer is $(1,1,\dots,1)$ with $f=0$.
+Here we choose the hard initial value\,\cite{}, i.e., $x_j^{(0)}=-3.0$ if
+$j$ is even, and  $x_j^{(0)}=-1.0$ if $j$ odd, to test our
+proposed method HiCS with $n$ variables. The choices of $n$ are
+$4$, $20$, $80$, $320$, $1280$, $2000$. 
+
+\begin{table}[!htbp]
+\caption{: Iteration information}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+ \hline
+  $\rho$ &  Iter. & $\ell^2$-distance & $F(x)$
+ \\\hline
+5.0 &  \makecell{ 111 } & 2.0269797302e+01 & 1.9462281448e+04 
+ \\\hline
+2.5 &  \makecell{ 21 } & 2.1446697698e+01 & 1.7213410433e+04
+ \\\hline
+1.25&  \makecell{ 38 } & 2.3007762412e+01 & 1.4027762445e+04
+ \\\hline
+0.625& \makecell{ 49 } & 2.1442322133e+01 & 9.2058823364e+03
+ \\\hline
+0.3125&  \makecell{ 558 } & 1.8950544937e+01 & 2.3646230729e+03
+ \\\hline
+0.15625&  \makecell{ 634 } & 1.6684359010e+01 & 1.2099516621e+03
+ \\\hline
+0.078125&  \makecell{ 2502 } & 1.2212940331e+01 & 2.9382990538e+02
+ \\\hline
+ $\downarrow$ & $\downarrow$ & $\downarrow$  & $\downarrow$
+ \\\hline
+1.907349e-05 & 114180  & 4.4027298178e-02 & 7.0921802110e-04
+ \\\hline
+\end{tabular}
+\\
+It costs $48665367$ function evaluations.
+\end{center}
+\end{table}
+
+
+We can further apply HiCSa approach ($\eta=0.5$) to approximating the
+minimizer of Woods functions based on the above convergent results.
+Here we take $n=80$ as an example to demonstrate the iteration procedure.
+
+
+\begin{table}[!htbp]
+\caption{: Iteration information}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+ \hline
+  $\rho$ &  Iter. & $\ell^2$-distance & $F(x)$
+ \\\hline
+5.0 &  \makecell{ 111 } & 2.0269797302e+01 & 1.9462281448e+04 
+ \\\hline
+2.5 &  \makecell{ 21 } & 2.1446697698e+01 & 1.7213410433e+04
+ \\\hline
+1.25&  \makecell{ 38 } & 2.3007762412e+01 & 1.4027762445e+04
+ \\\hline
+0.625& \makecell{ 49 } & 2.1442322133e+01 & 9.2058823364e+03
+ \\\hline
+0.3125&  \makecell{ 558 } & 1.8950544937e+01 & 2.3646230729e+03
+ \\\hline
+0.15625&  \makecell{ 634 } & 1.6684359010e+01 & 1.2099516621e+03
+ \\\hline
+0.078125&  \makecell{ 2502 } & 1.2212940331e+01 & 2.9382990538e+02
+ \\\hline
+ $\downarrow$ & $\downarrow$ & $\downarrow$  & $\downarrow$
+ \\\hline
+1.907349e-05 & 114180  & 4.4027298178e-02 & 7.0921802110e-04
+ \\\hline
+\end{tabular}
+\\
+\vspace{0.3cm}
+It costs $48665367$ function evaluations.
+\end{center}
+\end{table}
+
+
+\section{Discussion}
+\label{sec:conclusion}
+
+Inspired by the hill-climbing behavior of the blind, we has
+proposed a new derivative-free method to unconstrained
+optimization problems in our previous work\,\cite{huang2017hill}. 
+In this paper, we built a rigorous mathematical theory of HiCS
+algorithm which theoretically ensures finite-step convergence
+under mild conditions. Numerical results also have demonstrated
+this great property. 
+In practice, the computational complexity of HiCS algorithm mainly
+depends on the sampling strategy which determines the function
+valuations. In our previous work, the number of sampling points
+increases exponentially with the dimension of problems. It limits
+the application to high-dimensional optimization. To deal with
+high-dimensional problems, we proposed a new strategy of simplex
+sampling method to save computational amount. Using the new
+sampling strategy, the number of function valuations is linear
+dependent on the dimension of problems. 
+Taking Ackley function as an example, it allows us to solve up to
+2500 dimension function within a few hours.  
+
+
+
+\section*{Acknowledgments}
+%The work is supported by the Natural Science
+%Foundation of China (Grant No.~11421101, and
+%No.~11771368). 
+
+
+%\bibliographystyle{plain}
+%\bibliography{shcanal}
+
+
+\begin{thebibliography}{99}
+
+\bibitem{huang2017hill}
+{Huang, Yunqing and Jiang, Kai},
+{Hill-Climbing Algorithm with a Stick for Unconstrained Optimization Problems},
+{Advances in Applied Mathematics and Mechanics},
+2017, 9: 307--323.
+
+
+\bibitem{sun2006optimization}
+W.~Y.~Sun and Y.~Yuan,
+Optimization theory and methods: nonlinear programming,
+New York: Springer, 2006.
+
+\bibitem{conn2000trust}
+A.~R.~Conn, N.~I.~M.~Gould and P.~L.~Toint,
+Trust region methods, Philadelphia: SIAM, 2000.
+
+\bibitem{nocedal2006numerical}
+J.~Nocedal and S.~J.~Wright,
+Numerical optimization, 
+Berlin: Springer-Verlag, 2nd ed., 2006.
+
+\bibitem{conn2009introduction}
+A.~R.~Conn, K.~Scheinberg and L.~N.~Vicente,
+Introduction to derivative-free optimization,
+Philadelphia: SIAM, 2009.
+
+\bibitem{rios2013derivative}
+L.~M.~Rios and N.~V.~Sahinidis,
+Derivative-free optimization: a review of algorithms and comparison
+  of software implementations.
+{J. Global Optim.}, 2013, 56: 1247--1293.
+
+\bibitem{powell2000uobyqa}
+M.~J.~D.~Powell, UOBYQA: unconstrained optimization by quadratic
+approximation, Technical Report DAMTP NA2000/14, CMS, University
+of Cambridge, 2000.
+
+\bibitem{powell2002trust}
+M.~J.~D.~Powell, On trust region methods for unconstrained
+minimization without derivatives, Technical Report DAMTP
+NA2002/NA02, CMS, University of Cambridge, February 2002.
+
+\bibitem{wu2009heuristic}
+T.~Wu, Y.~Yang, L.~Sun, and H.~Shao, A heuristic
+iterated-subspace minimization method with pattern search for
+unconstrained optimization, 
+Comput. Math. Appl., 2009, 58: 2051-2059.
+
+\bibitem{zhang2014sobolev}
+Z.~Zhang, Sobolev seminorm of quadratic functions with
+applications to derivative-free optimization, Math. Program.,
+2014, 146: 77-96.
+
+\bibitem{michalewicz2004how}
+Z. Michalewicz and D. B. Fogel, How to solve it: modern
+heuristics, Springer, 2004.
+
+\bibitem{lecun2015deep}
+Y.~LeCun, Bengio, Y.~Hinton, G.~Hinton, Deep learning, Nature,
+2015, 521: 521-436.
+
+\bibitem{hooke1961direct}
+R.~Hooke and T.~A.~Jeeves,
+``Direct search'' solution of numerical and statistical problems,
+{J. ACM}, 1961, 8: 212--229.
+
+\bibitem{lewis2000direct}
+R.~M.~Lewis, V.~Torczon and M.~W.~Trosset,
+Direct search methods: then and now,
+{J. Comput. Appl. Math.},
+2000, 124: 191--207.
+
+\bibitem{nelder1965simplex}
+J.~A.~Nelder and R.~Mead,
+A simplex method for function minimization,
+{Comput. J.}, 1965, 7: 308--313.
+
+\bibitem{torczon1997convergence}
+V.~Torczon,
+On the convergence of pattern search algorithms,
+{SIAM J. Optim.}, 1997, 7: 1--25.
+
+\bibitem{kolda2003optimization}
+T.~G.~Kolda, R.~W.~Lewis and V.~Torczon,
+Optimization by direct search: new perspectives on some classical
+and modern methods,
+{SIAM Rev.}, 2003, 45: 385--482.
+
+\bibitem{dennis1991direct}
+J.~E.~Jr Dennis and V.~Torczon,
+Direct search methods on parallel machines,
+{SIAM J. Optim.}, 1991, 1: 448--474.
+
+\bibitem{dieterich2012empirical}
+J.~M.~Dieterich and B.~Hartke, 
+Empirical review of standard benchmark functions using evolutionary global optimization,
+{Appl. Math.} 2012, 3: 1552--1564.
+
+\bibitem{gratton2015direct} 
+S.~Gratton, C.~W.~Royer, L.~N.~Vicente, Z.~Zhang, Direct search
+based on probabilistic descent, SIAM J.~Optim., 
+2015, 25:1515-1541.
+
+\bibitem{russell2010artificial} 
+S.~J.~Russell and P.~Norvig,  Artificial intelligence: a modern
+approach, 3rd ed., Prentice Hall, 2010.
+
+\bibitem{back1996evolutionary}
+T.~B{\"a}ck, 
+Evolutionary algorithms in theory and practice: evolution
+  strategies, evolutionary programming, genetic algorithms,
+Oxford University Press, 1996.
+
+\bibitem{dennis1987optimization}
+J.~E.~Jr Dennis and D.~J.~Woods,
+Optimization on microcomputers: The Nelder-Mead simplex algorithm.
+In: New computing environments: microcomputers in large-scale
+computing, A.~Wouk ed., Philadelphia: SIAM, 1987.
+
+\bibitem{lukvsan2010modified}
+L.~Luk{\v{s}}an, C.~Matonoha, J.~Vlcek,
+Modified CUTE problems for sparse unconstrained optimization,
+Techical Report,
+2010, 1081.
+
+\bibitem{algopy}
+https://pythonhosted.org/algopy/index.html
+
+\bibitem{powell2006newuoa}
+M.~J.~D.~Powell,
+The NEWUOA software for unconstrained optimization without derivative, in
+Large-Scale Nonlinear Optimization , eds. G.~Di~Pillo
+and M.~Roma, Springer (New York), 2006, 255~297.
+
+\bibitem{andrei2008unconstrained}
+N.~Andrei, 
+An unconstrained optimization test functions collection,
+Adv. Model. Optim.,
+2008, 10: 147--161.
+
+
+\end{thebibliography}
+
+\end{document}
+
+\endinput

@@ -1,0 +1,27 @@
+\documentclass[12pt]{article}
+
+\usepackage{color}
+\usepackage{CJK}
+\usepackage{CJKfntef}
+
+\usepackage{mathrsfs,amsmath,amssymb,bm}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{overpic}
+\usepackage{epsfig}
+\usepackage{indentfirst}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+%%\renewcommand{\baselinestretch}{1.5}
+%
+\headsep=4mm\headheight=6mm\topmargin=-10pt
+\oddsidemargin=0pt\evensidemargin=0pt
+\textheight=225truemm\textwidth=160truemm
+%\setcounter{page}{257}
+
+\usepackage{fancyhdr}                                
+\usepackage{lastpage}                                           
+\usepackage{layout}                                             
+%\pagestyle{empty}                   %
