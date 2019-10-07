@@ -372,8 +372,8 @@ finite steps with mild assumptions for a given search radius $\rho$.
 In numerical implementation, the search surface $O(x_k,\rho)$ in
 each iteration shall be discretized.
 Without a priori information of the objective function,
-a reasonable discretization principle of $O(x_k,\rho)$
-includes symmetric and uniform distribution, and as few
+a reasonable discretization principle for $O(x_k,\rho)$
+should include symmetric and uniform distribution, and as few
 discretization points as possible.
 %The sampling strategy can not
 %only capture the SMP, but also treat high-dimensional
@@ -383,9 +383,9 @@ discretization points as possible.
 Our previous results have demonstrated that the uniformly distributed
 discretization method based on the spherical coordinate
 can be used to find the SMP\,\cite{huang2017hill}. 
-The produced discretization points are as large as $2m^{d-1}$ in
+The generated discretization points are as large as $2m^{d-1}$ in
 each iteration, $m$ is the number of refinement, $d$ is the dimensions of
-optimization problems. This seriously restricts the
+optimization problems. It restricts the
 application to high-dimensional problems. 
 To overcome this limitation, it needs to develop a new
 strategy to discretize $O(x_k,\rho)$ with less discretization points
