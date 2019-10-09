@@ -415,7 +415,8 @@ through the Algorithm \ref{alg:simplex}.
 	\label{alg:simplex}
 \begin{algorithmic}
 	\STATE Given a $d\times(d+1)$-order zero matrix $x(1:d,1:d+1)$
-	\FOR {$i=1:1:d$}
+	\STATE Let $x(:,1) = (1,0,\dots,0)$
+	\FOR {$i=2:1:d$}
 	\STATE $x(i,i)=\sqrt{1-\sum_{k=1}^{i-1} [x(k, i)]^{2}}$
 		\FOR {$j=i+1:1:d+1$}
 		\STATE $x(i,j)
