@@ -371,7 +371,7 @@ finite steps with mild assumptions for a given search radius $\rho$.
 In numerical implementation, the search surface $O(x_k,\rho)$ in
 each iteration shall be discretized.
 Without a priori information of the objective function,
-reasonable discretization principles for $O(x_k,\rho)$
+the discretization principles for $O(x_k,\rho)$
 should include symmetric and uniform distribution, and as few
 discretization points as possible.
 %The sampling strategy can not
@@ -470,7 +470,7 @@ rotation matrix $\bm Q$ is given as
 \end{equation}
 Then vertices of new simplex are
 \begin{align}
-	a_j = \bm{Q}a_j + x_k.
+	a_j = \bm{Q}a_j + x_k, \quad j = 1,\dots, d+1.
 	\label{}
 \end{align}
 \begin{figure}[!htbp]
@@ -651,8 +651,7 @@ In this section, we choose two kinds of high dimensional optimization functions,
 including the unimodal Gaussian function, multimodal problems,
 to demonstrate the performance of our proposed algorithm. 
 These objective functions are all differentiable. However, it is
-emphasized that the HiCS method can be applied to
-non-differentiable problems\,\cite{huang2017hill}. 
+emphasized that the HiCS method can be applied to non-differentiable problems. 
 In Algorithm\,\ref{alg:refined}, the discretized points of 
 search set in each iteration are $m(n+1)$, $n$ is the dimension
 of objective function. If not specified, the maximum number of
@@ -680,7 +679,7 @@ In the set of experiments, the search radius $\rho$ is fixed as
 $0.3$, start points are all randomly generated in the space $[-1,
 1]^{10}$.  For each experiment, the HiCS method indeed converges and
 captures a neighbourhood of the peak
-$0$ in finite iterations as Theorem \ref{thm:fsc} predicted.
+$0$ in finite iterations as Theorem \ref{thm:fsc} predicts.
 Fig.\,\ref{fig:exp1:randInit} gives the required iterations for
 convergence in the $30$ numerical experiments.
 \begin{figure}[!htbp]
@@ -729,7 +728,7 @@ The required iterations for convergence is given in
 Fig.\,\ref{fig:exp1:randInitr0_1}.
 In these $30$ runs, the average iterations of convergence is
 $77.2$, while the maximum is $121$, and the minimum is $54$.
-From these results, the HiCS approach converges in
+From these results, the HiCS approach all converges in
 finite iterations. Meanwhile, it is obvious that the value of
 $\rho$ affects the number of iterations. 
 \begin{figure}[!htbp]
