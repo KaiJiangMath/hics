@@ -1,0 +1,919 @@
+%%%%%%%%%%%%%%%%%%%%%%% file template.tex %%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% This is a general template file for the LaTeX package SVJour3
+% for Springer journals.          Springer Heidelberg 2010/09/16
+%
+% Copy it to a new file with a new name and use it as the basis
+% for your article. Delete % signs as needed.
+%
+% This template includes a few options for different layouts and
+% content for various journals. Please consult a previous issue of
+% your journal as needed.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% First comes an example EPS file -- just ignore it and
+% proceed on the \documentclass line
+% your LaTeX will extract the file if required
+%\begin{filecontents*}{example.eps}
+%!PS-Adobe-3.0 EPSF-3.0
+%%BoundingBox: 19 19 221 221
+%%CreationDate: Mon Sep 29 1997
+%%Creator: programmed by hand (JK)
+%%EndComments
+%gsave
+%newpath
+%  20 20 moveto
+%  20 220 lineto
+%  220 220 lineto
+%  220 20 lineto
+%closepath
+%2 setlinewidth
+%gsave
+%  .4 setgray fill
+%grestore
+%stroke
+%grestore
+%\end{filecontents*}
+%
+\RequirePackage{fix-cm}
+%
+%\documentclass{svjour3}                     % onecolumn (standard format)
+\documentclass[smallcondensed]{svjour3}     % onecolumn (ditto)
+%\documentclass[smallextended]{svjour3}       % onecolumn (second format)
+%\documentclass[twocolumn]{svjour3}          % twocolumn
+%
+\smartqed  % flush right qed marks, e.g. at end of proof
+%
+\usepackage{graphicx}
+\usepackage{lipsum}
+\usepackage{amsfonts}
+\usepackage{epstopdf}
+\usepackage{algorithmic}
+\usepackage{subfigure}
+\usepackage{url}
+%\usepackage{breakurl}
+\usepackage{array,tabularx}
+\usepackage{multicol}  %% for two columns. NEVER REMOVE!!
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{float}
+%
+% \usepackage{mathptmx}      % use Times fonts if available on your TeX system
+%
+% insert here the call for the packages your document requires
+%\usepackage{latexsym}
+% etc.
+%
+% please place your own definitions here and don't use \def but
+% \newcommand{}{}
+%
+\newcommand{\creflastconjunction}{, and~}
+% Insert the name of "your journal" with
+% \journalname{myjournal}
+%
+\begin{document}
+	
+	\title{Preconditioning Newton's method for the Ohta-Kawasaki equation
+		\thanks{The work was supported in part by National Natural Science Foundation of China (11771368, 11771370),
+			Natural Science Foundation of Hunan Province (2018JJ2376, 2017JJ3305), and Project of Education Department of Hunan Province (18B057, 19A500).}}
+	
+	%\subtitle{Do you have a subtitle?\\ If so, write it here}
+	
+	%\titlerunning{Short form of title}        % if too long for running head
+	
+	\author{Juan Zhang  \and Shifeng Li \and  Kai Jiang%etc.
+	}
+	
+	%\authorrunning{Short form of author list} % if too long for running head
+	
+	\institute{	Juan Zhang \at
+		\email{zhangjuan@xtu.edu.cn}
+		      %  \\
+		%             \emph{Present address:} of F. Author  %  if needed
+		\and
+		Shifeng Li \at
+		\email{201931000090@smail.xtu.edu.cn}
+		\and
+	  Kai Jiang (Corresponding author)\at
+	  \email{kaijiang@xtu.edu.cn}
+		\and
+		Hunan Key Laboratory for Computation and Simulation in Science and Engineering, School of Mathematics and Computational
+		Science, Xiangtan University, Xiangtan, Hunan,
+		411105, P. R. China
+	}
+	
+	%\date{Received: date / Accepted: date}
+	% The correct dates will be entered by the editor
+	
+
+
+\maketitle
+% REQUIRED
+\begin{abstract}
+ In this paper, we solve the numerical solution of the Ohta-Kawasaki equation by using the convex splitting scheme and  the finite element method to the time and spatial discretization, respectively. In addition, Newton's method is applied to approximate the nonlinear term for the semi-discreted system. The error estimate is analyzed for the discretized Ohta-Kawasaki partial differential equation. Finally, two block preconditioners are introduced for the ill-conditioned linear system. Numerical examples indicate the effectiveness of
+the proposed preconditioners for the Ohta-Kawasaki equation.
+
+\keywords{Ohta-Kawasaki equation \and Preconditioning \and Newton's method \and Convergent analysis.}
+\end{abstract}
+
+
+\section{Introduction}
+
+
+Consider the Ohta-Kawasaki equation which is an effective free energy functional to study diblock copolymers \cite{T.K.1986}:
+\begin{align}
+	E(u)=\int_{\Omega}(\frac{\epsilon^2}{2} |\nabla
+	u|^2+\frac{1}{4}(1-u^2)^2+\frac{\sigma}{2}
+|(-\Delta)^{-\frac{1}{2}}(u-m)|^2)\,dx.
+\label{eq:okenergy}
+\end{align}
+ $u(x)$ is the order parameter which is a measure of the degree of
+order in diblock copolymers.
+$m$ denotes the average mass of the melt on the domain $\Omega$.
+The parameters $\epsilon\ll 1$ and $\sigma$ measure the strength
+of the interfacial thickness in the region of pure phases and the
+non-local interaction potential, respectively.
+
+Using the Ohta-Kawasaki free energy functional, for (\ref{eq:okenergy}), a mass
+conserved dynamic equation can be given as
+\begin{align}
+	u_t = \Delta [-\epsilon^2\Delta u -u(1-u^2) - \sigma \Delta^{-1} (u-m)].
+	\label{eq:dynamic}
+\end{align}
+By introducing a new variable
+$$w=-\epsilon^2\Delta u-u(1-u^2),$$
+the forth order dynamic equation (\ref{eq:dynamic}) can be split
+into two second order equations on $\Omega \times [0, T]$ \cite{P.Q.2012}
+\begin{subequations}
+\label{eq:CH}
+\begin{align}
+u_t-\Delta w + \sigma(u-m)=0,\\
+w+\epsilon^2\Delta u-u(u^2-1)=0,
+\end{align}
+\end{subequations}
+with homogeneous Neumann boundary condition
+\begin{align*}
+\nabla u \cdot n =0 ~~\mbox{and}~~ \nabla w \cdot n=0 ~~\mbox{on}~~ [0,T]
+\end{align*}
+and a given initial value $u(x,0)=u_0(x)$, $x\in \Omega$.
+
+The organization of this paper is as follows. In Section \ref{sec:NS}, we use the convex splitting scheme in time and the finite element method (FEM) to solve numerical solution for the Ohta-Kawasaki equation. Meanwhile, we approximate the nonlinear term by Newton's method and show the error estimate for the semi-discreted system in Section \ref{sec:CA}. {\color{red}Section \ref{sec:CA2} compares the theoretical convergence rates of Newton's method and Newton2 method proposed
+in \cite{P.Q.2012}.} Two block preconditioners are applied for the ill-conditioned linear system in Section \ref{dic} which occurs in the Ohta-Kawasaki equation in Section \ref{sec:preconditioning}. Some numerical experiments are shown in Section \ref{sec:NE} to illustrate the effectiveness of the method. In Section \ref{sec:con}, we draw some concluding remarks about this paper.
+
+\section{Numerical solution}
+\label{sec:NS}
+
+ In order to derive the numerical solution for the Ohta-Kawasaki equation, the convex splitting scheme \cite{D.1998} in time and FEM in space are used to discretize the weak form for (\ref{eq:CH}). Then, we have
+ \begin{subequations}
+\label{eq:semidiscretedCH}
+\begin{align}
+\Big(\frac{u^n_h-u^{n-1}_h}{\Delta t},v_h \Big)+(\nabla w^n_h, \nabla v_h)
++ \sigma(u^n_h - m ,v_h )=0,\\
+(w^n_h,v_h)-\epsilon^2(\nabla u^n_h, \nabla
+v_h)-((u^n_h)^3-u^{n}_h, v_h)=0.
+\end{align}
+\end{subequations}
+The sequence of finite element approximation for (\ref{eq:semidiscretedCH}) is bounded and stable under all circumstances if $\Delta t$
+satisfies some certain conditions \cite{P.Q.2012}.
+
+In practical implementation, due to the nonlinearity of $u^n_h$, many researchers focusing on the Ohta-Kawasaki system  used Newton2 method to deal with the non-linear portion of this problem. Yet this way is computationally expensive. To reduce the computational cost,
+we linearize $(u^n_h)^3$ at $u^{n,k}_h$ by using Newton's method
+\begin{align*}
+(u^n_h)^3 \approx (u^{n,k-1}_h)^3 + 3 (u^{n,k-1}_h)^2(u^n_h- u^{n,k-1}_h)
+\end{align*}
+with $u^{n,0}_h=u^{n-1}_h$.
+Thus the nonlinear iteration method for (\ref{eq:semidiscretedCH}) is defined by
+ \begin{subequations}
+\label{eq:Newtonnonlinear}
+\begin{align}
+&(1+\sigma \Delta t)(u^{n,k}_h, v_h)+\Delta t(\nabla w^{n,k}_h,\nabla v_h)=\Delta t \sigma (m,v_h)+(u^{n-1}_h,v_h),\\
+&(w^{n,k}_h,v_h)-\epsilon^2(\nabla u^{n,k}_h,\nabla v_h)+([1-3(u^{n,k-1})^2](u^{n,k}_h),v_h)=-2((u^{n,k-1})^3,v_h).
+\end{align}
+\end{subequations}
+\begin{remark}
+ Quasi-Newton's method can also be used to approximate the nonlinear term and it has the same convergent rate of that for Newton's method.
+\end{remark}
+
+\section{Convergent analysis for Newton method}
+\label{sec:CA}
+
+In this section, we give the error estimate for (\ref{eq:Newtonnonlinear}).
+
+\subsection{Bilinear form}
+
+ For convenience, denote $X=H^1(\Omega)$. For $\hat{m}\geq 0,~~p\geq 1$, we introduce the standard Sobolev space $W^{\hat{m},p}(\Omega)$ with a norm $||\cdot||_{\hat{m},p}$ and a semi-norm $|\cdot|_{\hat{m},p}$ given by
+\begin{align*}
+||v||_{\hat{m},p}=
+\begin{cases}
+&\Big{\{}\sum\limits_{|\hat{\alpha}|\leq \hat{m}}||D^{\hat{\alpha}}v||^p_{L^p(\Omega)}\Big{\}}^{\frac{1}{p}},~~1\leq p<\infty,\\
+&\max\limits_{|\hat{\alpha}|\leq \hat{m}}||D^{\hat{\alpha}}v||^p_{L^{\infty}(\Omega)},~~p=\infty,
+\end{cases}
+\end{align*}
+and
+\begin{align*}
+|v|_{\hat{m},p}=
+\begin{cases}
+&\Big{\{}\sum\limits_{|\hat{\alpha}|=\hat{m}}||D^{\hat{\alpha}}v||^p_{L^p(\Omega)}\Big{\}}^{\frac{1}{p}},~~1\leq p<\infty,\\
+&\max\limits_{|\hat{\alpha}|=\hat{m}}||D^{\hat{\alpha}}v||^p_{L^{\infty}(\Omega)},~~p=\infty.
+\end{cases}
+\end{align*}
+
+Now let's simplify this problem (\ref{eq:Newtonnonlinear}) by introducing the bilinear form. Firstly, (\ref{eq:semidiscretedCH}) is equivalent to
+\begin{align}
+&(u^n_h,v_h)+\Delta t(\nabla w^n_h, \nabla v_h)
++ \Delta t\sigma(u^n_h,v_h)=(u^{n-1}_h+\sigma m, v_h),\label{3.1.1}\\
+&(w^n_h,v_h)-\epsilon^2(\nabla u^n_h, \nabla
+v_h)-((u^n_h)^3-u^{n}_h, v_h)=0.\label{3.1.2}
+\end{align}
+Subtracting (\ref{3.1.2}) from (\ref{3.1.1}) yields
+\begin{align}
+\epsilon^2(\nabla u^n_h, \nabla
+v_h)+((u^n_h)^3, v_h)+\Delta t\sigma(u^n_h,v_h)-(w^n_h,v_h)+\Delta t(\nabla w^n_h, \nabla v_h)=(f,v_h),\label{3.2}
+\end{align}
+where
+\begin{align}
+f=u^{n-1}_h+\sigma m\label{definition:f}
+\end{align}
+ can be viewed as a constant function and $v_h\in X_h$. Denote
+\begin{align*}
+A(u,w;v)&=\epsilon^2(\nabla u,\nabla v)+\Delta t\sigma(u,v)+(u^3,v)-(f,v)+\Delta t(\nabla w,\nabla v)-(w,v)\\
+&=A_1(u,v)+A_2(w,v),
+\end{align*}
+where
+\begin{align*}
+A_1(u,v)&=(F_1(\cdot,u,\nabla u),\nabla v)+(g_1(\cdot,u,\nabla u), v),\\
+A_2(w,v)&=(F_2(\cdot,w,\nabla w),\nabla v)+(g_2(\cdot,w,\nabla w), v),
+\end{align*}
+and
+\begin{align*}
+&F_1(x,u,\nabla u)=\epsilon^2\nabla u,~g_1(x,u,\nabla u)=(\Delta t\sigma u+u^3)-f,\\
+&F_2(x,w,\nabla w)=\Delta t \nabla w,~g_2(x,w,\nabla w)=-w,
+\end{align*}
+with $u,~w\in X$. Then (\ref{3.2}) is equivalent to
+\begin{align}
+A(u^n_h,w^n_h;v)=0.\label{3.3}
+\end{align}
+Evidently, $A(u,w;v)$ is represented linearly by the bilinear form $A_1$ and $A_2$. Further, we know that for $i=1,2$,
+$$F_i(x,y,z):\Omega\times R^1 \times R^2\rightarrow R^2$$
+and
+$$g_i(x,y,z):\Omega\times R^1 \times R^2\rightarrow R^1$$
+are smooth functions. Thus for any $u,~w\in H^1(\Omega)$, we have
+\begin{align*}
+&F_{1,z}(x,u,\nabla u)=\epsilon^2,~F_{1,y}(x,u,\nabla u)=0,\\
+&g_{1,z}(x,u,\nabla u)=0,~g_{1,y}(x,u,\nabla u)=\Delta t\sigma+3u^2,\\
+&F_{2,z}(x,w,\nabla w)=\Delta t,~F_{2,y}(x,w,\nabla w)=0,\\
+&g_{2,z}(x,w,\nabla w)=0,~g_{2,y}(x,w,\nabla w)=-1.
+\end{align*}
+Similarly to \cite{H.2013}, for (\ref{3.3}), we introduce the bilinear form
+\begin{align}
+A^{'}(u,w;v_1,v_2,v)=A^{'}_1(u;v_1,v)+A^{'}_2(w;v_2,v),
+\label{le:00}
+\end{align}
+where
+\begin{align*}
+A^{'}_1(u;v_1,v)&=(F_{1,z}\nabla v_1+F_{1,y}v_1,\nabla v)+(g_{1,z}\,\nabla v_1+g_{1,y}v_1,v)\\
+                &=(\epsilon^2\nabla v_1,\nabla v)+\    \Delta t \sigma(v_1,v)+3(u^2v_1,v),\\
+A^{'}_2(w;v_2,v)&=(F_{2,z}\nabla v_2+F_{2,y}v_2,\nabla v)+(g_{2,z}\,\nabla v_2+g_{2,y}v_2,v)\\
+                &=\Delta t(\nabla v_2,\nabla v)-(v_2,v).
+\end{align*}
+Obviously,
+\begin{align}
+A_2(w,v)=A^{'}_2(\cdot;w,v).\label{3.4}
+\end{align}
+
+\subsection{Lemmas and notations}
+
+To get the error estimate, the following results are required.
+
+\begin{lemma}\label{lemma:1}
+For any $ u_1,~w_1,~u_2,~w_2,~v\in X$, denote
+\begin{align}
+A(u_1,w_1;v)=A(u_2,w_2;v)+A'(u_2,w_2;u_1-u_2,w_1-w_2,v)+R(u_2,w_2,u_1,w_1,v).\label{le:1}
+\end{align}
+Let $e=u_1-u_2$, $\frac{1}{p}+\frac{1}{q}=1$, $p,~q\geq 1$ and
+\begin{align}
+||u_1||_{1,\infty}\leq K,~~||u_2||_{1,\infty}\leq K.
+\label{le:0}
+\end{align}
+Then the remainder $R$ satisfies
+\begin{align*}
+|R(u_2,w_2,u_1,w_1,v)|=|R_1(u_1,u_2,v)|\leq C(K)||e||_{0,2p}^2\cdot||v||_{0,q},
+\end{align*}
+where $C\geq \max\limits_{x\in\Omega,|y|\leq K}\{g_{1,yy}\}$.
+\end{lemma}
+
+\begin{proof}
+By the definitions of $A^{'}(u,w;v_1,v_2,v)$ and $A(u,w;v)$ in (\ref{le:00}), (\ref{le:1}) can be rewritten as
+\begin{align*}
+A_1(u_1,v)+A_2(w_1,v)=&A_1(u_2,v)+A_2(w_2,v)+A^{'}_1(u_2;u_1-u_2,v)\\
+             &+A^{'}_2(w_2;w_1-w_2,v)+R(u_2,w_2,u_1,w_1,v).
+\end{align*}
+Using (\ref{3.4}), it follows that
+\begin{align*}
+A_1(u_1,v)+A_2(w_1,v)=&A_1(u_2,v)+A_2(w_2,v)+A^{'}_1(u_2;u_1-u_2,v)\\
+                                &+A_2(w_1-w_2,v)+R(u_2,w_2,u_1,w_1,v),
+\end{align*}
+which is equivalent to
+\begin{align}
+A_1(u_1,v)=A_1(u_2,v)+A^{'}_1(u_2;u_1-u_2,v)+R_1(u_2,u_1,v).\label{der:error}
+\end{align}
+Set
+$$\hat{\eta}=A_1(u_1+t(u_2-u_1),v).$$
+From equation (\ref{der:error}), it is obvious that
+\begin{align*}
+\hat{\eta}(1)=\hat{\eta}(0)+\hat{\eta}^{'}(0)+\int_0^1\,\hat{\eta}^{''}(t)(1-t)\,dt,
+\end{align*}
+with
+\begin{align}
+R_1(u_2,u_1,v)=\int_0^1\,\hat{\eta}^{''}(t)(1-t)\,dt.
+\label{le:2}
+\end{align}
+A straightforward calculation shows that
+\begin{align}
+\nonumber\hat{\eta}^{''}(t)&=((F_{1,zz}\nabla e)\nabla e+2F_{1,yz}\nabla e\,e+F_{1,yy}e^2, \nabla v)\\
+&\nonumber+(g_{1,zz}\nabla e \cdot \nabla e+2g_{1,yz}\nabla e\,e+g_{1,yy}e^2, v)\\
+&=(g_{1,yy}\,e^2,v).
+\label{le:3}
+\end{align}
+Combining (\ref{le:2}) with (\ref{le:3}), using the condition (\ref{le:0}), we get
+\begin{align*}
+|R_1(u_2,u_1,v)|&=|\int_0^1\,\hat{\eta}^{''}(t)(1-t)\,dt|\\
+&\leq \int_0^1\,|\hat{\eta}^{''}(t)|\cdot (1-t)\,dt\\
+&\leq \int_0^1\,||g_{1,yy}\,e^2||_{0,p} \cdot ||v||_{0,q} \cdot (1-t)\,dt\\
+&\leq C(K)||e||_{0,2p}^2\cdot||v||_{0,q},
+\end{align*}
+where $C\geq \max\limits_{x\in\Omega,|y|\leq K}\{|g_{1,yy}|\}.$ Thus we complete the proof.
+\end{proof}
+
+\begin{lemma}\cite{P.Q.2012}\label{lemma:3}
+	If
+	\begin{align*}
+	||u||_{1,\infty}\leq C(\epsilon,\sigma,u_0,c_p,c_s,T,m,|\Omega|),~||u^n_h||_{1,\infty}\leq C(\epsilon,\sigma,u_0,c_p,c_s,T,m,|\Omega|),
+	\end{align*}
+	then
+	\begin{align*}
+	&||u-u^n_h||_{1,\infty}\leq C_1(\epsilon,\sigma,u_0,c_p,c_s,T,m,|\Omega|)\leq c_2.
+	\end{align*}
+	
+\end{lemma}
+
+\begin{lemma}\cite{H.2013}\label{lemma:2}
+If $h$ is sufficiently small and $u\in X$ is an isolated solution of (\ref{eq:CH}), then we have
+\begin{align*}
+|A^{'}_1(u;v,\phi)|&\leq c ||v||_{1,p}||\phi||_{1,p}, ~~\forall v\in W^{1,p}(\Omega),~\phi\in W^{1,q}(\Omega).
+\end{align*}
+\end{lemma}
+
+\begin{lemma}\cite{R.1982} \cite{S.1974}\label{lemma:4}
+For a given $z\in\Omega$, we can find $\hat{g}_{h}^z\in X_h$ such that
+\begin{align*}
+A^{'}_1(u; v_h, \hat{g}_{h}^z)=\partial\ v_h(z),~~v_h\in X_h,
+\end{align*}
+where
+\begin{align*}
+\sup_{z\in \bar{\Omega}}||\tilde{g}_{h}^z(z)||_{1,1}\leq c|\log h|.
+\end{align*}
+\end{lemma}
+
+
+\subsection{Error estimate}
+
+%The the detail of (\ref{3.5}) can refer to \cite{H.2013}.
+In this subsection, we apply Newton's method to (\ref{3.3}) and derive the error estimate.
+Firstly, by Newton's method for (\ref{3.3}), we get
+\begin{align*}
+&A^{'}_1(u_h^{n,k-1};u_h^{n,k},v_h)+A^{'}_2(w_h^{n,k-1};w_h^{n,k},v_h)= A^{'}_1(u_h^{n,k-1};u_h^{n,k-1},v_h)\\
+&+ A^{'}_2(w_h^{n,k-1};w_h^{n,k-1},v_h)-A_1(u^{n,k-1},v_h)-A_2(w^{n,k-1},v_h),~\forall v_h\in V_h,
+\end{align*}
+for $k=1,2,\cdots,$ where $u^{n,0}_h=u^{n-1}_h$ satisfies
+\begin{align*}
+||u^{n,0}_h-u_h^{n}||_{1,\infty}\leq \eta,
+\end{align*}
+with $0\leq \eta<1$.
+ Hence,
+\begin{align}
+A^{'}_1(u_h^{n,k-1};u_h^{n,k},v_h)+A^{'}_2(w_h^{n,k-1};w_h^{n,k},v_h)
+= A^{'}_1(u_h^{n,k-1};u_h^{n,k-1},v_h)-A_1(u^{n,k-1},v_h).\label{Newton:2}
+\end{align}
+
+\begin{theorem}\label{th:Newton Error}
+Assume that $h$ is sufficiently small, $u\in X$ is an isolated solution of (\ref{eq:CH}) and $0\leq\eta<1$. For some constant $c_3$ and $2\leq p\leq\infty$, if
+the convergence factor $\rho$ satisfies that
+\begin{align}
+\rho=\frac{c_3C(K)|\log h|}{1-c_3[(C(K)+1)(c_2+\eta)+c]|\log h|}<1,
+\label{3.13}
+\end{align}
+then
+\begin{align}
+||u^n_h-u_h^{n,m}||_{1,p}\leq c\rho^{2^m}.
+\label{3.14}
+\end{align}
+\end{theorem}
+
+\begin{proof}
+Using the definitions in Lemma \ref{lemma:1}, we obtain
+\begin{align}
+A_1(u^{n,k-1}_h,v_h)&+A_2(w^{n,k-1}_h,v_h)
++A^{'}_1(u_h^{n,k-1};u_h^{n}-u_h^{n,k-1},v_h)\notag\\
+&~~~~+A^{'}_2(w_h^{n,k-1};w_h^n-w_h^{n,k-1},v_h)
++R_1(u_h^{n,k-1},u^{n}_h,v_h)=0.\label{Newton:3}
+\end{align}
+Combining (\ref{Newton:2}) with (\ref{Newton:3}), it is obvious that
+\begin{align}
+&A_1(u^{n,k-1}_h,v_h)+A_2(w^{n,k}_h,v_h)
++A^{'}_1(u_h^{n,k-1};u_h^{n,k}-u_h^{n,k-1},v_h)=0,\label{3.6.1}
+\\
+&A_1(u^{n,k-1}_h,v_h)+A_2(w^n_h,v_h)
++A^{'}_1(u_h^{n,k-1};u^{n}_h-u_h^{n,k-1},v_h)\notag\\
+&~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++R_1(u_h^{n,k-1},u^{n}_h,v_h)=0.\label{3.6.2}
+\end{align}
+Subtracting (\ref{3.6.2}) with (\ref{3.6.1}), we get the following error equation
+\begin{align}
+A_2(w^n_h-w_h^{n,k},v_h)+A^{'}_1(u_h^{n,k-1};u^n_h-u_h^{n,k},v_h)+R_1(u_h^{n,k-1},u^n_h,v_h)=0.
+\label{Newton:04}
+\end{align}
+
+i) Firstly, using mathematical induction method, for $0\leq \eta <1$, we prove the following estimate
+\begin{align}
+||u^n_h-u_h^{n,m}||_{1,\infty}\leq \rho^{2^m-1}\eta^{2^m},\label{3.7}
+\end{align}
+where
+\begin{align*}
+||u^{n,0}_h-u_h^n||_{1,\infty}\leq \eta.
+\end{align*}
+
+1) According to the condition of the initial value, (\ref{3.7}) is true for $m=0$.
+
+2) Assume that (\ref{3.7}) is true for $m=k-1$.
+
+3) It is required to prove (\ref{3.7}) for $m=k$.
+
+Applying the induction assumption and Lemma \ref{lemma:3}, we have
+\begin{align*}
+||u-u_h^{n,k-1}||_{1,\infty}&\leq ||u-u^n_h||_{1,\infty}+||u^n_h-u_h^{n,k-1}||_{1,\infty}\\
+&\leq c_2+(\rho\eta)^{2^{n-1}-1}\eta\leq c_2+\eta,
+\end{align*}
+which yields
+\begin{align}
+||u_h^{n,k-1}||_{1,\infty}\leq C+c_2+\eta.
+ \label{3.7.1}
+\end{align}
+Then according to the definition of $A^{'}_1(\cdot;\cdot,\cdot)$, we have
+ \begin{align}
+ |A^{'}_1(u;u^{n,k}_h-u^n_h,v_h)-A^{'}_1(u^{n,k-1}_h;u^{n,k}_h-u^n_h,v_h)|
+ \leq \eta(u,u^{n,k-1}_h)||u^{n,k}_h-u^n_h||_{1,\infty}||v_h||_{1,1},
+ \label{le4:0}
+ \end{align}
+ where
+ \begin{align}
+&\eta(u,u^{n,k-1}_h)\notag\\
+=&||F_{1,z}(x,u,\nabla u )-F_{1,z}(x,u^{n,k-1}_h,\nabla u^{n,k-1}_h)||_{0,\infty}\notag\\
+&+||F_{1,y}(x,u,\nabla u)-F_{1,y}(x,u^{n,k-1}_h,\nabla u^{n,k-1}_h )||_{0,\infty}\notag\\
+&+||g_{1,z}(x,u,\nabla u)-g_{1,z}(x,u^{n,k-1}_h,\nabla u^{n,k-1}_h )||_{0,\infty}\notag\\
+&+||g_{1,y}(x,u,\nabla u)-g_{1,y}(x,u^{n,k-1}_h,\nabla u^{n,k-1}_h )||_{0,\infty}\notag\\
+=&||g_{1,y}(x,u,\nabla u)-g_{1,y}(x,u^{n,k-1}_h,\nabla u^{n,k-1}_h )||_{0,\infty}.
+\label{le4:2}
+\end{align}
+For any $u,~u^{n,k-1}_h\in W^{1,\infty}(\Omega)$, note that the condition (\ref{le:0}) is met, i.e.,
+$$||u||_{1,\infty}\leq K,~||u^{n,k-1}_h||_{1,\infty}\leq K.$$ By setting
+\begin{align*}
+\Phi(t)=g_{1,y}(x,u+t(u^{n,k-1}_h-u),\nabla u_1+t\nabla (u^{n,k-1}_h-u)),
+\end{align*}
+for $v,~w\in X\cap W^{1,\infty}(\Omega)$ and using the definition of $g_{1,y}$, we have
+\begin{align}
+&|g_{1,y}(x,u^{n,k-1}_h,\nabla u^{n,k-1}_h )-g_{1,y}(x,u,\nabla u )|\notag\\
+&=|\int_0^1\Phi^{'}(t)\,dt|\notag\\
+&\leq \max_{x\in\Omega,|y|\leq K,|z|\leq K}(|g_{1,yz}+g_{1,yy}|)||u-u^{k-1}_h||_{1,\infty}.
+\label{le4:3}
+\end{align}
+Combining (\ref{le4:2}) with (\ref{le4:3}), it follows that
+\begin{align}
+\eta(u,u^{n,k-1}_h)\leq C(K)||u-u^{n,k-1}_h||_{1,\infty}.
+\label{le4:4}
+\end{align}
+Substituting (\ref{le4:4}) into (\ref{le4:0}) yields
+\begin{align}
+ &|A^{'}_1(u;u^{n,k}_h-u^n_h,v_h)-A^{'}_1(u^{n,k-1}_h;u^{n,k}_h-u^n_h,v_h)|\notag\\
+ &\leq C(K)||u-u^{n,k-1}_h||_{1,\infty}||u^{n,k}_h-u^n_h||_{1,\infty}||v_h||_{1,1}\notag\\
+ &\leq (c_2+\eta)C(K)\,||u^{n,k}_h-u^n_h||_{1,\infty}||v_h||_{1,1}.
+  \label{3.7.2}
+ \end{align}
+ Moreover, using Lemma \ref{lemma:2} and (\ref{3.7.1}), it is evident that
+ \begin{align}
+&|A^{'}_1(u^{n,k-1}_h;u^{n,k}_h-u^n_h,v_h)|\notag\\
+ &\leq (c_2+\eta)\,||u^{n,k}_h-u^n_h||_{1,\infty}\, ||v_h||_{1,1}+|A^{'}_1(u;u^{n,k}_h-u^n_h,v_h)|\notag\\
+ &\leq (c_2+\eta)\,||u^{n,k}_h-u^n_h||_{1,\infty}\,||v_h||_{1,1} + c ||u^{n,k}_h-u^n_h||_{1,\infty}\,||v_h||_{1,1}\notag\\
+ &=[(c_2+\eta)+c]\,||u^{n,k}_h-u^n_h||_{1,\infty}\, ||v_h||_{1,1}.\label{3.7.3}
+ \end{align}
+ Now for any $z\in\Omega$, let $\hat{g}^z_h$ be the discrete Green function, applying Lemma \ref{lemma:4} to (\ref{Newton:04}), then
+ \begin{align}
+ |\partial\,(u^{n,k}_h-u^n_h)(z)|=&|A^{'}_1(u;u^{n,k}_h-u^n_h,\hat{g}_h^z)
+ -A_2(w^n_h-w_h^{n,k},\hat{g}_h^z)\notag\\
+ &-A^{'}_1(u_h^{n,k-1};u^n_h-u_h^{n,k},\hat{g}_h^z)-R_1(u_h^{n,k-1},u^n_h,\hat{g}_h^z)|\notag\\
+=&|A^{'}_1(u;u^{n,k}_h-u^n_h,\hat{g}_h^z)
+ -A_2(w;w^n_h-w_h^{n,k},\hat{g}_h^z)\notag\\
+ &-A^{'}_1(u_h^{n,k-1};u^n_h-u_h^{n,k},\hat{g}_h^z)-R_1(u_h^{n,k-1},u^n_h,\hat{g}_h^z)|\notag\\
+=&|A^{'}_1(u;u^{n,k}_h-u^n_h,\hat{g}_h^z)
+ -\partial\,(w^{n,k}_h-w^n_h)(z)\notag\\
+ &-A^{'}_1(u_h^{n,k-1};u^n_h-u_h^{n,k},\hat{g}_h^z)-R_1(u_h^{n,k-1},u^n_h,\hat{g}_h^z)|,
+ \label{3.6.3}
+ \end{align}
+due to
+ \begin{align*}
+ \partial\,(w^{n,k}_h-w^n_h)(z)= &A^{'}_2(w;w^{n,k}_h-w^n_h,\hat{g}_h^z)\\
+ =&A^{'}_2(w;w^{n,k}_h-w^n_h,\hat{g}_h^z)
+ +A_2(w^n_h-w_h^{n,k},\hat{g}_h^z)\\
+ &+A^{'}_1(u_h^{n,k-1};u^n_h-u_h^{n,k},\hat{g}_h^z)+R_1(u_h^{n,k-1},u^n_h,\hat{g}_h^z)\\
+ =&A^{'}_1(u_h^{n,k-1};u^n_h-u_h^{n,k},\hat{g}_h^z)+R_1(u_h^{n,k-1},u^n_h,\hat{g}_h^z).
+ \end{align*}
+Therefore, combining (\ref{3.7.2}), (\ref{3.7.3}) with (\ref{3.6.3}), by Lemma \ref{lemma:1}, then
+ \begin{align}
+ &|\partial\,(u^{n,k}_h-u^n_h)(z)|\notag\\
+ =&|A^{'}_1(u;u^{n,k}_h-u^n_h,\hat{g}_h^z)
+-2A^{'}_1(u_h^{n,k-1};u^n_h-u_h^{n,k},\hat{g}_h^z)
+ -2R_1(u_h^{n,k-1},u^n_h,\hat{g}_h^z)|\notag\\
+\leq &|A^{'}_1(u;u^{n,k}_h-u^n_h,\hat{g}_h^z)
+ -A^{'}_1(u_h^{n,k-1};u^n_h-u_h^{n,k},\hat{g}_h^z)|\notag\\
+ &+|A^{'}_1(u_h^{n,k-1};u^n_h-u_h^{n,k},\hat{g}_h^z)|+|R_1(u_h^{n,k-1},u^n_h,\hat{g}_h^z)|\notag\\
+\leq& [(C(K)+1)(c_2+\eta)+c]|\log h| \,||u^{n,k}_h-u^n_h||_{1,\infty}\notag\\
+&+C(K)|\log h|\cdot ||u^n_h-u_h^{n,k-1}||_{1,\infty}^2.\label{3.7.4}
+ \end{align}
+Applying Lemma \ref{lemma:4} to (\ref{3.7.4}) yields
+\begin{align*}
+||u^{n,k}_h-u^n_h||_{1,\infty} \leq & c_3[(C(K)+1)(c_2+\eta)+c]|\log h|\,||u^{n,k}_h-u^n_h||_{1,\infty}\notag\\
+                                          &+c_3C(K)|\log h|\,||u^n_h-u_h^{n,k-1}||^2_{1,\infty}.
+\end{align*}
+Thus, we obtain
+\begin{align}
+||u^{n,k}_h-u^n_h||_{1,\infty}&\leq\frac{c_3C(K)|\log h|}{1-c_3[(C(K)+1)(c_2+\eta)+c]|\log h|}||u^n_h-u_h^{n,k-1}||^2_{1,\infty}\notag\\
+&=\rho ||u^n_h-u_h^{n,k-1}||^2_{1,\infty},\label{3.7.5}
+\end{align}
+and $0\leq\eta<1$ and $h$ satisfy the condition $\rho<1$.
+
+Using the induction assumption, it is evident that
+\begin{align}
+||u^n_h-u_h^{n,k-1}||^2_{1,\infty}\leq \rho^{2\times (2^{k-1}-1)}\eta^{2\times2^{k-1}}.\label{3.10}
+\end{align}
+Combining (\ref{3.7.5}) with (\ref{3.10}) yields
+\begin{align*}
+||u^n_h-u_h^{n,k}||_{1,\infty}\leq \rho^{ 2^k-1}\eta^{2^k},
+\end{align*}
+i.e., (\ref{3.7}). Thus (\ref{3.7}) is true for any $k$ using mathematical induction method.
+
+ii) Finally, note that
+\begin{align}
+||u^n_h-u_h^{n,m}||_{1,p}\leq |\Omega|^{\frac{1}{p}}||u^n_h-u_h^{n,m}||_{1,\infty},
+\label{3.12}
+\end{align}
+ and the condition (\ref{3.13}), i.e., $\rho<1$.
+
+Substituting (\ref{3.12}) and (\ref{3.13}) into (\ref{3.7}) yields
+\begin{align*}
+||u^n_h-u_h^{n,m}||_{1,p}\leq c\rho^{2^m},
+\end{align*}
+i.e., (\ref{3.14}). Therefore we complete the proof.
+\end{proof}
+
+
+\section{Convergent analysis for Newton2 method}
+\label{sec:CA2}
+
+We recall that the nonlinear term $(u^n_h)^3$ is linearly approximated by $(u^{n,k-1}_h)^2u^{n,k}_h$ in \cite{P.Q.2012}. In this section, we can prove the convergence factor $\hat{\rho}$ of Newton2 method is greater than $\rho$ in
+Newton method. In other words, we can strictly prove theoretically that the convergence rate of Newton method described in this paper is better than that of Newton2 method proposed in \cite{P.Q.2012}.
+
+Firstly, the nonlinear iteration method {\color{red}with Newton2 method} for (\ref{eq:semidiscretedCH}) is defined by
+ \begin{subequations}
+\label{eq:Picardnonlinear}
+\begin{align}
+&(1+\sigma \Delta t)(u^{n,k}_h, v_h)+\Delta t(\nabla w^{n,k}_h,\nabla v_h)=\Delta t \sigma (m,v_h)+(u^{n-1}_h,v_h),\label{eq:Picardnonlinear1}\\
+&(w^{n,k}_h,v_h)-\epsilon^2(\nabla u^{n,k}_h,\nabla v_h)+([1-(u^{n,k-1})^2](u^{n,k}_h),v_h)=0.\label{eq:Picardnonlinear2}
+\end{align}
+\end{subequations}
+Thus subtracting (\ref{eq:Picardnonlinear2}) from (\ref{eq:Picardnonlinear1}) we have
+\begin{align}
+\epsilon^2(\nabla u^{n,k}_h, \nabla
+v_h)&+((u^{n,k-1}_h)^2u^{n,k}_h, v_h)+\Delta t\sigma(u^{n,k}_h,v_h)\notag\\
+&-(w^{n,k}_h,v_h)+\Delta t(\nabla w^{n,k}_h, \nabla v_h)=(f,v_h),\label{eq:Picardnonlinear sub}
+\end{align}
+where $f$ is defined by (\ref{definition:f}).
+Similar to the error estimate process of Newton method in section \ref{sec:CA},
+we can rewrite (\ref{eq:Picardnonlinear sub}) as
+\begin{align*}
+A_1(u^{n,k-1}_h,v_h)+A_2(w^{n,k}_h,v_h)
+&+A^{'}_1(u_h^{n,k-1};u_h^{n,k}-u_h^{n,k-1},v_h)\\
+&-2((u^{n,k-1}_h)^2(u^{n,k}_h-u^{n,k-1}_h),v_h)=0.
+\end{align*}
+Then, we obtain
+ \begin{align*}
+ &|\partial\,(u^{n,k}_h-u^n_h)(z)|\notag\\
+ =&|A^{'}_1(u;u^{n,k}_h-u^n_h,\hat{g}_h^z)
+-2A^{'}_1(u_h^{n,k-1};u^n_h-u_h^{n,k},\hat{g}_h^z)
+ -2R_1(u_h^{n,k-1},u^n_h,\hat{g}_h^z)|\notag\\
+\leq &|A^{'}_1(u;u^{n,k}_h-u^n_h,\hat{g}_h^z)
+ -A^{'}_1(u_h^{n,k-1};u^n_h-u_h^{n,k},\hat{g}_h^z)|\notag\\
+ &+|A^{'}_1(u_h^{n,k-1};u^n_h-u_h^{n,k},\hat{g}_h^z)|+|R_1(u_h^{n,k-1},u^n_h,\hat{g}_h^z)|
+ +4|((u^{n,k-1}_h)^2(u^{n,k}_h-u^{n,k-1}_h),\hat{g}_h^z)|.
+ \end{align*}
+Moreover,
+\begin{align*}
+|((u^{n,k-1}_h)^2(u^{n,k}_h-u^{n,k-1}_h),\hat{g}_h^z)|
+&\leq\|u^{n,k-1}_h\|^2_{1,\infty}\|u^{n,k}_h-u^{n,k-1}_h\|_{1,\infty}\cdot \|\hat{g}_h^z\|_{1,1}\\
+&\leq (C+c_2+\eta)^2c\,|\log h|\cdot \|u^{n,k}_h-u^{n,k-1}_h\|_{1,\infty}\\
+&=c_4 \|u^{n,k}_h-u^{n,k-1}_h\|_{1,\infty},
+\end{align*}
+where 
+$$c_4=(C+c_2+\eta)^2c\,|\log h|>0.$$
+
+Thus, we have
+\begin{align*}
+|\partial\,(u^{n,k}_h-u^n_h)(z)|
+\leq&[(C(K)+1)(c_2+\eta)+c+c_4]\,|\log h| \,||u^{n,k}_h-u^n_h||_{1,\infty}\\
+&+C(K)|\log h|\cdot ||u^n_h-u_h^{n,k-1}||_{1,\infty}^2.
+\end{align*}
+Therefore, we note that the convergence factor $\hat{\rho}$ of Newton2 method can be defined by
+\begin{align*}
+\hat{\rho}=\frac{c_3C(K)|\log h|}{1-c_3[(C(K)+1)(c_2+\eta)+c+c_4]|\log h|}
+\end{align*}
+and the error estimate of Newton2 method is given by
+\begin{align*}
+||u^n_h-u_h^{n,m}||_{1,p}\leq c\hat{\rho}^{2^m}.
+\end{align*}
+
+Through the above analysis, we can derive the following theorem for the convergence analysis of Newton2 method.
+
+\begin{theorem}\label{th:Newton2 Error}
+Assume that $h$ is sufficiently small, $u\in X$ is an isolated solution of (\ref{eq:CH}) and $0\leq\eta<1$. For some constants $c_3, c_4$ and $2\leq p\leq\infty$, if
+the convergence factor $\hat{\rho}$ satisfies that
+\begin{align}
+\hat{\rho}=\frac{c_3C(K)|\log h|}{1-c_3[(C(K)+1)(c_2+\eta)+c+c_4]|\log h|}<1,
+\label{3.13}
+\end{align}
+then
+\begin{align}
+||u^n_h-u_h^{n,m}||_{1,p}\leq c\hat{\rho}^{2^m}.
+\label{3.14}
+\end{align}
+\end{theorem}
+
+\begin{remark}
+Obviously, $\rho<\hat{\rho}$, this shows that the convergence rate of Newton method is faster than that of Newton2 method,
+and it is verified by numerical experiments.
+\end{remark}
+
+\section{Dicretization}
+\label{dic}
+In this section, we impose a uniform dicretization on
+the spatial domain $\mathcal{T}_h$ for each $t_n=n\Delta t$ $(0\leq n\leq N)$.
+We assume that the dimension of the finite element subspace $V_h$
+is $\hat{M}$, and use the set of piecewise linear $\phi_i$ as the
+basis functions which are defined in the usual way. Therefore, the scheme of
+(\ref{eq:Newtonnonlinear}) is summarized as follows:
+ \begin{align}
+\mathcal{A}\left(
+         \begin{array}{c}
+           U^{(n,k)}  \\
+           W^{(n,k)}   \\
+         \end{array}
+       \right)=\left(
+         \begin{array}{cc}
+           (1+\sigma \Delta t)M &  \Delta t S \\
+           -\epsilon^2 S+M-3L^{(n,k)} & M   \\
+         \end{array}
+       \right) \left(
+         \begin{array}{c}
+           U^{(n,k)}  \\
+           W^{(n,k)}   \\
+         \end{array}
+       \right)= \left(
+         \begin{array}{c}
+           F^{(n)}\\
+           E^{(n,k)}
+         \end{array}
+       \right), \label{eq:discretedmatrix}
+\end{align}
+%简单说明系统的病态和预处理的必要性
+where $M$ and $S$ are the mass matrix and the stiffness matrix, respectively. $L^{(n,k)}$ is a spatially coefficient with entries
+$\int_{\Omega}u^2\phi_i\phi_j\, dx$. $F^{(n)}$ and $E^{(n,k)}$ gather the source term and contributions from previous time levels.
+
+Thus, it is required to solve the
+discrete nonlinear problem (\ref{eq:discretedmatrix}) using linear
+solvers at each time step. As the discretization is refined and the dimension of (\ref{eq:discretedmatrix}) increases,
+it becomes impractical to employ direct solvers and preconditioned GMRES method must be used instead.
+
+\section{Preconditioning}
+\label{sec:preconditioning}
+%对系统应用BT预处理子
+%定理2：BT预处理子的分布范围
+%对系统应用EL预处理子
+%定理3：BT预处理子和EL预处理子的谱分布相同
+%
+Firstly, based on the Schur complement method, the following block
+triangular (BT in short) preconditioner is constructed for the discretized Ohta-Kawasaki \cite{P.J.2017}
+system (\ref{eq:discretedmatrix}):
+\begin{align}
+\mathcal{P}_{BT}= \left(
+         \begin{array}{cc}
+           (1+\sigma \Delta t)M &  0  \\
+           -\epsilon^2 S-3L^{(n,k)}+M & \tilde{K}
+         \end{array}
+       \right).\label{1.38}
+\end{align}
+Denote
+$$\zeta=\Delta t/(1+\sigma \Delta t).$$ Then
+\begin{align*}
+\tilde{K}=(M+\epsilon \sqrt{\zeta} S)M^{-1}(M+\epsilon \sqrt{\zeta} S)
+\end{align*}
+is a good approximation of the Schur complement:
+\begin{align*}
+K=M+\epsilon^2 \zeta SM^{-1}S+\zeta (3L^{(n,k)}-M)M^{-1}S.
+\end{align*}
+Further, we give the spectral distribution for the preconditioning system.
+
+\begin{theorem}\label{BTeig}
+The eigenvalues of $\mathcal{P}_{BT}^{-1}\mathcal{A}$ are real and satisfy
+\begin{align*}
+\lambda(\mathcal{P}_{BT}^{-1}\mathcal{A})\in [\frac{1}{2}-\frac{1}{4\epsilon}\sqrt{\zeta},
+1+\frac{1}{4\epsilon}\sqrt{\zeta}\lambda_{+}],
+\end{align*}
+where $\lambda_{+}=\mbox{max}\{\lambda_{\mbox{max}}(M^{-1}M_E),0\},$ $M_E = 3L^{(n,k)}-M$ and $\lambda_{\mbox{max}}$ is the maximum eigenvalue.
+\end{theorem}
+
+Secondly, in order to eliminate the influence of the matrix $L^{(n,k)}$ on the preconditioner proposed in \cite{W.2007},
+the matrix $L^{(n,k)}$ directly is discarded and the following preconditioner (EL in short) is presented in \cite{L.2018}:
+\begin{align}
+\mathcal{P}_{EL}= \left(
+         \begin{array}{cc}
+           M &  \zeta S  \\
+           -\epsilon^2 S & M+2 \epsilon \sqrt{\zeta} S
+         \end{array}
+       \right).\label{1.39}
+\end{align}
+\begin{remark}\label{re3}
+Denote
+\begin{align*}
+\hat{\mathcal{A}}=\left(
+         \begin{array}{cc}
+           M &  \zeta S \\
+           -\epsilon^2 S-3L^{(n,k)}+M & M   \\
+         \end{array}
+       \right).
+\end{align*}
+Using the similar method in \cite{L.2018}, we can get that the eigenvalues of the corresponding preconditioned matrix $\mathcal{P}^{-1}_{EL}\hat{\mathcal{A}}$
+are the same as those of $\mathcal{P}^{-1}_{BT}\mathcal{A}$.
+
+\end{remark}
+\section{Numerical experiments}
+\label{sec:NE}
+
+In this section, we use some numerical experiments to show that Newton's method can effectively speed up the convergence compared with Newton2 method,
+and save calculation in the predictor-corrector process. Using BT preconditioner to accelerate GMRES algorithm,
+we can get better effect compared with previous results.
+
+The experiments are performed from the average of GMRES iteration
+per Newton step (denoted by `IT'), the elapsed CPU time of per
+predictor-corrector step in seconds (denoted by `CPU').
+Denote the predictor-corrector steps $k_n$ in $n$-th iteration and IT$_{tol}$ by the total number of predictor-corrector steps after $n$-th iteration, i.e., $\mbox{IT}_{tol}=\sum\limits_{i=1}^{n} k_i$. Moreover, GMRES is used as the outer Krylov solver with a relative tolerance of $10^{-8}$ in the spectral norm.
+
+In first experiment, we use Figure \ref{fig:1} to show that Newton's method effectively speeds up the convergence rate of the predictor-corrector method in one dimension. The parameters are $\hat{M}=1E+4$, $\sigma=100$, $\epsilon=0.01$ and $\Delta t = \epsilon^2$. Denote $\varepsilon = ||u^{(n,k)}-u^{(n,k-1)}||_2$.
+ \begin{figure}[H]
+	 \centering
+	 \label{fig:a}
+	 \includegraphics[width=2.2in]{./figures/f1.png}
+     \hspace{0.1in}
+	 \label{fig:b}
+	 \includegraphics[width=2.2in]{./figures/CPU_corrector.png}
+	\caption{Comparison of convergence rates between Newton's method and Newton2 method. Left: when $n=11$, $\varepsilon$ vary with $k$. Right: CPU vary in 50 time steps update.}\label{fig:1}
+  \end{figure}
+
+We use next experiment to show the preconditioned numerical results in 100 time steps update. Table \ref{tab:1} and Table \ref{tab:2} are given to illustrate the results of one dimension and two dimension, respectively. The parameters in one dimension are the same as those in the first experiment.
+ \begin{table}[H]
+  \centering
+  \caption{Preconditioned numerical results in 100 time steps updates when $\Omega=(0,1)$ with the number of freedom degrees increasing.}\label{tab:1}
+  \renewcommand\arraystretch{1.2}
+  \setlength{\tabcolsep}{0.8mm}{
+\begin{tabular}{cccccccc}\hline
+
+DOF   & Index         & Newton    &Newton2         & Newton$_{BT}$    &P$_{BT}$     & Newton$_{EL}$   & P$_{EL}$\\ \hline
+      &CPU      & 23.94      &112.42      & 28.31         & 96.15      &17.24            & 83.94  \\
+ 1E+4  &IT$_{tol}$ &339     & 1937     &  339            &1937       & 339           & 1937\\
+       & IT        & -         & -          &18.13       & 11.96      &12.82          &13.84\\ \cline{1-8}
+       &CPU      & 235.70      &1.2483E+3   &359.55          &1.3230E+3      &189.10        &1.0719E+3  \\
+ 1E+5  &IT$_{tol}$ &324        &1902         &324            &1902          &324             &1902\\
+       & IT        & -         & -          &17.81           &11.59         &12.44          & 13.36\\ \hline
+\end{tabular}}\\
+\end{table}
+
+The parameters in two dimension are $\sigma=100$, $\epsilon=0.001$ and $\Delta t=\epsilon^2$.
+ \begin{table}[H]
+  \centering
+  \caption{Preconditioned numerical results in 100 time steps updates when $\Omega=(0,\pi)^2$ with the number of freedom degrees increasing.}\label{tab:2}
+  \renewcommand\arraystretch{1.2}
+  \setlength{\tabcolsep}{0.8mm}{
+\begin{tabular}{cccccccc}\hline
+
+DOF   & Index     & Newton    &Newton2      & Newton$_{BT}$ &P$_{BT}$  & Newton$_{EL}$   & P$_{EL}$\\ \hline
+      &CPU      & 77.93      &115.71      & 179.50         & 198.78      &95.41            & 167.16  \\
+ 1E+4  &IT$_{tol}$ &300     & 487        &  300            &487         & 300          & 487\\
+       & IT        & -         & -          &7.64       & 5.00          &5.00          &6.00\\ \hline
+       &CPU      & 459.60      &1.06E+03      & 1.25E+03   &2.07E+03   &623.82          &1.64E+03  \\
+ 4E+4  &IT$_{tol}$ &300     & 784        &  300            &784         & 300          & 784\\
+       & IT        & -         & -          &10.86       &6.54      &6.79         &7.55\\ \hline
+\end{tabular}}\\
+\end{table}
+
+In last experiment, let $\Omega=(0,4)^2$ and take the domain triangulation $h=4/100$ as the mesh size.
+ As the stopping criterion, we use
+ \begin{align*}
+ ||u_h^n-u_h^{n-1}||_2 \leq 1e-7.
+ \end{align*}
+ The coarsening dynamic processes are shown in Figure \ref{FIG:5} and
+ Figure \ref{FIG:6} with different parameters which respectively form the laminar and cylinderical structures.
+  \begin{figure}[H]
+	 \centering
+	 \label{fig:c}
+	 \includegraphics[width=1.2in]{./figures/phase_1_l}
+      \hspace{0.3in}
+	 \label{fig:d}
+	 \includegraphics[width=1.2in]{./figures/phase_10_l}
+      \hspace{0.3in}
+	 \label{fig:e}
+	 \includegraphics[width=1.2in]{./figures/phase_100_l}
+  \end{figure}
+
+\begin{figure}[H]
+     \centering
+	 \includegraphics[width=1.2in]{./figures/phase_200_l}
+     \hspace{0.3in}
+	 \label{fig:f}
+	 \includegraphics[width=1.2in]{./figures/phase_400_l}
+     \hspace{0.3in}
+	 \label{fig:g}
+	 \includegraphics[width=1.2in]{./figures/phase_1000_l}
+\caption{ The coarsening dynamic process shows the system experience of phase separation using a random
+initial.  $\epsilon=0.08$, $\sigma=10$ , $m=0$ and $\Delta t=0.0046$ in two-dimensional space. B1 is the initial concentration, B2=0.092, B3=0.46, B4=0.92,
+B5=1.84, B6=4.6.}
+\label{FIG:5}
+  \end{figure}
+
+    \begin{figure}[H]
+	 \centering
+	 \label{fig:h}
+	 \includegraphics[width=1.2in]{./figures/phase_0_c}
+      \hspace{0.3in}
+	 \label{fig:i}
+	 \includegraphics[width=1.2in]{./figures/phase_10_c}
+      \hspace{0.3in}
+	 \label{fig:j}
+	 \includegraphics[width=1.2in]{./figures/phase_50_c}
+  \end{figure}
+\begin{figure}[H]
+      \centering
+	 \includegraphics[width=1.2in]{./figures/phase_100_c}
+     \hspace{0.3in}
+	 \label{fig:k}
+	 \includegraphics[width=1.2in]{./figures/phase_600_c}
+     \hspace{0.3in}
+	 \label{fig:l}
+	 \includegraphics[width=1.2in]{./figures/phase_800_c}
+\caption{The coarsening dynamic process shows the system experiences of phase separation using a random
+initial. The bubbles appear from coarsening, evolve into same size, and finally form the cylinderical structure. $\epsilon=0.08$, $\sigma=10$,
+$m=0.4$ and  $\Delta t=0.0064$ in two-dimensional space. T1 is the initial concentration, T2=0.064, T3=0.32, T4=0.064, T5=3.84 and T6=5.12.}
+\label{FIG:6}
+  \end{figure}
+\section{Conclusion}
+\label{sec:con}
+
+ In this paper, we have applied two block preconditioners to the Ohta-Kawasaki equation. In our numerical method,
+the time discretization and  spatial discretization have been done by the convex-splitting scheme and FEM. Moreover, we have introduced Newton's method to approximate the nonlinear term for the semi-discreted system and discussed the error estimate for the discretized Ohta-Kawasaki partial differential equation. Then, we presented two block preconditioners for the ill-conditioned linear system. Finally, we have offered numerical examples to show the effectiveness of the proposed preconditioners for the Ohta-Kawasaki equation.
+
+%\section*{References}
+
+
+\bibliography{mybibfile}
+\begin{thebibliography}{}
+\bibitem{T.K.1986}
+T. Ohta, K. Kawasaki, Equilibrium morphology of block copolymer melts, Macromolecules, 19, 2621-2632 (1986).
+\bibitem{P.Q.2012}
+ P. Quentin, Numerical Approximation of the Ohta-Kawasaki Functional, Diss. master's thesis, University of Oxford, Oxford, UK (2012).
+\bibitem{D.1998}
+D. Eyre, Unconditionally gradient stable time marching the Cahn-Hilliard equation, in: J.W. Bullard, R. Kalia, M. Stoneham, L.Q. Chen(Eds.), Computational and Mathematical Models of Microstructural Evolution, in: Mater. Res. Soc. Symp. Proc., vol. 529, Materials Research Society, Warrendale, PA, 39-46 (1998).
+\bibitem{P.J.2017}
+ P. E. Farrell, J. W. Pearson, A preconditioner for the Ohta-Kawasaki equation, SIAM J. Matrix Anal. Appl., 38, 217-225 (2017).
+\bibitem{L.2018}
+R. X. Li, Z. Z. Liang, G. F. Zhang, L. D. Liao, A note on preconditioner for the Ohta-Kawasaki equation, Applied Mathematics Letters., 85,132-138 (2018).
+\bibitem{W.2007}
+ J. Schaberl, W. Zulehner, Symmetric indefinite preconditioners for saddle point problems with applications to PDE-constrained optimization problems, SIAM J. Matrix Anal. Appl. 29 (3) (2007) 752-773.
+\bibitem{X.1996}
+Xu, J.C.: Two-grid discretization techniques for linear and nonlinear PDEs. SIAM J. Numer. Anal. 33, 1759-1777 (1996)
+\bibitem{H.2013}
+He Y, Zhang Y, Xu H. Two-level Newton's method for nonlinear elliptic PDEs[J]. Journal of Scientific Computing, 2013, 57(1): 124-145.
+\bibitem{R.1982}
+R. RANNACHER and R. SCOTT, Some optimal error estimates for piecewise linear finite element approximation,
+Math. Comp., 54 (1982), pp. 437-445.
+\bibitem{S.1974}
+A. SCHATZ, An observation concerning Ritz-Galerkin methods with indefinite bilinear forms, Math. Comp.,
+28 (1974), pp. 959-962.
+\end{thebibliography}
+\end{document}
