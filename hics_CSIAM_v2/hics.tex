@@ -194,7 +194,8 @@ determine the search direction and then the step length along with the search
 direction. Model-based approaches construct and utilize a related simple model to
 approximate the original problem in a trust region to guide the search process. 
 \textcolor{blue}{
-During the optimization process, obtaining a proper search domain is important 
+Finding equilibrium points in a proper search domain is important 
+during the optimization process.
 }
 Inspired by the behavior of the blind for climbing hill, we
 proposed a new approach, the hill-climbing method with a stick
@@ -202,9 +203,13 @@ proposed a new approach, the hill-climbing method with a stick
 our previous work\,\cite{huang2017hill}.
 The main idea of the HiCS, at each search step, is comparing
 function values on a surface surrounding the current iterator.
-It requires the comparison of function values, and
+It requires a comparison of function values, and
 does not need the search direction or construct a surrogate
 model in a trust region.
+\textcolor{blue}{
+The HiCS algorithm is different from the direct search methods in
+derivative-free optimization. The 
+}
 Numerical results have been demonstrated that the HiCS has many 
 satisfactory properties, including being easy to implement,
 a unique parameter to be modulated, and having the capacity
