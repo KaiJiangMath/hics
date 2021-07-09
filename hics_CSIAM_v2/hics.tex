@@ -198,18 +198,21 @@ Finding equilibrium points in a proper search domain is important
 during the optimization process.
 }
 Inspired by the behavior of the blind for climbing hill, we
-proposed a new approach, the hill-climbing method with a stick
+proposed a new derivative-free approach, the hill-climbing method with a stick
 (HiCS), to treat unconstrained optimization problems in
 our previous work\,\cite{huang2017hill}.
 The main idea of the HiCS, at each search step, is comparing
 function values on a surface surrounding the current iterator.
-It requires a comparison of function values, and
-does not need the search direction or construct a surrogate
-model in a trust region.
+It requires a comparison of function values, and does not need the search direction
+or construct a surrogate model in a trust region.
 \textcolor{blue}{
 The HiCS algorithm is different from the direct search methods in
 derivative-free optimization. The direct search methods choose a set of nonzero
-vectors, then try to find a 
+vectors deterministically or stochastically as search directions, then try to find a
+replaceable point along search directions with a step size until a certain stopping
+criterion is met.  
+The HiCS algorithm tries to find a neighbourhood that contains equilibrium points
+rather than directly finding these equilibrium points.
 }
 Numerical results have been demonstrated that the HiCS has many 
 satisfactory properties, including being easy to implement,
@@ -251,6 +254,7 @@ $x_k$ with radius of $\rho$.  To illustrate the algorithm
 more accurately, an useful concept of the \textit{suspected extreme point}
 is introduced.
 
+\textcolor{blue}{
 \begin{definition}	
 	For a given objective function $f(x)$ and a positive constant 
 	$\rho>0$, $\tilde{x}$ is a \textit{suspected extreme point} if
@@ -265,6 +269,7 @@ is introduced.
 	$\tilde x$ is a SMP, then there exists at least a minimizer in $U(\tilde x,
 	\rho)$ or $f(x)$ is constant on $\overline{U}(\tilde x, \rho)$.
 \end{remark}
+}
 
 
 %Obviously, $\tilde{x}$ is a SMP if $\tilde{x}$ is a minimizer in
@@ -366,7 +371,7 @@ Its Cartesian coordinates can be obtained from the following two properties:
 \end{enumerate}
 In particular, the above two properties can be implemented
 through the Algorithm \ref{alg:simplex}.
-\begin{algorithm}
+\begin{algorithm}[!htpb]
 	\caption{Generate $d$-D regular simplex coordinates} 
 	\label{alg:simplex}
 \begin{algorithmic}
