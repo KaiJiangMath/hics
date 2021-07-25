@@ -158,15 +158,15 @@
 	\begin{abstract}
 In our previous work [Adv. Appl. Math. Mech., 2017, 9: 307-323],
 we proposed a novel optimization algorithm, the hill-climbing method with a stick
-(HiCS) method, to address the unconstrained optimization. 
+(HiCS), to address the unconstrained optimization. 
 \textcolor{blue}{
-HiCS method can find a suspected extreme point rather than the minimizer which
+HiCS can find a suspected extreme point rather than the minimizer which
 indicates the minimizers exist in a small domain with mild conditions.   
-In this paper, we give a rigorous theory to guarantee that the HiCS algorithm has 
+In this paper, we give a rigorous theory to guarantee that the HiCS has 
 a finite-step convergence property.
 Meanwhile, an efficient discretization strategy based on the regular simplex is
-developed to treat high-dimensional optimization. 
-The power of the improved HiCS method is demonstrated by several
+developed to treat high-dimensional problems. 
+The power of the improved HiCS is demonstrated by several
 high-dimensional benchmarks.
 }
 	\end{abstract}
@@ -187,7 +187,7 @@ Simplex, High-dimensional problems}
 \label{sec:intro}
 
 \textcolor{blue}{
-Classic optimization approaches are developed to find the equilibrium point. }
+Classic optimization approaches are developed to find the extreme point. }
 These optimization approaches can be divided into broadly two
 classes, directional search and model-based\,\cite{sun2006optimization,
 nocedal2006numerical, conn2009introduction}.  Directional search algorithms first
@@ -195,24 +195,23 @@ determine the search direction and then the step length along with the search
 direction. Model-based approaches construct and utilize a related simple model to
 approximate the original problem in a trust region to guide the search process. 
 \textcolor{blue}{
-Finding equilibrium points in a proper search domain is very important 
+Finding extreme points in a proper search domain is very important 
 during the optimization process.
 }
 Inspired by the behavior of the blind for climbing hill, we
-proposed a new derivative-free approach, the hill-climbing method with a stick
-(HiCS), to treat unconstrained optimization problems in
+proposed a new approach, the HiCS, to treat unconstrained optimization problems in
 our previous work\,\cite{huang2017hill}.
 The main idea of the HiCS, at each search step, is comparing
 function values on a surface surrounding the current iterator.
 It requires a comparison of function values, and does not need the search direction
 or construct a surrogate model in a trust region.
 \textcolor{blue}{
-The HiCS algorithm is different from the direct search methods in
+The HiCS is different from the direct search methods in
 derivative-free optimization. The direct search methods choose a set of nonzero
 vectors deterministically or stochastically as search directions, then try to find a
 replaceable point along search directions with a step size until a certain stopping
 criterion is met.  
-The HiCS algorithm tries to find a neighbourhood that contains equilibrium points
+The HiCS tries to find a neighbourhood that contains equilibrium points
 rather than directly finding these equilibrium points.
 }
 Numerical results have been demonstrated that the HiCS has many 
@@ -227,7 +226,7 @@ properties of this algorithm by introducing a new concept.
 Meanwhile, a new strategy will be proposed to sample the search
 surface to address high dimension optimization problems.
 
-In the following, we will briefly introduce the HiCS algorithm and
+In the following, we will briefly introduce the HiCS and
 prove its finite-step convergence in Sec.\,\ref{sec:algorithm}. 
 The algorithm implementation is presented in Sec.\,\ref{sec:implement}.
 In particular, the new sampling strategy using the regular simplex is
@@ -236,11 +235,10 @@ The numerical experiments including high dimensional optimization
 problems are showcased in Sec.\,\ref{sec:experiment}. 
 Finally the conclusion and discussions are given in Sec.\,\ref{sec:conclusion}.
 
-\section{HiCS algorithm and convergence analysis}
+\section{HiCS and convergence analysis}
 \label{sec:algorithm}
 
-Before going further, a short introduction of the
-HiCS method is necessary.
+Before going further, a short introduction of the HiCS is necessary.
 We consider an unconstrained optimization problem 
 \begin{align}
 	\min_{x\in\Omega\subset\mathbb{R}^d} f(x),
@@ -278,7 +276,7 @@ is introduced.
 
 %Obviously, $\tilde{x}$ is a SMP if $\tilde{x}$ is a minimizer in
 %the neighborhood of $U(\tilde{x}, \rho)$. The opposite is not always true.
-With these notations, the HiCS algorithm can be presented
+With these notations, the HiCS can be presented
 as the Algorithm \ref{alg:HiCS}.
 \begin{algorithm}[H]
 	\caption{Hill-Climbing method with a stick (HiCS)}
@@ -295,11 +293,11 @@ as the Algorithm \ref{alg:HiCS}.
 		   a SMP is found， and end the iteration.
 \end{algorithmic}
 \end{algorithm}
-The approximation error of the HiCS algorithm
+The approximation error of the HiCS 
 can be measured by the distance between the SMP and a minimum.
 When the HiCS converges, the approximation error is smaller than the search radius
 $\rho$.
-From our experience, the HiCS approach usually terminates in finite steps. It is a satisfactory property. In what follows, we will
+From our experience, the HiCS usually terminates in finite steps. It is a satisfactory property. In what follows, we will
 prove the finite-step convergence with some mild conditions.
 
 \begin{theorem}[Finite-step convergence]
@@ -311,7 +309,7 @@ prove the finite-step convergence with some mild conditions.
 	Then Algorithm \ref{alg:HiCS} converges in finite steps.
 \end{theorem}
 \begin{proof}
-	Assume that the HiCS method generates an infinite pair sequence
+	Assume that the HiCS generates an infinite pair sequence
 	$\{x_n, f(x_n)\}_{x=0}^{\infty}$. From these assumptions,
 	it is obvious $f(x)$ is bounded. The decreasing sequence
 	$\{f(x_n)\}_{n=0}^\infty$ converges, and the bounded
@@ -338,7 +336,7 @@ prove the finite-step convergence with some mild conditions.
 \section{Implementation}
 \label{sec:implement}
 
-As mentioned above, the HiCS algorithm can converge in  
+As mentioned above, the HiCS can converge in  
 finite steps with mild assumptions for a given search radius $\rho$.
 \textcolor{blue}{
 In practical implementation, it requires to numerically imitate the minimization
@@ -398,7 +396,7 @@ through the Algorithm \ref{alg:simplex}.
 \end{algorithmic}
 \end{algorithm}
 
-If the HiCS method does not find a better state at the initial given regular
+If the HiCS does not find a better state at the initial given regular
 simplex, more points can be added to discretize $O(x_k, \rho)$ by 
 rotating regular simplex.
 For a given rotation angle
@@ -506,10 +504,10 @@ more significantly, the convergent ball contains a SMP.
 We will demonstrate this by several numerical experiments in
 Sec.\,\ref{sec:experiment}.
 Note that the convergent result provides a
-the good initial value for other optimization approaches, including 
+good initial value for other optimization approaches, including 
 directional search and model-based algorithms.
 
-We can also adjust the search radius $\rho$ in HiCS method 
+We can also adjust the search radius $\rho$ in HiCS 
 to improve the approximation precision as done in our previous
 work\,\cite{huang2017hill}. Algorithm\,\ref{alg:AHiCS} gives the
 process by adaptively changing $\rho$ when Algorithm\,\ref{alg:refined} fails
@@ -554,7 +552,7 @@ with different search radius.
 
 In this section, we choose two kinds of high-dimensional optimization functions, including the unimodal Gaussian function, multimodal problems, to demonstrate our proposed algorithm's performance. 
 These objective functions are all differentiable. However, it is
-emphasized that the HiCS method can be applied to non-differentiable problems. 
+emphasized that the HiCS can be applied to non-differentiable problems. 
 In Algorithm\,\ref{alg:refined}, the discretized points of 
 search set in each iteration are $m(n+1)$, $n$ is the dimension
 of objective function. If not specified, the maximum number of
@@ -573,11 +571,11 @@ The objective function is differentiable in $\bbR^d$, however,
 it quickly diffuses out towards zero out of the upside-down ``bell''. 
 
 We first investigate the convergent property of HiCS
-method for $10$ dimensional Gaussian function using 
+for $10$ dimensional Gaussian function using 
 $30$ experiments.
 In the set of experiments, the search radius $\rho$ is fixed as
 $0.3$, start points are all randomly generated in the space $[-1,
-1]^{10}$.  For each experiment, the HiCS method indeed converges and
+1]^{10}$.  For each experiment, the HiCS indeed converges and
 captures a neighborhood of the peak
 $0$ in finite iterations as Theorem \ref{thm:fsc} predicts.
 Fig.\,\ref{fig:exp1:randInit} gives the required iterations for
@@ -587,7 +585,7 @@ convergence in the $30$ numerical experiments.
 	  \includegraphics[scale=0.2]{../figures/gauss10Drandr0_3.png}
 	  \caption{
 	  The required iteration steps of the 
-	  HiCS algorithm for the Gaussian function
+	  HiCS for the Gaussian function
 	  \eqref{eqn:exp1} in $30$ runs with randomly generated start points
 	  in the space $[-1, 1]^{10}$, and $\rho=0.3$. 
 	  The flat dashed line shows the average.} 
@@ -596,14 +594,14 @@ convergence in the $30$ numerical experiments.
 In these $30$ runs, the average iterations of convergence is
 $20.5$, while the maximum is $27$, and the minimum is $9$.
 
-Then we decrease the search radius $\rho$ to $0.1$ to observe the
-HiCS method's behavior in $30$ numerical tests. 
+Then we decrease the search radius $\rho$ to $0.1$ to observe the behavior of
+HiCS in $30$ numerical tests. 
 The initial values are also randomly generated in the same region.  
 The required iterations for convergence are given in
 Fig.\,\ref{fig:exp1:randInitr0_1}.
 In these $30$ runs, the average iterations of convergence are
 $77.2$, while the maximum is $121$, and the minimum is $54$.
-From these results, the HiCS approach all converges in
+From these results, the HiCS converges in
 finite iterations. Meanwhile, it is obvious that the value of
 $\rho$ affects the number of iterations. 
 \begin{figure}[!htbp]
@@ -611,7 +609,7 @@ $\rho$ affects the number of iterations.
 	  \includegraphics[scale=0.2]{../figures/gauss10Drandr0_1.png}
 	  \caption{
 	  The required iteration steps of the 
-	  HiCS algorithm for the Gaussian function
+	  HiCS for the Gaussian function
 	  \eqref{eqn:exp1} in $30$ runs with randomly generated start points
 	  in the space $[-1, 1]^{10}$, and $\rho=0.1$. 
 	  The flat dashed line shows the average.} 
@@ -619,7 +617,7 @@ $\rho$ affects the number of iterations.
 \end{figure}
 
 
-In the following, we apply the adaptive HiCS algorithm to $1000$ dimensional
+In the following, we apply the adaptive HiCS to $1000$ dimensional
 Gaussian function. The initial value is randomly generated in
 domain $[-1000,1000]^{1000}$, the initial search radius $\rho_0 = 2.0$,
 and control factor $\eta=(\sqrt{5}-1)/2$. 
@@ -631,7 +629,7 @@ plots the changes of search radius $\rho$ and $\ell^2$-distance between
 the iterator and the global minimizer $x^*=0$, where $\|x\|_{\ell^2}=\left(
 (\sum_{i=1}^d x_i^2) / d\right)^{1/2}$.
 From these results, it can be found that the HiCS is convergent
-for each $\rho$. Based on the iteration, the adaptive HiCS method
+for each $\rho$. Based on the iteration, the adaptive HiCS 
 can approximate the global minimum by decreasing the search radius $\rho$. 
 Meanwhile, during the iteration, the global minimizer is always in the
 search neighbourhood. 
@@ -648,7 +646,7 @@ search neighbourhood.
 	  }
 %    \centerline{(b) }
 	\end{minipage}
-	  \caption{The iteration process of the adaptive HiCS method to 1000
+	  \caption{The iteration process of the adaptive HiCS to 1000
 	  dimensional Gaussian function. 
 	  Start point is randomly generated in the space $[-1000,
 	  1000]^{1000}$, $\rho=2.0$ and control factor
@@ -679,11 +677,11 @@ Ackley function has many local minima and a unique global
 minimum of $0$ with $f(0)=0$, which poses a risk for
 optimization algorithms to be trapped into one of local
 minima, such as the traditional hill-climbing method\,\cite{back1996evolutionary}.
-Our previous result has shown that the HiCS method can capture
+Our previous result has shown that the HiCS can capture
 different local minimizer and the global minimizer for 2
 dimensional problem through the choice of different $\rho$\,\cite{huang2017hill}.
 In this subsection, we will apply the improved HiCS
-algorithm to higher dimensional Ackley function. 
+to higher dimensional Ackley function. 
 In the following simulation, the control factor
 $\eta=(\sqrt{5}-1)/2$.
 
@@ -691,7 +689,7 @@ $\eta=(\sqrt{5}-1)/2$.
 \caption{
 The successful number $N_s$ of capturing the global minimizer for
 each different initial search radius $\rho_0$ when applying the
-adaptive HiCS method to $100$ dimensional Ackley function from 100
+adaptive HiCS to $100$ dimensional Ackley function from 100
 time numerical experiments. 
 The initial values are randomly generated in $[-10,10]^{100}$.
 }
@@ -712,7 +710,7 @@ The initial values are randomly generated in $[-10,10]^{100}$.
 \end{table}
 We first take $100$ dimensional Ackley function as an example to
 test the performance of our proposed algorithm for finding minimizers. 
-We run adaptive HiCS method 100 times for each different initial
+We run adaptive HiCS 100 times for each different initial
 search radius $\rho_0$ from $0.01$ to $2.0$.
 The start points are all randomly generated in $[-10,10]^{100}$.
 The convergent criterion is the search radius smaller than $10^{-10}$.
@@ -736,13 +734,13 @@ experiments have obtained other local minimizers.
 
 
 
-We continue to apply the adaptive HiCS method to $2500$ dimensional
+We continue to apply the adaptive HiCS to $2500$ dimensional
 Ackley function. The initial search radius is $\rho_0=3.5$, and
 the initial position is generated randomly in $[-10,10]^{2500}$. 
 The iteration process is presented in Fig.\,\ref{fig:ackley2500D:AHiCS}. 
 For such a high dimensional optimization problem, the iteration
 behavior is similar to previous numerical experiments. 
-When $\rho=3.5$, the HiCS method costs $90$ steps to achieve convergence.
+When $\rho=3.5$, the HiCS costs $90$ steps to achieve convergence.
 By further shrinking search radius, the adaptive HiCS can
 capture global minimizer. As one can see from 
 Fig\,\ref{fig:ackley2500D:AHiCS}, the global minimizer always
@@ -753,7 +751,7 @@ local basin even for such a high dimensional problem.
 	\centering
 	\includegraphics[scale=0.25]{../figures/ackley2500D.png}
 	\includegraphics[scale=0.25]{../figures/ackley2500D_dist.png}
-	  \caption{The iteration process of the adaptive HiCS method to 2500
+	  \caption{The iteration process of the adaptive HiCS to 2500
 	  dimensional Ackley function with initial search
 	  radius $\rho_0=3.5$. Start point is randomly generated in the
 	  space $[-10, 10]^{2500}$. } 
@@ -769,7 +767,7 @@ method\,\cite{powell2006newuoa}. The expression of the Arwhead function is
 \end{align}
 The least value of $f$ is zero, which occurs when the minimizer
 $x^*$ take the values $x_j=1$, $j=1,2,\dots,d-1$ and $x_d=0$. 
-We directly apply the adaptive HiCS method ($\eta=0.5$) to $1000$
+We directly apply the adaptive HiCS ($\eta=0.5$) to $1000$
 dimensional Arwhead function.
 The starting vector is given by $x_j^{(0)}=1$, $j=1,2,\dots,d$, as
 Powell done in Ref.\,\cite{powell2006newuoa}
@@ -778,13 +776,13 @@ The initial search radius $\rho_0=3$ and $\eta=(\sqrt{5}-1)/2$.
 	\centering
 	  \includegraphics[scale=0.25]{../figures/arwhead1000D.png}
 	  \includegraphics[scale=0.25]{../figures/arwhead1000D_dist.png}
-  \caption{The iteration process of the adaptive HiCS method
+  \caption{The iteration process of the adaptive HiCS 
   ($\eta=(\sqrt{5}-1)/2$) to the $1000$ dimensional Arwhead function.}
 	\label{fig:arwhead}
 \end{figure}
 
 Fig.\,\ref{fig:arwhead} gives the iteration process of
-applying the adaptive HiCS algorithm to $1000$ dimensional Arwhead function.
+applying the adaptive HiCS to $1000$ dimensional Arwhead function.
 The sequences of function values and iterators approximate the global minimum and the global minimizer. 
 The function value always decreases as the proposed algorithm
 indicates. While the distance $\|x^{(k)}-x^*\|_{\ell^2}$
@@ -794,7 +792,7 @@ minimizer $x^*$ is in the search neighborhood. Then when the distance is
 about $1.67\times 10^{-1}$, the $\rho$ is smaller than the
 distance, which indicates $x^*$ is not in the search neighborhood. 
 It means that the iterator locates in the valley of a local minimizer. 
-However, as iteration evolves, the HiCS algorithm can jump out of
+However, as iteration evolves, the HiCS can jump out of
 the local energy trap well and again contains the global
 minimizer in the search region.
 
@@ -806,11 +804,11 @@ minimizer in the search region.
 Inspired by the hill-climbing behavior of the blind, we have
 proposed a new derivative-free method to unconstrained
 optimization problems in our previous work\,\cite{huang2017hill}. 
-This paper establishes a rigorous mathematical theory of the HiCS
-algorithm, which theoretically guarantees the finite-step convergence
+This paper establishes a rigorous mathematical theory of the HiCS, which
+theoretically guarantees the finite-step convergence
 under mild conditions. Numerical results also have demonstrated
 the satisfactory property. 
-In practice, the computational complexity of the HiCS algorithm mainly
+In practice, the computational complexity of the HiCS mainly
 depends on the discretized strategy on search boundaries.
 We proposed a new simplex
 discretization method to save computational amount to ａddress high-dimensional problems in this work. Using the
