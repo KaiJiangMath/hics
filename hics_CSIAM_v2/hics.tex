@@ -131,8 +131,8 @@
 	%%%%% title : short title may not be used but TITLE is required.
 	% \title{TITLE}
 	% \title[short title]{TITLE}
-	\title[Hill-climbing method with a stick]{A finite-step convergent method 
-	of finding a suspected extreme point}
+	\title[HiCS]{\textcolor{blue}{A finite-step convergent method 
+	of finding a suspected extreme point}}
 
 	%%%%% author(s) :
 	
@@ -157,17 +157,18 @@
 	%%%%% Begin Abstract %%%%%%%%%%%
 	\begin{abstract}
 In our previous work [Adv. Appl. Math. Mech., 2017, 9: 307-323],
-we proposed a novel optimization algorithm, the hill-climbing method with a stick (HiCS), to address the unconstrained optimization. Numerical
-results have been demonstrated many satisfactory properties.
-However, there exist two unsolved issues: convergent
-analysis and application to high-dimensional problems. 
-In this paper, we will give a rigorous theory to guarantee the finite-step
-convergence property by introducing a new definition of the suspected
-extreme point. Meanwhile, an economic sampling
-strategy based on the regular simplex is
-developed to treat high-dimensional optimization. Finally, 
-the efficiency of the improved HiCS method is demonstrated by several
-high-dimensional examples.
+we proposed a novel optimization algorithm, the hill-climbing method with a stick
+(HiCS) method, to address the unconstrained optimization. 
+\textcolor{blue}{
+HiCS method can find a suspected extreme point rather than the minimizer which
+indicates the minimizers exist in a small domain with mild conditions.   
+In this paper, we give a rigorous theory to guarantee that the HiCS algorithm has 
+a finite-step convergence property.
+Meanwhile, an efficient discretization strategy based on the regular simplex is
+developed to treat high-dimensional optimization. 
+The power of the improved HiCS method is demonstrated by several
+high-dimensional benchmarks.
+}
 	\end{abstract}
 	%%%%% end %%%%%%%%%%%
 	
@@ -176,7 +177,7 @@ high-dimensional examples.
 	\ams{90C56, 90C59, 65K05.%The information of the AMS subject classification can be found in http://mathscinet.ams.org/msc/msc2010.html
 	}
 	\keywords{
-Hill-climbing method with a stick, Finite-step convergence, 
+Hill-climbing method with a stick, Suspected extreme point, Finite-step convergence, 
 Simplex, High-dimensional problems}
 	
 	%%%% maketitle %%%%%
@@ -194,7 +195,7 @@ determine the search direction and then the step length along with the search
 direction. Model-based approaches construct and utilize a related simple model to
 approximate the original problem in a trust region to guide the search process. 
 \textcolor{blue}{
-Finding equilibrium points in a proper search domain is important 
+Finding equilibrium points in a proper search domain is very important 
 during the optimization process.
 }
 Inspired by the behavior of the blind for climbing hill, we
