@@ -249,23 +249,26 @@ where the objective function $f(x):\bbR^d\rightarrow \bbR$.
 Let $\rho$ be the search radius, $O(x_k, \rho)=\{x:
 \|x-x_k \|=\rho\}$ be the search surface at the
 $k$-th iteration with radius $\rho$. $\|\cdot \|$ is the common
-norm in $\bbR^d$ space.  $U(x_k, \rho)$ is the neighbourhood of
-$x_k$ with radius of $\rho$.  To illustrate the algorithm
+norm in $\bbR^d$ space. Denote $U(x_k, \rho)$ is the neighbourhood of
+$x_k$ with radius of $\rho$.  
+$\overline{U}(\tilde{x}, \rho)$ is the closure of $U(\tilde{x}, \rho)$, i.e., 
+$\overline{U}(\tilde{x}, \rho) = U(\tilde{x}, \rho)\cup O(\tilde{x}, \rho) $.
+To illustrate the algorithm
 more accurately, an useful concept of the \textit{suspected extreme point}
 is introduced.
 
 \textcolor{blue}{
 \begin{definition}	
 	For a given objective function $f(x)$ and a positive constant 
-	$\rho>0$, $\tilde{x}$ is a \textit{suspected extreme point} if
+	$\rho>0$, $\tilde{x}$ is a \textit{suspected extreme point} (SEP) if
 	$f(\tilde x)\leq f(x)$ or $f(\tilde x)\geq f(x)$, for each $x \in O(\tilde{x},\rho)$.
 	If $f(\tilde x) \leq f(x)$ for all $x\in O(\tilde{x},\rho)$,
 	$\tilde{x}$ is the \textit{suspected minimum point (SMP)}.
 \end{definition}
 \begin{remark}
-	Denote $\overline{U}(\tilde{x}, \rho)$ is the closure of $U(\tilde{x}, \rho)$, i.e., 
-	$\overline{U}(\tilde{x}, \rho) = U(\tilde{x}, \rho)\cup O(\tilde{x}, \rho) $.
-	If $f(x)$ is continuous in domain $\overline{U}(\tilde{x}, \rho)$,
+	Note that the SMP might be not a minimizer. If one finds the SMP which means
+	that the minimizer point is close to it.
+	If $f(x)$ is continuous in $\overline{U}(\tilde{x}, \rho)$,
 	$\tilde x$ is a SMP, then there exists at least a minimizer in $U(\tilde x,
 	\rho)$ or $f(x)$ is constant on $\overline{U}(\tilde x, \rho)$.
 \end{remark}
@@ -336,6 +339,10 @@ prove the finite-step convergence with some mild conditions.
 
 As mentioned above, the HiCS algorithm can converge in  
 finite steps with mild assumptions for a given search radius $\rho$.
+\textcolor{blue}{
+In practical implementation, it requires to numerically imitate the minimization
+process of finding $\tilde{x}$ in the Algorithm \ref{alg:HiCS}.
+}
 The search surface $O(x_k,\rho)$ in
 each iteration shall be discretized in the numerical implementation.
 Without a priori information of the objective function,
