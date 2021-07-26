@@ -290,11 +290,11 @@ as the Algorithm \ref{alg:HiCS}.
 	\STATE \hspace{0.5cm} If $f(\bar x)<f(x_k)$, then set $x_{k+1}= \bar{x}$.
 		  \\
 	\STATE \hspace{0.5cm} Otherwise, declare that 
-		   a SMP is found， and end the iteration.
+		   a SMP is found, and end the iteration.
 \end{algorithmic}
 \end{algorithm}
 \textcolor{blue}{ 
-In the following, we will give the finite-step convergent property of the Algorithm
+In what follows, we will give the finite-step convergent property of the Algorithm
 \ref{alg:HiCS}.
 }
 \begin{theorem}[Finite-step convergence]
@@ -329,28 +329,30 @@ In the following, we will give the finite-step convergent property of the Algori
 	Obviously, $\|x^*-x_*\|=\rho$, and $f(x^*)=f(x_*)=\alpha$ 
 	which clearly contradicts the assumption.
 \end{proof}
-The approximation error of the HiCS can be measured by the distance between the
-SMP and a minimum.  When the HiCS converges, the approximation error is smaller
-than the search radius $\rho$.
-From our experience, the HiCS usually terminates in finite steps. It is a
-satisfactory property. In what follows, we will
-prove the finite-step convergence with some mild conditions.
+\textcolor{blue}{ 
+Theorem \ref{thm:fsc} demonstrates the HiCS can converge to a SMP $x^k$ in finite
+steps under reasonable conditions. If the stopping criterion is met, it implies
+that there exist minimizers in $U(x^k, \rho)$. 
+}
+
+%The approximation error of the HiCS can be measured by the distance between the
+%SMP and a minimum.  When the HiCS converges, the approximation error is smaller
+%than the search radius $\rho$.
+%From our experience, the HiCS usually terminates in finite steps. It is a
+%satisfactory property. In what follows, we will
+%prove the finite-step convergence with some mild conditions.
 
 
 
 \section{Implementation}
 \label{sec:implement}
 
-\textcolor{blue}{ 
-From the Algorithm \ref{alg:HiCS}, one can find that, at each
-iteration, the HiCS minimizes a $(d-1)$-dimensional subproblem for a
-$d$-dimensional objective function.
-}
-
 As mentioned above, the HiCS can converge in  
 finite steps with mild assumptions for a given search radius $\rho$.
-\textcolor{blue}{
-In practice, it requires to numerically imitate the minimization
+\textcolor{blue}{ 
+At each iteration, the HiCS minimizes a
+$(d-1)$-dimensional subproblem for a $d$-dimensional objective function.
+In practice, HiCS requires to numerically imitate the minimization
 process of finding $\tilde{x}$ in the Algorithm \ref{alg:HiCS}.
 }
 In other words, the search surface $O(x_k,\rho)$ in
