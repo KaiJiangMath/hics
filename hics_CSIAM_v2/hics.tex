@@ -187,20 +187,20 @@ Simplex, High-dimensional problems}
 \label{sec:intro}
 
 \textcolor{blue}{
-Classic optimization approaches are developed to find the extreme point. }
-These optimization approaches can be divided into broadly two
+Classic optimization approaches are developed to directly find the extreme point}
+which can be divided into two
 classes, directional search and model-based\,\cite{sun2006optimization,
 nocedal2006numerical, conn2009introduction}.  Directional search algorithms first
 determine the search direction and then the step length along with the search
 direction. Model-based approaches construct and utilize a related simple model to
 approximate the original problem in a trust region to guide the search process. 
 \textcolor{blue}{
-Finding extreme points in a proper search domain is very important 
-during the optimization process.
+Before finding the extreme point, an important thing is 
+determining that there exist minimizers in the search domain.
 }
 Inspired by the behavior of the blind for climbing hill, we
-proposed a new approach, the HiCS, to treat unconstrained optimization problems in
-our previous work\,\cite{huang2017hill}.
+proposed a new approach, the HiCS, to \textcolor{blue}{greatly shrink the research
+domain which includes minimizers}\,\cite{huang2017hill}.
 The main idea of the HiCS, at each search step, is comparing
 function values on a surface surrounding the current iterator.
 It requires a comparison of function values, and does not need the search direction
@@ -211,28 +211,29 @@ derivative-free optimization. The direct search methods choose a set of nonzero
 vectors deterministically or stochastically as search directions, then try to find a
 replaceable point along search directions with a step size until a certain stopping
 criterion is met.  
-The HiCS tries to find a neighbourhood that contains equilibrium points
-rather than directly finding these equilibrium points.
+The HiCS can find a neighbourhood that contains extreme value points
+rather than directly finding them. 
 }
 Numerical results have been demonstrated that the HiCS has many 
 satisfactory properties, including being easy to implement,
 a unique parameter to be modulated, and having the capacity
-for finding the local and global maximum. 
+of \textcolor{blue}{finding a small domain of the local and global minimizer. }
 However, there are two unsolved problems in the
 previous work, including a rigorous theoretical explanation and
-the treatment of high-dimensional optimization.
+the treatment of high-dimensional problems.
 This paper will give the convergence analysis and related
-properties of this algorithm by introducing a new concept. 
-Meanwhile, a new strategy will be proposed to sample the search
-surface to address high dimension optimization problems.
+properties of this algorithm by introducing a new concept, the suspected extreme
+point.
+Meanwhile, a new strategy will be proposed to discretize the search
+surface for high-dimensional objective functions.
 
 In the following, we will briefly introduce the HiCS and
 prove its finite-step convergence in Sec.\,\ref{sec:algorithm}. 
 The algorithm implementation is presented in Sec.\,\ref{sec:implement}.
 In particular, the new sampling strategy using the regular simplex is
 also given in this section.
-The numerical experiments including high dimensional optimization
-problems are showcased in Sec.\,\ref{sec:experiment}. 
+The numerical experiments including high-dimensional benchmarks
+are showcased in Sec.\,\ref{sec:experiment}. 
 Finally the conclusion and discussions are given in Sec.\,\ref{sec:conclusion}.
 
 \section{HiCS and convergence analysis}
@@ -252,9 +253,8 @@ norm in $\bbR^d$ space. Denote $U(x_k, \rho)$ is the neighbourhood of
 $x_k$ with radius of $\rho$.  
 $\overline{U}(\tilde{x}, \rho)$ is the closure of $U(\tilde{x}, \rho)$, i.e., 
 $\overline{U}(\tilde{x}, \rho) = U(\tilde{x}, \rho)\cup O(\tilde{x}, \rho) $.
-To illustrate the algorithm
-more accurately, an useful concept of the \textit{suspected extreme point}
-is introduced.
+To illustrate the algorithm more accurately, an useful concept of the
+\textit{suspected extreme point} is proposed.
 
 \textcolor{blue}{
 \begin{definition}	
@@ -265,7 +265,7 @@ is introduced.
 	$\tilde{x}$ is the \textit{suspected minimum point (SMP)}.
 \end{definition}
 \begin{remark}
-	Note that the SMP might be not a minimizer. If one finds the SMP which means
+	Note that the SMP might be not a minimizer. If the SMP is found which means
 	that the minimizer point is close to it.
 	If $f(x)$ is continuous in $\overline{U}(\tilde{x}, \rho)$,
 	$\tilde x$ is a SMP, then there exists at least a minimizer in $U(\tilde x,
@@ -285,7 +285,7 @@ as the Algorithm \ref{alg:HiCS}.
 	\STATE \textbf{Initialization:} Choose $x_0$ and $\rho$.
 	\STATE \textbf{For} $k=0,1,2,\dots$
 	\STATE \hspace{0.5cm} 
-	Find $\bar{x}=\argmin\limits_{y\in O(x_k,~ \rho)} f(y)$.
+	\textcolor{blue}{Find $\bar{x}=\argmin_{x\in O(x_k,~ \rho)} f(x)$. }
 			\\
 	\STATE \hspace{0.5cm} If $f(\bar x)<f(x_k)$, then set $x_{k+1}= \bar{x}$.
 		  \\
@@ -293,13 +293,10 @@ as the Algorithm \ref{alg:HiCS}.
 		   a SMP is found， and end the iteration.
 \end{algorithmic}
 \end{algorithm}
-The approximation error of the HiCS 
-can be measured by the distance between the SMP and a minimum.
-When the HiCS converges, the approximation error is smaller than the search radius
-$\rho$.
-From our experience, the HiCS usually terminates in finite steps. It is a satisfactory property. In what follows, we will
-prove the finite-step convergence with some mild conditions.
-
+\textcolor{blue}{ 
+In the following, we will give the finite-step convergent property of the Algorithm
+\ref{alg:HiCS}.
+}
 \begin{theorem}[Finite-step convergence]
 	\label{thm:fsc}
 	Suppose that objective function $f(x)$ is continuous and the
@@ -332,18 +329,32 @@ prove the finite-step convergence with some mild conditions.
 	Obviously, $\|x^*-x_*\|=\rho$, and $f(x^*)=f(x_*)=\alpha$ 
 	which clearly contradicts the assumption.
 \end{proof}
+The approximation error of the HiCS can be measured by the distance between the
+SMP and a minimum.  When the HiCS converges, the approximation error is smaller
+than the search radius $\rho$.
+From our experience, the HiCS usually terminates in finite steps. It is a
+satisfactory property. In what follows, we will
+prove the finite-step convergence with some mild conditions.
+
+
 
 \section{Implementation}
 \label{sec:implement}
 
+\textcolor{blue}{ 
+From the Algorithm \ref{alg:HiCS}, one can find that, at each
+iteration, the HiCS minimizes a $(d-1)$-dimensional subproblem for a
+$d$-dimensional objective function.
+}
+
 As mentioned above, the HiCS can converge in  
 finite steps with mild assumptions for a given search radius $\rho$.
 \textcolor{blue}{
-In practical implementation, it requires to numerically imitate the minimization
+In practice, it requires to numerically imitate the minimization
 process of finding $\tilde{x}$ in the Algorithm \ref{alg:HiCS}.
 }
-The search surface $O(x_k,\rho)$ in
-each iteration shall be discretized in the numerical implementation.
+In other words, the search surface $O(x_k,\rho)$ in
+each iteration shall be discretized in the implementation.
 Without a priori information of the objective function,
 the discretization principles for $O(x_k,\rho)$
 should include symmetric and uniform distribution and as few discretization points as possible.
