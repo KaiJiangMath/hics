@@ -142,7 +142,7 @@
 	% use \emails to provide email addresses of authors
 	% e.g. below example has 3 authors, first author is also the corresponding
 	%      author, author 1 and 3 having the same address.
-	\author[Yunqing Huang and Kai Jiang]{
+	\author[Y. Huang and K. Jiang]{
 	Yunqing Huang\affil{1}\corrauth~and Kai Jiang\affil{1} }
 	\address
 	{ \affilnum{1}\ School of Mathematics and Computational Science, 
@@ -199,7 +199,7 @@ Before finding the extreme point, an important thing is
 determining that there exist minimizers in the search domain.
 }
 Inspired by the behavior of the blind for climbing hill, we
-proposed a new approach, the HiCS, to \textcolor{blue}{greatly shrink the research
+proposed a new approach, the HiCS, to \textcolor{blue}{greatly shrink the search
 domain which includes minimizers}\,\cite{huang2017hill}.
 The main idea of the HiCS, at each search step, is comparing
 function values on a surface surrounding the current iterator.
@@ -294,15 +294,15 @@ as the Algorithm \ref{alg:HiCS}.
 \end{algorithmic}
 \end{algorithm}
 \textcolor{blue}{ 
-In what follows, we will give the finite-step convergent property of the Algorithm
+In what follows, we will discuss the convergent property of the Algorithm
 \ref{alg:HiCS}.
 }
 \begin{theorem}[Finite-step convergence]
 	\label{thm:fsc}
-	Suppose that objective function $f(x)$ is continuous and the
+	Suppose that the objective function $f(x)$ is continuous and the
 	search domain $\Omega$ is a compact set.
 	If there are not two SMPs $x_*$ and $x^*$ satisfying 
-	$\|x_*-x^*\|=\rho$ and $f(x^*)=f(x_*)=\alpha$.
+	$\|x_*-x^*\|=\rho$ and $f(x^*)=f(x_*)$.
 	Then Algorithm \ref{alg:HiCS} converges in finite steps.
 \end{theorem}
 \begin{proof}
@@ -330,9 +330,16 @@ In what follows, we will give the finite-step convergent property of the Algorit
 	which clearly contradicts the assumption.
 \end{proof}
 \textcolor{blue}{ 
-Theorem \ref{thm:fsc} demonstrates the HiCS can converge to a SMP $x^k$ in finite
+Theorem \ref{thm:fsc} demonstrates that the HiCS can converge to a SMP $x^k$ in finite
 steps under reasonable conditions. If the stopping criterion is met, it implies
-that there exist minimizers in $U(x^k, \rho)$. 
+that there exist minimizers in $U(x^k, \rho)$. The distance between the SMP
+$x^k$ and minimizers is smaller than $\rho$.
+Therefore, the HiCS can efficiently shrink search domain $\Omega$ to the $U(x^k,
+\rho)$.  At each iteration, the HiCS minimizes a
+$(d-1)$-dimensional subproblem of the $d$-dimensional objective function.
+In practice, HiCS requires to numerically solve the subproblem
+in the Algorithm \ref{alg:HiCS}.
+Next, we will discuss the implementation detailedly. 
 }
 
 %The approximation error of the HiCS can be measured by the distance between the
@@ -347,26 +354,25 @@ that there exist minimizers in $U(x^k, \rho)$.
 \section{Implementation}
 \label{sec:implement}
 
-As mentioned above, the HiCS can converge in  
-finite steps with mild assumptions for a given search radius $\rho$.
 \textcolor{blue}{ 
-At each iteration, the HiCS minimizes a
-$(d-1)$-dimensional subproblem for a $d$-dimensional objective function.
-In practice, HiCS requires to numerically imitate the minimization
-process of finding $\tilde{x}$ in the Algorithm \ref{alg:HiCS}.
+As mentioned above, at each iteration, the HiCS has to discretize 
+the $(d-1)$-dimensional search surface $O(x_k,\rho)$
+to numerically imitate the minimization process of finding $\tilde{x}$.
+How to design an efficient method to discretize $O(x_k,\rho)$ is skillful. 
 }
-In other words, the search surface $O(x_k,\rho)$ in
-each iteration shall be discretized in the implementation.
-Without a priori information of the objective function,
-the discretization principles for $O(x_k,\rho)$
-should include symmetric and uniform distribution and as few discretization points as possible.
-Our previous results have demonstrated that the uniformly distributed
+When without a priori information of the objective function, the discretization
+principles for $O(x_k,\rho)$ should include symmetric and uniform distribution
+and as few discretization points as possible.
+Previous results have shown that the uniformly distributed
 discretization method based on the spherical coordinate
 can be used to find the SMP\,\cite{huang2017hill}. 
-The generated discretization points are as large as $2m^{d-1}$ in
-each iteration, $m$ is the number of refinement, $d$ is the dimensions of
-optimization problems. It restricts the
-application to high-dimensional problems. 
+The generated discretization points are as large as \textcolor{blue}{$2^{d}m$} in
+each iteration, $m$ is the number of refinement, $d$ is the dimension of
+the objective problem. 
+\textcolor{blue}{ 
+The discretization points increase  
+}
+It restricts the application to high-dimensional problems. 
 To overcome this limitation, it needs to develop a new
 strategy to discretize $O(x_k,\rho)$ with fewer discretization points
 but still satisfying these properties.
