@@ -82,7 +82,6 @@
 
 
 
-
 \newcommand\tbbint{{-\mkern -16mu\int}}
 \newcommand\tbint{{\mathchar '26\mkern -14mu\int}}
 \newcommand\dbbint{{-\mkern -19mu\int}}
@@ -370,20 +369,19 @@ The generated discretization points are as large as \textcolor{blue}{$2^{d}m$} i
 each iteration, $m$ is the number of refinement, $d$ is the dimension of
 the objective problem. 
 \textcolor{blue}{ 
-The discretization points increase  
+The power increasing discretization points as the dimension $d$
+restricts the application to high-dimensional problems. 
 }
-It restricts the application to high-dimensional problems. 
 To overcome this limitation, it needs to develop a new
-strategy to discretize $O(x_k,\rho)$ with fewer discretization points
-but still satisfying these properties.
+strategy to discretize the search surface $O(x_k,\rho)$ with fewer
+discretization points but still satisfying these properties.
 A reasonable requirement for discretization points should be
-linear or quasi-linear growth as the problem's dimension increases.
+linear or quasi-linear growth as the dimension of the objective problem increases.
 In this work, we will use the regular simplex and its rotations to
-discretize the search surface $O(x_k,\rho)$. 
-The computational complexity grows linearly as the
-dimension of optimization problems increases.
+discretize $O(x_k,\rho)$. 
+The computational complexity grows linearly as $d$ increases.
 
-The $d$-dimension regular simplex is a congruent polytope of
+The $d$-dimensional regular simplex is a congruent polytope of
 $\mathbb{R}^d$ with a set of points $\{a_1,\dots,a_d,a_{d+1}\}$,
 and all pairwise distances $1$.
 Its Cartesian coordinates can be obtained from the following two properties:
@@ -406,7 +404,7 @@ through the Algorithm \ref{alg:simplex}.
 	\STATE $x(i,i)=\sqrt{1-\sum_{k=1}^{i-1} [x(k, i)]^{2}}$
 		\FOR {$j=i+1:1:d+1$}
 		\STATE $x(i,j)
-		=-\frac{1}{x(i,i)}\Big[\frac{1}{d}+x(1:i-1, i)^T \cdot
+		=-\dfrac{1}{x(i,i)}\Big[\dfrac{1}{d}+x(1:i-1, i)^T \cdot
 		x(1:i-1, j\,)\Big]$
 		\ENDFOR
 	\ENDFOR
@@ -415,12 +413,10 @@ through the Algorithm \ref{alg:simplex}.
 \end{algorithmic}
 \end{algorithm}
 
-If the HiCS does not find a better state at the initial given regular
-simplex, more points can be added to discretize $O(x_k, \rho)$ by 
-rotating regular simplex.
-For a given rotation angle
-$\theta=(\theta_1,\theta_2,\dots,\theta_{d})$, the
-rotation matrix $\bm Q$ is given as 
+If the HiCS does not find a better state at the initial given regular simplex,
+more points can be added to discretize $O(x_k, \rho)$ by rotating regular
+simplex. For a given rotation angle $\theta=(\theta_1,\theta_2,\dots,\theta_{d})$, 
+the rotation matrix $\bm Q$ is given as 
 \begin{equation}
 \begin{aligned}
 	{\bm Q} = 
@@ -462,50 +458,53 @@ Then vertices of new simplex are
 \end{align}
 \begin{figure}[!htbp]
 	\centering
-	\subfigure[2D regular simplexes]{
+	\subfigure[Two-dimensional regular simplexes with rotation]{
 %      \includegraphics[scale=0.3]{../figures/2Dsketch.png}
-		  \includegraphics[scale=0.08]{../figures/2D1.png}
-		  \includegraphics[scale=0.08]{../figures/2D2.png}
-		  \includegraphics[scale=0.08]{../figures/2D3.png}
-		  \includegraphics[scale=0.08]{../figures/2D4.png}
+		  \includegraphics[scale=0.1]{../figures/2D1.png}
+		  \includegraphics[scale=0.1]{../figures/2D2.png}
+		  \includegraphics[scale=0.1]{../figures/2D3.png}
+		  \includegraphics[scale=0.1]{../figures/2D4.png}
 	  }
-	\subfigure[3D regular simplexes]{
-	  \includegraphics[scale=0.4]{../figures/3Dsketch.png}
+	\subfigure[Three-dimensional regular simplexes with rotation]{
+	  \includegraphics[scale=0.46]{../figures/3Dsketch.png}
 	  }
-	\caption{The first regular simplexes of sampling the search set $O(x, \rho)$.}
+	\caption{The regular simplexes of discretizing the search set $O(x_k, \rho)$
+	which obeys uniform distribution principle.}
 \label{fig:obset:sketch}
 \end{figure}
-When without a priori knowledge of objective function, the
-uniform distribution of these regular simplexes is another
-principle to be obeyed.
-%%%% How to rotate
-Standard schematic simplexes of 2D and
-3D cases are given in Fig.\,\ref{fig:obset:sketch}.
-It should be noted that there are also other strategies to
-discretize $O(x_k,\rho)$. 
-For example, the new adding discretized points 
-depend on the known information of objective functions. 
+\textcolor{blue}{
+Standard two- and three-dimensional rotational simplexes which obey the uniform
+distribution principle are shown in Fig.\,\ref{fig:obset:sketch}.
+It should be noted that there could be other strategies to discretize
+$O(x_k,\rho)$ if more information is considered. 
+For example, the new adding discretized points can be concentrated on these
+areas that the function values have a sufficient decrease.
+}
 
-To save computational amount, we choose a dynamic refinement
-strategy to discretize the search surface and compare function
-values in practice. 
+To further save computational amount, we choose a dynamic refinement
+strategy to discretize the search surface and minimize the subproblem 
+in practical implementation.
+\Note{
+These simplexes satisfies the uniform distribution principle.
+}
 Based on the dynamic refinement strategy, we propose the
-practical HiCS, see Algorithm \ref{alg:refined}. The computational amount is not
-larger than $m_{\max}(d+1)$ in each iteration, which is linearly
-dependent on the dimension of optimization problems,
-$m_{\max}$ is the maximum number of rotation.
+practical HiCS, as the Algorithm \ref{alg:refined} shows. The computational
+amount is not larger than $(d+1)m_{\max}$ in each iteration, 
+$m_{\max}$ is the maximum number of rotation,
+which is linearly dependent on the dimension of optimization problems.
 Whence, it allows us to treat high-dimensional optimization problems.
 
-\begin{algorithm}[H]
+\begin{algorithm}[!hbpt]
 	\caption{Practical HiCS}
 	\label{alg:refined}
 \begin{algorithmic}[1]
-	\STATE Input $x_0$, $\rho$, and $m_{\max}$
+	\STATE Input $x_0$, $\rho>0$, and $m_{\max}\in \mathbb{Z}^+$
 	\FOR {$k=0,1,2,\cdots$}
 		\STATE Set $m=0$
 		\IF {$m\leq m_{\max}$}
-			\STATE Discretize $O(x_k,\rho)$ to obtain $O^m_h(x_k,\rho)$
-			\IF {$\exists x_j \in O^m_h(x_k,\rho)$, s.t.  $f(x_j)<f(x_k)$}
+			\STATE Discretize $O(x_k,\rho)$ to obtain $O^m_h(x_k,\rho)$. 
+			\textcolor{blue}{ Find $x_j=\argmin_{x\in O^m_h(x_k,\rho)} f(x)	$. }
+			\IF { $f(x_j)<f(x_k)$}
 				\STATE Set $x_{k+1}=x_j$, and $m=m_{\max}+1$
 			\ELSE
 				\STATE Set $m = m+1$
@@ -543,8 +542,8 @@ with different search radius.
 	\caption{Adaptive HiCS}
 	\label{alg:AHiCS}
 \begin{algorithmic}[1]
-	\STATE Input $x_0$, $\rho$, $m_{\max}$,
-	$\varepsilon$ and $\eta>0$
+	\STATE Input $x_0$, $\rho$, 
+	$\varepsilon$ and $\eta>0$ and  $m_{\max}\in \mathbb{Z}^+$
 	\IF {  $\rho>\varepsilon$}
 	\FOR {$k=0,1,2,\cdots$}
 		\STATE Set $m=0$
