@@ -488,11 +488,13 @@ in practical implementation.
 These simplexes satisfies the uniform distribution principle.
 }
 Based on the dynamic refinement strategy, we propose the
-practical HiCS, as the Algorithm \ref{alg:refined} shows. The computational
-amount is not larger than $(d+1)m_{\max}$ in each iteration, 
+practical HiCS, as the Algorithm \ref{alg:refined} shows.
+For a given search radius $\rho$, the computational
+amount of the HiCS is not larger than $(d+1)m_{\max}$ in each iteration, 
 $m_{\max}$ is the maximum number of rotation,
-which is linearly dependent on the dimension of optimization problems.
-Whence, it allows us to treat high-dimensional optimization problems.
+which is linearly dependent on the spatial dimension $d$.
+Therefore, this strategy can allow us to treat high-dimensional optimization
+problems due to the economical computational cost.
 
 \begin{algorithm}[!hbpt]
 	\caption{Practical HiCS}
@@ -516,53 +518,64 @@ Whence, it allows us to treat high-dimensional optimization problems.
 \end{algorithmic}
 \end{algorithm}
 
-It is evident that once the HiCS converges,
-the search space shrinks to a ball with the radius $\rho$, and
-more significantly, the convergent ball contains a SMP.
+It is evident that once the HiCS converges, the search space shrinks to a
+neighborhood of the SMP with the radius $\rho$, and more significantly, the
+convergent neighborhood contains minimizers. 
 We will demonstrate this by several numerical experiments in
-Sec.\,\ref{sec:experiment}.
-Note that the convergent result provides a
-good initial value for other optimization approaches, including 
-directional search and model-based algorithms.
-
-We can also adjust the search radius $\rho$ in HiCS 
-to improve the approximation precision as done in our previous
-work\,\cite{huang2017hill}. Algorithm\,\ref{alg:AHiCS} gives the
-process by adaptively changing $\rho$ when Algorithm\,\ref{alg:refined} fails
-to find $f(\bar{x})<f(x_k)$, $\bar{x}\in O(x_k, \rho)$ for a fixed $\rho$.
-The approximation distance between convergent point and a SMP is
-improved when Algorithm\,\ref{alg:AHiCS} converges when $\eta <1$.
-Certainly, the search surface can be expanded by setting
-control factor $\eta>1$ if required. 
-The Algorithm\,\ref{alg:AHiCS} can be restarted by
-fixed $k$ iterations or by other criterions
-with different search radius.
+Sec.\,\ref{sec:experiment}. Note that the convergent result also provides a good
+initial value for other optimization approaches, including directional search
+and model-based algorithms.  
+\Note{We can also modify the HiCS to find the minimizer by changing the search
+radius $\rho$ as shown in the Algorithm\,\ref{alg:AHiCS}.
+When the Algorithm\,\ref{alg:refined} finds a SMP for a fixed $\rho$,
+the Algorithm\,\ref{alg:AHiCS} can further 
+gives the process by contracting $\rho$ 
+The approximation distance between convergent
+point and a SMP is improved when Algorithm\,\ref{alg:AHiCS} converges when $\eta
+<1$.  Certainly, the search surface can be expanded by setting control factor
+$\eta>1$ if required.  The Algorithm\,\ref{alg:AHiCS} can be restarted by fixed
+$k$ iterations or by other criterions with different search radius.
+}
 
 \begin{algorithm}[H]
 	\caption{Adaptive HiCS}
 	\label{alg:AHiCS}
 \begin{algorithmic}[1]
-	\STATE Input $x_0$, $\rho$, 
-	$\varepsilon$ and $\eta>0$ and  $m_{\max}\in \mathbb{Z}^+$
-	\IF {  $\rho>\varepsilon$}
-	\FOR {$k=0,1,2,\cdots$}
-		\STATE Set $m=0$
-		\IF {$m\leq m_{\max}$}
-			\STATE Discretize $O(x_k,\rho)$ to obtain $O^m_h(x_k,\rho)$
-			\IF {$\exists x_j \in O^m_h(x_k,\rho)$, s.t.  $f(x_j)<f(x_k)$}
-			\STATE Set $x_{k+1}=x_j$, 
-				and $m=m_{\max}+1$
-			\ELSE
-				\STATE Set $m = m+1$
-			\ENDIF
-		\ELSE
-			\STATE Set $\rho=\eta\rho$
+	\STATE Input $x_0$, $\rho$, $\varepsilon$ and $\eta>0$ and $m_{\max}\in \mathbb{Z}^+$
+	\IF {$\rho>\varepsilon$}
+	\STATE Carry out the practice HiCS method (see the Algorithm \ref{alg:refined})
+		\IF {a SEP is found}
+			\STATE Set $\rho=\eta \rho$
 		\ENDIF
-		\STATE Set $k=k+1$
-	\ENDFOR
 \ENDIF
 \end{algorithmic}
 \end{algorithm}
+
+%\begin{algorithm}[H]
+%    \caption{Adaptive HiCS}
+%    \label{alg:AHiCS}
+%\begin{algorithmic}[1]
+%    \STATE Input $x_0$, $\rho$, 
+%    $\varepsilon$ and $\eta>0$ and  $m_{\max}\in \mathbb{Z}^+$
+%    \IF {  $\rho>\varepsilon$}
+%    \FOR {$k=0,1,2,\cdots$}
+%        \STATE Set $m=0$
+%        \IF {$m\leq m_{\max}$}
+%            \STATE Discretize $O(x_k,\rho)$ to obtain $O^m_h(x_k,\rho)$
+%            \IF {$\exists x_j \in O^m_h(x_k,\rho)$, s.t.  $f(x_j)<f(x_k)$}
+%            \STATE Set $x_{k+1}=x_j$, 
+%                and $m=m_{\max}+1$
+%            \ELSE
+%                \STATE Set $m = m+1$
+%            \ENDIF
+%        \ELSE
+%            \STATE Set $\rho=\eta\rho$
+%        \ENDIF
+%        \STATE Set $k=k+1$
+%    \ENDFOR
+%\ENDIF
+%\end{algorithmic}
+%\end{algorithm}
 
 
 \section{Numerical results}
