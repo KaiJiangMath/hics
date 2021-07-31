@@ -155,18 +155,40 @@
 	
 	%%%%% Begin Abstract %%%%%%%%%%%
 	\begin{abstract}
+		{
+%\Notsure{
+%In our previous work [Adv. Appl. Math. Mech., 2017, 9: 307-323],
+%we proposed a novel algorithm, the hill-climbing method with a stick
+%(HiCS), to address the unconstrained optimization. 
+%HiCS can find a suspected extreme point (SEP) rather than a minimizer. The SEP
+%indicates the minimizers exist in a small domain with mild conditions.   
+%In this paper, we give a rigorous theory to guarantee that the HiCS has 
+%a finite-step convergence property.
+%Meanwhile, an efficient discretization strategy based on the regular simplex is
+%developed to treat high-dimensional problems. 
+%The power of the improved HiCS is demonstrated by several
+%high-dimensional benchmarks.
+%}
+\Note{
+Determining a area that contains minimizers is a prerequisite for the
+success of optimization methods.  
 In our previous work [Adv. Appl. Math. Mech., 2017, 9: 307-323],
-we proposed a novel optimization algorithm, the hill-climbing method with a stick
-(HiCS), to address the unconstrained optimization. 
-\textcolor{blue}{
-HiCS can find a suspected extreme point rather than the minimizer which
-indicates the minimizers exist in a small domain with mild conditions.   
-In this paper, we give a rigorous theory to guarantee that the HiCS has 
-a finite-step convergence property.
-Meanwhile, an efficient discretization strategy based on the regular simplex is
-developed to treat high-dimensional problems. 
-The power of the improved HiCS is demonstrated by several
-high-dimensional benchmarks.
+we proposed a novel algorithm, the hill-climbing method with a stick
+(HiCS), to find a satisfactory domain. 
+The HiCS is easy to implement and has only one parameter, the search radius, to be adjusted.
+In this paper, we give a rigorously analysis to guarantee that the HiCS converges to 
+a suspected minimum point (SMP) within finite steps.
+The SMP is a new concept that might be not a minimizer but indicates the distance between
+the SMP and minimizers being smaller than the search radius.
+To address high dimensional problems, we propose an efficient method
+to discretize subproblem through simplex and its rotaion in which the discretization
+points linearly increase as the spatial dimension. We apply the HiCS to several
+benchmarks.  Numerical results demonstrate that the HiCS can efficiently obtain a
+small neighbourhood that contains local minimizers, even the global minimizer.
+The obtained results by the HiCS provide a good initial values for other optimization
+methods to further find a minimizer. Alternatively, we can also decrease the search
+radius to directly approximate a minimizer by the HiCS.
+}
 }
 	\end{abstract}
 	%%%%% end %%%%%%%%%%%
@@ -176,7 +198,7 @@ high-dimensional benchmarks.
 	\ams{90C56, 90C59, 65K05.%The information of the AMS subject classification can be found in http://mathscinet.ams.org/msc/msc2010.html
 	}
 	\keywords{
-Hill-climbing method with a stick, Suspected extreme point, Finite-step convergence, 
+Hill-climbing method with a stick, Suspected minimum point, Finite-step convergence, 
 Simplex, High-dimensional problems}
 	
 	%%%% maketitle %%%%%
@@ -210,7 +232,7 @@ derivative-free optimization. The direct search methods choose a set of nonzero
 vectors deterministically or stochastically as search directions, then try to find a
 replaceable point along search directions with a step size until a certain stopping
 criterion is met.  
-The HiCS can find a neighbourhood that contains extreme value points
+The HiCS finds a neighbourhood that contains extreme value points
 rather than directly finding them. 
 }
 Numerical results have been demonstrated that the HiCS has many 
@@ -651,7 +673,7 @@ $\rho$ affects the number of iterations.
 %\end{figure}
 
 
-In the following, we apply the adaptive HiCS to $1000$ dimensional
+In the following, we apply the adaptive HiCS to $1000$-dimensional
 Gaussian function. The initial value is randomly generated in
 domain $[-1000,1000]^{1000}$, the initial search radius $\rho_0 = 2.0$,
 and regulator $\eta=(\sqrt{5}-1)/2$. 
@@ -835,32 +857,28 @@ minimizer in the search region.
 \section{Conclusion}
 \label{sec:conclusion}
 
-Determining a small area that contains minimizers is a prerequisite for the
+\Note{
+In this paper, we prove that the HiCS converges to a SMP in finite steps. 
+}
+
+
+\Note{
+Determining a area that contains minimizers is a prerequisite for the
 success of optimization methods.  
 Inspired by the hill-climbing behavior of the blind, we 
-proposed the HiCS to find a satisfactory area with a search radius. 
-More significantly, we gave a new concept of the SMP to precisely present the HiCS. 
-By combining with the SMP, the HiCS can be 
-The SMP can be used to describe 
-
-We also give 
-
-
-new derivative-free method to unconstrained
-optimization problems in our previous work\,\cite{huang2017hill}. 
-This paper establishes a rigorous mathematical theory of the HiCS, which
-theoretically guarantees the finite-step convergence
-under mild conditions. Numerical results also have demonstrated
-the satisfactory property. 
-In practice, the computational complexity of the HiCS mainly
-depends on the discretized strategy on search boundaries.
-We proposed a new simplex discretization method to save computational amount to
-address high-dimensional problems in this work. Using the
-simplex method, the number of function evaluations is linearly
-dependent on the dimension of problems,
-which allows us to solve high-dimensional optimization problems. 
-Finally, we demonstrate the efficiency of our proposed algorithm
-by solving several higher-dimensional benchmark problems.
+propose the HiCS to find a satisfactory area. The HiCS is easy to implement and has
+only one parameter, the search radius $\rho$, to be adjusted.
+More significantly, we establish a rigorous convergent analysis to guarantee the HiCS
+within finite steps by introducing a new concept of the SMP. 
+To address high dimensional problems, we propose an efficient method
+to discretize subproblem through simplex in which the discretization points linearly increase
+as the spatial dimension. We apply this approach to several benchmarks.
+Numerical results demonstrate that the HiCS can efficiently obtain a neighbourhood
+with $\rho$ that includes local minimizers, even the global minimizer. 
+The obtained results by the HiCS provide a good initial values for other optimization
+methods to further find a minimizer. Alternatively we can shrink the search
+radius $\rho$ to directly approximate a minimizer by the HiCS.
+}
 
 
 \section*{Acknowledgments}
