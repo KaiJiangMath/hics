@@ -229,12 +229,11 @@ It requires a comparison of function values, and does not need the search direct
 or construct a surrogate model in a trust region.
 \textcolor{blue}{
 The HiCS is different from the direct search methods in
-derivative-free optimization. The direct search methods choose a set of nonzero
-vectors deterministically or stochastically as search directions, then try to find a
-replaceable point along search directions with a step size until a certain stopping
-criterion is met.  
-The HiCS finds a neighbourhood that contains minimum points
-rather than directly finding them. 
+derivative-free optimization\,\cite{kolda2003optimization, conn2009introduction}. The
+direct search methods choose a set of nonzero vectors deterministically or
+stochastically as search directions, then try to find a replaceable point along
+search directions with a step size until a certain stopping criterion is met.  The
+HiCS finds a neighbourhood that contains minimum points rather than directly finding them. 
 }
 Numerical results have been demonstrated that the HiCS has many 
 satisfactory properties, including being easy to implement,
@@ -719,7 +718,7 @@ search neighbourhood.
 \label{subsec:minmulit}
 
 The second objective function is the Ackley
-function\,\cite{dieterich2012empirical} which is a widely used 
+function\,\cite{stacey2003particle, dieterich2012empirical} which is a widely used 
 benchmark function for testing optimization algorithms.
 The expression of the Ackley function is
 \begin{align}
@@ -817,7 +816,7 @@ dimensional problem.
 
 The last benchmark example is the Arwhead function, which has been
 also used by Powell to test the NEWUOA derivative-free
-method\,\cite{powell2006newuoa}. The expression of the Arwhead function is
+method\,\cite{powell2006newuoa, powell2008developments}. The expression of the Arwhead function is
 \begin{align}
 	f(x) = \sum_{i=1}^{d-1}[(x_i^2+x_d^2)^2 - 4 x_i +3].
 	\label{}
@@ -927,6 +926,16 @@ Philadelphia: SIAM, 2009.
 {Adv. Appl. Math. Mech.},
 2017, 9: 307--323.
 
+\bibitem{stacey2003particle}
+  {A.~Stacey, M.~Jancic, and I.~Grundy},
+  {Particle swarm optimization with mutation},
+  In \textit{Proceedings of the Congress on Evolutionary Computation}, pages
+1425–1430, Camberra, Australia, 2003. IEEE Press.
+
+
+  {The 2003 Congress on Evolutionary Computation, CEC03},
+  2003, 2: 1425--1430.
+
 \bibitem{dieterich2012empirical}
 J.~M.~Dieterich and B.~Hartke, 
 Empirical review of standard benchmark functions using evolutionary global optimization,
@@ -943,6 +952,12 @@ M.~J.~D.~Powell,
 The NEWUOA software for unconstrained optimization without derivative, in
 Large-Scale Nonlinear Optimization , eds. G.~Di~Pillo
 and M.~Roma, Springer (New York), 2006, 255--297.
+
+\bibitem{powell2008developments}
+M.~J.~D.~Powell,
+Developments of NEWUOA for minimization without derivatives,
+IMA J. Numer. Anal.,
+2008, 28: 649--664.
 
 
 %%\bibitem{rios2013derivative}
@@ -1001,12 +1016,12 @@ and M.~Roma, Springer (New York), 2006, 255--297.
 %On the convergence of pattern search algorithms,
 %{SIAM J. Optim.}, 1997, 7: 1--25.
 %
-%\bibitem{kolda2003optimization}
-%T.~G.~Kolda, R.~W.~Lewis and V.~Torczon,
-%Optimization by direct search: new perspectives on some classical
-%and modern methods,
-%{SIAM Rev.}, 2003, 45: 385--482.
-%
+\bibitem{kolda2003optimization}
+T.~G.~Kolda, R.~W.~Lewis and V.~Torczon,
+Optimization by direct search: new perspectives on some classical
+and modern methods,
+{SIAM Rev.}, 2003, 45: 385--482.
+
 %\bibitem{dennis1991direct}
 %J.~E.~Jr Dennis and V.~Torczon,
 %Direct search methods on parallel machines,
